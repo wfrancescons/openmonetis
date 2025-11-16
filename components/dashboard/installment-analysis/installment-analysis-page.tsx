@@ -76,7 +76,10 @@ export function InstallmentAnalysisPage({
   };
 
   // Função para selecionar/desselecionar parcela individual
-  const toggleInstallmentSelection = (seriesId: string, installmentId: string) => {
+  const toggleInstallmentSelection = (
+    seriesId: string,
+    installmentId: string
+  ) => {
     const newMap = new Map(selectedInstallments);
     const current = newMap.get(seriesId) || new Set<string>();
 
@@ -101,9 +104,7 @@ export function InstallmentAnalysisPage({
     let installmentsCount = 0;
 
     selectedInstallments.forEach((installmentIds, seriesId) => {
-      const group = data.installmentGroups.find(
-        (g) => g.seriesId === seriesId
-      );
+      const group = data.installmentGroups.find((g) => g.seriesId === seriesId);
       if (group) {
         installmentIds.forEach((id) => {
           const installment = group.pendingInstallments.find(
@@ -141,8 +142,8 @@ export function InstallmentAnalysisPage({
       </div>
 
       {/* Card de resumo principal */}
-      <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
-        <CardContent className="flex flex-col items-center justify-center gap-2 py-5">
+      <Card className="border-primary/20 bg-linear-to-br from-primary/5 to-primary/10">
+        <CardContent className="flex flex-col items-start justify-center gap-2 py-5">
           <p className="text-xs font-medium text-muted-foreground">
             Se você pagar tudo que está selecionado:
           </p>
@@ -151,7 +152,8 @@ export function InstallmentAnalysisPage({
             className="text-3xl font-bold text-primary"
           />
           <p className="text-xs text-muted-foreground">
-            {selectedCount} {selectedCount === 1 ? "parcela" : "parcelas"} selecionadas
+            {selectedCount} {selectedCount === 1 ? "parcela" : "parcelas"}{" "}
+            selecionadas
           </p>
         </CardContent>
       </Card>

@@ -19,6 +19,7 @@ import {
   RiBarChartBoxLine,
   RiBarcodeLine,
   RiBillLine,
+  RiCalculatorLine,
   RiExchangeLine,
   RiLineChartLine,
   RiMoneyDollarCircleLine,
@@ -139,8 +140,9 @@ export const widgetsConfig: WidgetConfig[] = [
     action: (
       <Link
         href="/dashboard/analise-parcelas"
-        className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+        className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
       >
+        <RiCalculatorLine className="inline mr-1 size-4" />
         Análise
       </Link>
     ),

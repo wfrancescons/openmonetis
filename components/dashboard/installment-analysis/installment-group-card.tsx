@@ -52,7 +52,7 @@ export function InstallmentGroupCard({
 
   return (
     <Card className={cn(isFullySelected && "border-primary/50")}>
-      <CardContent className="flex flex-col gap-2 py-1">
+      <CardContent className="flex flex-col gap-2">
         {/* Header do card */}
         <div className="flex items-start gap-3">
           <Checkbox
@@ -98,8 +98,7 @@ export function InstallmentGroupCard({
                   {group.paidInstallments} de {group.totalInstallments} pagas
                 </span>
                 <span>
-                  {unpaidCount}{" "}
-                  {unpaidCount === 1 ? "pendente" : "pendentes"}
+                  {unpaidCount} {unpaidCount === 1 ? "pendente" : "pendentes"}
                 </span>
               </div>
               <Progress value={progress} className="h-1.5" />
