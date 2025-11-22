@@ -15,6 +15,7 @@ import {
 import { RiExpandDiagonalLine } from "@remixicon/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
+import { title_font } from "@/public/fonts/font_index";
 
 const OVERFLOW_THRESHOLD_PX = 16;
 const OVERFLOW_CHECK_DEBOUNCE_MS = 100;
@@ -78,7 +79,9 @@ export default function WidgetCard({
       <CardHeader className="border-b [.border-b]:pb-2">
         <div className="flex w-full items-start justify-between">
           <div>
-            <CardTitle className="flex items-center gap-1">
+            <CardTitle
+              className={`${title_font.className} flex items-center gap-1`}
+            >
               {icon}
               {title}
             </CardTitle>

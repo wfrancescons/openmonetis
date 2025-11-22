@@ -98,7 +98,7 @@ export function NavMain({ sections }: { sections: NavSection[] }) {
   );
 
   const activeLinkClasses =
-    "data-[active=true]:bg-dark! shadow-md data-[active=true]:text-dark-foreground! hover:bg-primary/10! hover:text-primary!";
+    "data-[active=true]:bg-sidebar-accent data-[active=true]:text-dark! hover:text-primary!";
 
   return (
     <>
@@ -119,8 +119,8 @@ export function NavMain({ sections }: { sections: NavSection[] }) {
                         className={itemIsActive ? activeLinkClasses : ""}
                       >
                         <Link prefetch href={buildHrefWithPeriod(item.url)}>
-                          <item.icon className="h-4 w-4" />
-                          <span className="lowercase">{item.title}</span>
+                          <item.icon className={"h-4 w-4"} />
+                          {item.title}
                         </Link>
                       </SidebarMenuButton>
                       {item.items?.length ? (

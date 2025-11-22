@@ -4,9 +4,69 @@ import { updatePasswordAction } from "@/app/(dashboard)/ajustes/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils/ui";
 import { RiEyeLine, RiEyeOffLine, RiCheckLine, RiCloseLine, RiAlertLine } from "@remixicon/react";
 import { useState, useTransition, useMemo } from "react";
 import { toast } from "sonner";
+
+interface PasswordValidation {
+  hasLowercase: boolean;
+  hasUppercase: boolean;
+  hasNumber: boolean;
+  hasSpecial: boolean;
+  hasMinLength: boolean;
+  hasMaxLength: boolean;
+  isValid: boolean;
+}
+
+function validatePassword(password: string): PasswordValidation {
+  const hasLowercase = /[a-z]/.test(password);
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(password);
+  const hasMinLength = password.length >= 7;
+  const hasMaxLength = password.length <= 23;
+
+  return {
+    hasLowercase,
+    hasUppercase,
+    hasNumber,
+    hasSpecial,
+    hasMinLength,
+    hasMaxLength,
+    isValid:
+      hasLowercase &&
+      hasUppercase &&
+      hasNumber &&
+      hasSpecial &&
+      hasMinLength &&
+      hasMaxLength,
+  };
+}
+
+function PasswordRequirement({
+  met,
+  label,
+}: {
+  met: boolean;
+  label: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-1.5 text-xs transition-colors",
+        met ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"
+      )}
+    >
+      {met ? (
+        <RiCheckLine className="h-3.5 w-3.5" />
+      ) : (
+        <RiCloseLine className="h-3.5 w-3.5" />
+      )}
+      <span>{label}</span>
+    </div>
+  );
+}
 
 type UpdatePasswordFormProps = {
   authProvider?: string; // 'google' | 'credential' | undefined
@@ -30,30 +90,23 @@ export function UpdatePasswordForm({ authProvider }: UpdatePasswordFormProps) {
     return newPassword === confirmPassword;
   }, [newPassword, confirmPassword]);
 
-  // Indicador de força da senha (básico)
-  const passwordStrength = useMemo(() => {
-    if (!newPassword) return null;
-    if (newPassword.length < 6) return "weak";
-    if (newPassword.length >= 12 && /[A-Z]/.test(newPassword) && /[0-9]/.test(newPassword) && /[^A-Za-z0-9]/.test(newPassword)) {
-      return "strong";
-    }
-    if (newPassword.length >= 8 && (/[A-Z]/.test(newPassword) || /[0-9]/.test(newPassword))) {
-      return "medium";
-    }
-    return "weak";
-  }, [newPassword]);
+  // Validação de requisitos da senha
+  const passwordValidation = useMemo(
+    () => validatePassword(newPassword),
+    [newPassword]
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validação frontend antes de enviar
-    if (newPassword !== confirmPassword) {
-      toast.error("As senhas não coincidem");
+    if (!passwordValidation.isValid) {
+      toast.error("A senha não atende aos requisitos de segurança");
       return;
     }
 
-    if (newPassword.length < 6) {
-      toast.error("A senha deve ter no mínimo 6 caracteres");
+    if (newPassword !== confirmPassword) {
+      toast.error("As senhas não coincidem");
       return;
     }
 
@@ -145,12 +198,13 @@ export function UpdatePasswordForm({ authProvider }: UpdatePasswordFormProps) {
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             disabled={isPending}
-            placeholder="Mínimo de 6 caracteres"
+            placeholder="Crie uma senha forte"
             required
-            minLength={6}
+            minLength={7}
+            maxLength={23}
             aria-required="true"
             aria-describedby="new-password-help"
-            aria-invalid={newPassword.length > 0 && newPassword.length < 6}
+            aria-invalid={newPassword.length > 0 && !passwordValidation.isValid}
           />
           <button
             type="button"
@@ -165,42 +219,35 @@ export function UpdatePasswordForm({ authProvider }: UpdatePasswordFormProps) {
             )}
           </button>
         </div>
-        <div className="space-y-1">
-          <p id="new-password-help" className="text-xs text-muted-foreground">
-            Use no mínimo 6 caracteres. Recomendado: 12+ caracteres com letras, números e símbolos
-          </p>
-          {/* Indicador de força da senha */}
-          {passwordStrength && (
-            <div className="flex items-center gap-2">
-              <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                <div
-                  className={`h-full transition-all duration-300 ${
-                    passwordStrength === "weak"
-                      ? "w-1/3 bg-red-500"
-                      : passwordStrength === "medium"
-                      ? "w-2/3 bg-amber-500"
-                      : "w-full bg-green-500"
-                  }`}
-                />
-              </div>
-              <span
-                className={`text-xs font-medium ${
-                  passwordStrength === "weak"
-                    ? "text-red-600 dark:text-red-400"
-                    : passwordStrength === "medium"
-                    ? "text-amber-600 dark:text-amber-400"
-                    : "text-green-600 dark:text-green-400"
-                }`}
-              >
-                {passwordStrength === "weak"
-                  ? "Fraca"
-                  : passwordStrength === "medium"
-                  ? "Média"
-                  : "Forte"}
-              </span>
-            </div>
-          )}
-        </div>
+        {/* Indicadores de requisitos da senha */}
+        {newPassword.length > 0 && (
+          <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1">
+            <PasswordRequirement
+              met={passwordValidation.hasMinLength}
+              label="Mínimo 7 caracteres"
+            />
+            <PasswordRequirement
+              met={passwordValidation.hasMaxLength}
+              label="Máximo 23 caracteres"
+            />
+            <PasswordRequirement
+              met={passwordValidation.hasLowercase}
+              label="Letra minúscula"
+            />
+            <PasswordRequirement
+              met={passwordValidation.hasUppercase}
+              label="Letra maiúscula"
+            />
+            <PasswordRequirement
+              met={passwordValidation.hasNumber}
+              label="Número"
+            />
+            <PasswordRequirement
+              met={passwordValidation.hasSpecial}
+              label="Caractere especial"
+            />
+          </div>
+        )}
       </div>
 
       {/* Confirmar nova senha */}
@@ -267,7 +314,7 @@ export function UpdatePasswordForm({ authProvider }: UpdatePasswordFormProps) {
         )}
       </div>
 
-      <Button type="submit" disabled={isPending || passwordsMatch === false}>
+      <Button type="submit" disabled={isPending || passwordsMatch === false || (newPassword.length > 0 && !passwordValidation.isValid)}>
         {isPending ? "Atualizando..." : "Atualizar senha"}
       </Button>
     </form>

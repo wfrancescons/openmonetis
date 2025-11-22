@@ -23,7 +23,6 @@ type NavUserProps = {
 export function NavUser({ user, pagadorAvatarUrl }: NavUserProps) {
   useSidebar();
 
-  // Lógica de fallback: user.image (Google) > pagador avatar > default
   const avatarSrc = useMemo(() => {
     if (user.image) {
       return user.image;

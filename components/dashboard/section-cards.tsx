@@ -15,6 +15,7 @@ import {
   RiSubtractLine,
 } from "@remixicon/react";
 import MoneyValues from "../money-values";
+import { title_font } from "@/public/fonts/font_index";
 
 type SectionCardsProps = {
   metrics: DashboardCardMetrics;
@@ -60,7 +61,9 @@ const getPercentChange = (current: number, previous: number): string => {
 
 export function SectionCards({ metrics }: SectionCardsProps) {
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-3 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+    <div
+      className={`${title_font.className} *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-3 @xl/main:grid-cols-2 @5xl/main:grid-cols-4`}
+    >
       {CARDS.map(({ label, key, icon: Icon }) => {
         const metric = metrics[key];
         const trend = getTrend(metric.current, metric.previous);

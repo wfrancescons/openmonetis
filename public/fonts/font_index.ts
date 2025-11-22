@@ -1,4 +1,4 @@
-import { Inter, Outfit } from "next/font/google";
+import { Inter, Funnel_Display } from "next/font/google";
 import localFont from "next/font/local";
 
 // const aeonik = localFont({
@@ -21,18 +21,18 @@ const anthropic_sans = localFont({
   ],
 });
 
+const funnel_display = Funnel_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
 
-const outfit = Outfit({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
 const main_font = anthropic_sans;
-const money_font = outfit;
-const title_font = inter;
+const money_font = funnel_display;
+const title_font = funnel_display;
 
 export { main_font, money_font, title_font };

@@ -11,7 +11,7 @@ interface ReturnButtonProps {
 const ReturnButton = React.memo(({ disabled, onClick }: ReturnButtonProps) => {
   return (
     <Button
-      className="w-28 h-6"
+      className="w-28 h-6 rounded-sm"
       size="sm"
       disabled={disabled}
       onClick={onClick}

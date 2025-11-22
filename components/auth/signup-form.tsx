@@ -13,13 +13,73 @@ import { authClient, googleSignInAvailable } from "@/lib/auth/client";
 import { cn } from "@/lib/utils/ui";
 import { RiLoader4Line } from "@remixicon/react";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useState, useMemo, type FormEvent } from "react";
 import { toast } from "sonner";
 import { Logo } from "../logo";
 import { AuthErrorAlert } from "./auth-error-alert";
 import { AuthHeader } from "./auth-header";
 import AuthSidebar from "./auth-sidebar";
 import { GoogleAuthButton } from "./google-auth-button";
+import { RiCheckLine, RiCloseLine } from "@remixicon/react";
+
+interface PasswordValidation {
+  hasLowercase: boolean;
+  hasUppercase: boolean;
+  hasNumber: boolean;
+  hasSpecial: boolean;
+  hasMinLength: boolean;
+  hasMaxLength: boolean;
+  isValid: boolean;
+}
+
+function validatePassword(password: string): PasswordValidation {
+  const hasLowercase = /[a-z]/.test(password);
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(password);
+  const hasMinLength = password.length >= 7;
+  const hasMaxLength = password.length <= 23;
+
+  return {
+    hasLowercase,
+    hasUppercase,
+    hasNumber,
+    hasSpecial,
+    hasMinLength,
+    hasMaxLength,
+    isValid:
+      hasLowercase &&
+      hasUppercase &&
+      hasNumber &&
+      hasSpecial &&
+      hasMinLength &&
+      hasMaxLength,
+  };
+}
+
+function PasswordRequirement({
+  met,
+  label,
+}: {
+  met: boolean;
+  label: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-1.5 text-xs transition-colors",
+        met ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"
+      )}
+    >
+      {met ? (
+        <RiCheckLine className="h-3.5 w-3.5" />
+      ) : (
+        <RiCloseLine className="h-3.5 w-3.5" />
+      )}
+      <span>{label}</span>
+    </div>
+  );
+}
 
 type DivProps = React.ComponentProps<"div">;
 
@@ -35,8 +95,18 @@ export function SignupForm({ className, ...props }: DivProps) {
   const [loadingEmail, setLoadingEmail] = useState(false);
   const [loadingGoogle, setLoadingGoogle] = useState(false);
 
+  const passwordValidation = useMemo(
+    () => validatePassword(password),
+    [password]
+  );
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    if (!passwordValidation.isValid) {
+      setError("A senha não atende aos requisitos de segurança.");
+      return;
+    }
 
     await authClient.signUp.email(
       {
@@ -99,10 +169,7 @@ export function SignupForm({ className, ...props }: DivProps) {
             noValidate
           >
             <FieldGroup className="gap-4">
-              <AuthHeader
-                title="Criar sua conta"
-                description="Comece com sua nova conta"
-              />
+              <AuthHeader title="Criar sua conta" />
 
               <AuthErrorAlert error={error} />
 
@@ -144,14 +211,43 @@ export function SignupForm({ className, ...props }: DivProps) {
                   placeholder="Crie uma senha forte"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  aria-invalid={!!error}
+                  aria-invalid={!!error || (password.length > 0 && !passwordValidation.isValid)}
+                  maxLength={23}
                 />
+                {password.length > 0 && (
+                  <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1">
+                    <PasswordRequirement
+                      met={passwordValidation.hasMinLength}
+                      label="Mínimo 7 caracteres"
+                    />
+                    <PasswordRequirement
+                      met={passwordValidation.hasMaxLength}
+                      label="Máximo 23 caracteres"
+                    />
+                    <PasswordRequirement
+                      met={passwordValidation.hasLowercase}
+                      label="Letra minúscula"
+                    />
+                    <PasswordRequirement
+                      met={passwordValidation.hasUppercase}
+                      label="Letra maiúscula"
+                    />
+                    <PasswordRequirement
+                      met={passwordValidation.hasNumber}
+                      label="Número"
+                    />
+                    <PasswordRequirement
+                      met={passwordValidation.hasSpecial}
+                      label="Caractere especial"
+                    />
+                  </div>
+                )}
               </Field>
 
               <Field>
                 <Button
                   type="submit"
-                  disabled={loadingEmail || loadingGoogle}
+                  disabled={loadingEmail || loadingGoogle || (password.length > 0 && !passwordValidation.isValid)}
                   className="w-full"
                 >
                   {loadingEmail ? (

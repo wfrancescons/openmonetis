@@ -86,7 +86,11 @@ export function InsightsPage({ period, onAnalyze }: InsightsPageProps) {
 
     startSaveTransition(async () => {
       try {
-        const result = await saveInsightsAction(period, selectedModel, insights);
+        const result = await saveInsightsAction(
+          period,
+          selectedModel,
+          insights
+        );
 
         if (result.success) {
           setIsSaved(true);
@@ -135,7 +139,7 @@ export function InsightsPage({ period, onAnalyze }: InsightsPageProps) {
         <Button
           onClick={handleAnalyze}
           disabled={isPending || isLoading}
-          className="bg-linear-to-r from-primary to-emerald-400 dark:from-primary-dark dark:to-emerald-600"
+          className="bg-linear-to-r from-primary to-violet-500 dark:from-primary-dark dark:to-emerald-600"
         >
           <RiSparklingLine className="mr-2 size-5" aria-hidden="true" />
           {isPending ? "Analisando..." : "Gerar análise inteligente"}
@@ -163,7 +167,10 @@ export function InsightsPage({ period, onAnalyze }: InsightsPageProps) {
 
         {isSaved && savedDate && (
           <span className="text-sm text-muted-foreground">
-            Salva em {format(new Date(savedDate), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+            Salva em{" "}
+            {format(new Date(savedDate), "dd/MM/yyyy 'às' HH:mm", {
+              locale: ptBR,
+            })}
           </span>
         )}
       </div>
