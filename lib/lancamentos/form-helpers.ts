@@ -39,6 +39,7 @@ export type LancamentoFormOverrides = {
   defaultCartaoId?: string | null;
   defaultPaymentMethod?: string | null;
   defaultPurchaseDate?: string | null;
+  isImporting?: boolean;
 };
 
 /**
@@ -64,7 +65,13 @@ export function buildLancamentoInitialState(
     preferredPeriod && /^\d{4}-\d{2}$/.test(preferredPeriod)
       ? preferredPeriod
       : derivedPeriod;
-  const fallbackPagadorId = lancamento?.pagadorId ?? defaultPagadorId ?? null;
+
+  // Quando importando, usar valores padrão do usuário logado ao invés dos valores do lançamento original
+  const isImporting = overrides?.isImporting ?? false;
+  const fallbackPagadorId = isImporting
+    ? (defaultPagadorId ?? null)
+    : (lancamento?.pagadorId ?? defaultPagadorId ?? null);
+
   const boletoPaymentDate =
     lancamento?.boletoPaymentDate ??
     (paymentMethod === "Boleto" && (lancamento?.isSettled ?? false)
@@ -92,12 +99,12 @@ export function buildLancamentoInitialState(
     contaId:
       paymentMethod === "Cartão de crédito"
         ? undefined
-        : lancamento?.contaId ?? undefined,
+        : isImporting ? undefined : (lancamento?.contaId ?? undefined),
     cartaoId:
       paymentMethod === "Cartão de crédito"
-        ? lancamento?.cartaoId ?? overrides?.defaultCartaoId ?? undefined
+        ? isImporting ? (overrides?.defaultCartaoId ?? undefined) : (lancamento?.cartaoId ?? overrides?.defaultCartaoId ?? undefined)
         : undefined,
-    categoriaId: lancamento?.categoriaId ?? undefined,
+    categoriaId: isImporting ? undefined : (lancamento?.categoriaId ?? undefined),
     installmentCount: lancamento?.installmentCount
       ? String(lancamento.installmentCount)
       : "",

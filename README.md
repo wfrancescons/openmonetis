@@ -48,6 +48,17 @@
 
 A ideia é simples: ter um lugar onde consigo ver todas as minhas contas, cartões, gastos e receitas de forma clara. Se isso for útil pra você também, fique à vontade para usar e contribuir.
 
+### 📊 Estatísticas do Projeto
+
+- **~200 componentes React** organizados por feature
+- **15+ tabelas de banco de dados** com relações complexas
+- **20+ widgets** no dashboard principal
+- **18+ queries paralelas** otimizadas para performance
+- **736 linhas** de schema Drizzle ORM
+- **Docker multi-stage** com imagem final de ~200MB
+- **100% TypeScript** com strict mode
+- **Self-hosted** - seus dados, seu controle
+
 > 💡 **Licença Não-Comercial:** Este projeto é gratuito para uso pessoal, mas não pode ser usado comercialmente. Veja mais detalhes na seção [Licença](#-licença).
 
 ### ⚠️ Avisos importantes
@@ -78,13 +89,15 @@ Se você não se importa em dedicar alguns minutos por dia (ou semana) para mant
 - Registre suas contas bancárias, cartões e dinheiro em espécie
 - Adicione receitas, despesas e transferências entre contas
 - Organize tudo por categorias (moradia, alimentação, transporte, etc.)
-- Veja o saldo atual de cada conta
+- Veja o saldo atual de cada conta e extratos detalhados
+- Importação em massa de lançamentos via texto
 
 📊 **Relatórios e gráficos**
 
 - Dashboard com resumo mensal das suas finanças
 - Gráficos de evolução do patrimônio
 - Comparação de gastos por categoria
+- Relatórios detalhados de categorias com histórico
 - Entenda pra onde seu dinheiro está indo
 
 💳 **Faturas de cartão de crédito**
@@ -92,11 +105,54 @@ Se você não se importa em dedicar alguns minutos por dia (ou semana) para mant
 - Cadastre seus cartões e acompanhe as faturas
 - Veja o que ainda não foi fechado na fatura atual
 - Controle de limites e vencimentos
+- Visualização de faturas por período
 
 🎯 **Orçamentos**
 
 - Defina quanto quer gastar por categoria no mês
 - Acompanhe se está dentro do planejado
+- Indicadores visuais de progresso do orçamento
+
+💸 **Parcelamentos avançados**
+
+- Controle completo de compras parceladas
+- Antecipação de parcelas com cálculo de desconto
+- Análise consolidada de parcelas em aberto
+- Rastreamento de séries de parcelas
+
+🤖 **Insights com IA**
+
+- Análises financeiras geradas por IA (Claude, GPT, Gemini)
+- Insights personalizados sobre seus gastos
+- Recomendações e alertas inteligentes
+- Histórico de insights salvos por período
+
+👥 **Gestão colaborativa**
+
+- Cadastro de pagadores/recebedores
+- Sistema de compartilhamento com permissões (admin/viewer)
+- Notificações automáticas por e-mail
+- Colaboração em lançamentos compartilhados
+
+📝 **Anotações e tarefas**
+
+- Notas de texto para organização
+- Listas de tarefas com checkboxes
+- Sistema de arquivamento
+- Anexação de anotações a lançamentos
+
+📅 **Visualização em calendário**
+
+- Visão mensal de todos os lançamentos
+- Navegação intuitiva por data
+- Filtros e organização temporal
+
+⚙️ **Preferências e personalização**
+
+- Tema claro/escuro
+- Modo privacidade (oculta valores)
+- Customização de comportamento (magnetlines, etc.)
+- Configurações de usuário personalizadas
 
 ### Stack técnica
 
@@ -119,26 +175,82 @@ O projeto é open source, seus dados ficam no seu controle (pode rodar localment
 
 ### 🔐 Autenticação
 
-- Better Auth integrado
-- OAuth (Google, GitHub)
-- Email magic links
-- Session management
+- Better Auth 1.4.10 integrado
+- OAuth (Google)
+- Autenticação por email/senha
+- Session management com tokens
 - Protected routes via middleware
+- Verificação de email
 
 ### 🗄️ Banco de Dados
 
 - PostgreSQL 18 (última versão estável)
-- Drizzle ORM com TypeScript
+- Drizzle ORM 0.45 com TypeScript
 - Migrations automáticas
 - Drizzle Studio (UI visual para DB)
 - Suporte para banco local (Docker) ou remoto (Supabase, Neon, etc)
+- Índices otimizados para performance
+- Relações complexas e integridade referencial
+
+### 💼 Gestão Financeira
+
+- Controle completo de contas bancárias
+- Gerenciamento de cartões de crédito
+- Lançamentos com suporte a:
+  - Receitas e despesas
+  - Transferências entre contas
+  - Parcelamentos com séries
+  - Antecipação de parcelas
+  - Recorrências
+- Categorização flexível
+- Orçamentos mensais por categoria
+- Faturas de cartão de crédito
+
+### 🤖 Inteligência Artificial
+
+- Integração com múltiplos providers:
+  - Anthropic Claude
+  - OpenAI GPT
+  - Google Gemini
+  - OpenRouter
+- Análises financeiras personalizadas
+- Insights salvos e histórico
+
+### 👥 Colaboração
+
+- Sistema de pagadores/recebedores
+- Compartilhamento com permissões granulares
+- Notificações por email (Resend)
+- Códigos de compartilhamento únicos
+- Multi-usuário com isolamento de dados
+
+### 📊 Relatórios e Analytics
+
+- Dashboard interativo com 20+ widgets
+- Relatórios detalhados de categorias
+- Histórico de transações
+- Análise de parcelas consolidada
+- Gráficos com Recharts
+- Exportação de dados (PDF, Excel)
 
 ### 🎨 Interface
 
-- shadcn/ui components
+- shadcn/ui components (Radix UI)
 - Tailwind CSS v4
-- Dark mode suportado
-- Animações com Framer Motion
+- Dark mode com next-themes
+- Animações fluidas com Motion
+- Responsive design
+- Modo privacidade (oculta valores)
+- Componentes acessíveis (ARIA)
+
+### 📝 Produtividade
+
+- Sistema de anotações e tarefas
+- Calendário de transações
+- Importação em massa
+- Calculadora integrada
+- Preferências personalizáveis
+- Changelog integrado
 
 ### 🐳 Docker
 
@@ -147,14 +259,18 @@ O projeto é open source, seus dados ficam no seu controle (pode rodar localment
 - Volumes persistentes
 - Network isolada
 - Scripts npm facilitados
+- Imagem final ~200MB
 
 ### 🧪 Desenvolvimento
 
-- Next.js 16 com App Router
+- Next.js 16.1 com App Router
 - Turbopack (fast refresh)
-- TypeScript 5.9
-- ESLint + Prettier
-- React 19
+- TypeScript 5.9 (strict mode)
+- ESLint 9
+- React 19.2 (com Compiler)
+- Server Actions
+- Parallel data fetching
+- Streaming SSR
 
 ---
 
@@ -162,34 +278,52 @@ O projeto é open source, seus dados ficam no seu controle (pode rodar localment
 
 ### Frontend
 
-- **Framework:** Next.js 16 (App Router)
-- **Linguagem:** TypeScript 5.9
-- **UI Library:** React 19
-- **Styling:** Tailwind CSS v4
+- **Framework:** Next.js 16.1.1 (App Router)
+- **Linguagem:** TypeScript 5.9.3
+- **UI Library:** React 19.2.3
+- **Styling:** Tailwind CSS 4.1.18
 - **Components:** shadcn/ui (Radix UI)
-- **Icons:** Remixicon
-- **Animations:** Framer Motion
+- **Icons:** Remixicon 4.8.0
+- **Animations:** Motion 12.23.26
+- **Tables:** TanStack React Table 8.21.3
+- **Charts:** Recharts 3.6.0
+- **Forms:** React Hook Form + Zod 4.3.4
+- **Theme:** next-themes 0.4.6
 
 ### Backend
 
 - **Runtime:** Node.js 22
 - **Database:** PostgreSQL 18
-- **ORM:** Drizzle ORM
-- **Auth:** Better Auth
-- **Email:** Resend
+- **ORM:** Drizzle ORM 0.45.1
+- **Database Driver:** pg 8.16.3
+- **Auth:** Better Auth 1.4.10
+- **Email:** Resend 6.6.0
+- **Validation:** Zod 4.3.4
+
+### AI Integration (Opcional)
+
+- **AI SDK:** Vercel AI SDK 6.0.6
+- **Anthropic:** Claude (via @ai-sdk/anthropic 3.0.2)
+- **OpenAI:** GPT (via @ai-sdk/openai 3.0.2)
+- **Google:** Gemini (via @ai-sdk/google 3.0.2)
+- **OpenRouter:** via @openrouter/ai-sdk-provider 1.5.4
+
+### Utilities
+
+- **Date Handling:** date-fns 4.1.0
+- **Class Management:** clsx 2.1.1 + tailwind-merge 3.4.0
+- **PDF Export:** jspdf 4.0.0 + jspdf-autotable 5.0.2
+- **Excel Export:** xlsx 0.18.5
+- **Toast Notifications:** sonner 2.0.7
+- **Command Palette:** cmdk 1.1.1
 
 ### DevOps
 
 - **Containerization:** Docker + Docker Compose
 - **Package Manager:** pnpm
 - **Build Tool:** Turbopack
-
-### AI Integration (Opcional)
-
-- Anthropic (Claude)
-- OpenAI (GPT)
-- Google Gemini
-- OpenRouter
+- **Linting:** ESLint 9.39.2
+- **Analytics:** Vercel Analytics + Speed Insights
 
 ---
 
@@ -732,43 +866,253 @@ psql $DATABASE_URL < backup.sql
 
 ```
 opensheets/
-├── app/                      # Next.js App Router
-│   ├── api/                  # API Routes
-│   │   ├── auth/            # Better Auth endpoints
-│   │   └── health/          # Health check
-│   ├── (dashboard)/         # Protected routes (com auth)
-│   └── layout.tsx           # Root layout
+├── app/                           # Next.js App Router
+│   ├── api/                       # API Routes
+│   │   ├── auth/[...all]/        # Better Auth endpoints
+│   │   └── health/               # Health check endpoint
+│   ├── (auth)/                   # Rotas públicas de autenticação
+│   │   ├── login/                # Página de login
+│   │   └── signup/               # Página de cadastro
+│   ├── (dashboard)/              # Rotas protegidas (requer auth)
+│   │   ├── dashboard/            # Dashboard principal
+│   │   │   └── analise-parcelas/ # Análise de parcelas
+│   │   ├── lancamentos/          # Lançamentos/transações
+│   │   ├── contas/               # Contas bancárias
+│   │   │   └── [contaId]/extrato # Extrato da conta
+│   │   ├── cartoes/              # Cartões de crédito
+│   │   │   └── [cartaoId]/fatura # Fatura do cartão
+│   │   ├── categorias/           # Categorias
+│   │   │   ├── historico/        # Histórico de categorias
+│   │   │   └── [categoryId]/     # Detalhes da categoria
+│   │   ├── pagadores/            # Pagadores/recebedores
+│   │   │   └── [pagadorId]/      # Detalhes do pagador
+│   │   ├── orcamentos/           # Orçamentos mensais
+│   │   ├── anotacoes/            # Anotações e tarefas
+│   │   │   └── arquivadas/       # Anotações arquivadas
+│   │   ├── insights/             # Insights de IA
+│   │   ├── relatorios/           # Relatórios
+│   │   │   └── categorias/       # Relatório de categorias
+│   │   ├── calendario/           # Visão de calendário
+│   │   ├── changelog/            # Histórico de mudanças
+│   │   └── ajustes/              # Configurações
+│   ├── (landing-page)/           # Página inicial pública
+│   ├── layout.tsx                # Root layout
+│   └── globals.css               # Estilos globais (Tailwind)
 │
-├── components/              # React Components
-│   ├── ui/                  # shadcn/ui components
-│   └── ...                  # Feature components
+├── components/                    # React Components (~200 arquivos)
+│   ├── ui/                       # shadcn/ui base components
+│   │   ├── button.tsx
+│   │   ├── dialog.tsx
+│   │   ├── table.tsx
+│   │   └── ... (40+ componentes)
+│   ├── lancamentos/              # Componentes de lançamentos
+│   │   ├── dialogs/             # Diálogos (criar, editar, detalhes)
+│   │   ├── table/               # Tabela com filtros avançados
+│   │   ├── shared/              # Componentes compartilhados
+│   │   └── page/                # Página completa
+│   ├── dashboard/                # Widgets do dashboard (20+ widgets)
+│   │   ├── accounts-summary.tsx
+│   │   ├── income-expense-chart.tsx
+│   │   ├── category-breakdown.tsx
+│   │   └── ...
+│   ├── cartoes/                  # Componentes de cartões
+│   ├── contas/                   # Componentes de contas
+│   ├── categorias/               # Componentes de categorias
+│   ├── pagadores/                # Componentes de pagadores
+│   ├── orcamentos/               # Componentes de orçamentos
+│   ├── anotacoes/                # Componentes de anotações
+│   ├── insights/                 # Componentes de insights IA
+│   ├── relatorios/               # Componentes de relatórios
+│   ├── calendario/               # Componentes de calendário
+│   ├── calculadora/              # Calculadora integrada
+│   ├── sidebar/                  # Sidebar de navegação
+│   ├── skeletons/                # Estados de loading
+│   └── month-picker/             # Seletor de mês/período
 │
-├── lib/                     # Shared utilities
-│   ├── db.ts               # Drizzle client
-│   ├── auth.ts             # Better Auth server
-│   └── auth-client.ts      # Better Auth client
+├── lib/                          # Lógica de negócio e utilitários
+│   ├── auth/
+│   │   ├── config.ts            # Configuração Better Auth
+│   │   ├── server.ts            # Auth helpers (servidor)
+│   │   └── client.ts            # Auth client
+│   ├── db.ts                    # Conexão Drizzle ORM
+│   ├── dashboard/               # Fetchers do dashboard
+│   │   ├── fetch-dashboard-data.ts  # Fetcher principal (18+ queries paralelas)
+│   │   ├── accounts.ts
+│   │   ├── metrics.ts
+│   │   └── ... (15+ fetchers especializados)
+│   ├── lancamentos/             # Lógica de lançamentos
+│   │   ├── constants.ts
+│   │   ├── form-helpers.ts
+│   │   ├── categoria-helpers.ts
+│   │   └── formatting-helpers.ts
+│   ├── actions/                 # Helpers de Server Actions
+│   │   ├── helpers.ts           # Error handling, revalidation
+│   │   └── types.ts             # ActionResult types
+│   ├── schemas/                 # Zod validation schemas
+│   ├── utils/                   # Utilitários gerais
+│   │   ├── currency.ts          # Formatação de moeda
+│   │   ├── date.ts              # Manipulação de datas
+│   │   ├── period/              # Utilitários de período (YYYY-MM)
+│   │   └── calculator.ts        # Lógica da calculadora
+│   └── ...                      # Outros helpers
 │
-├── db/                      # Drizzle schema
-│   └── schema.ts           # Database schema
+├── db/                           # Banco de dados
+│   └── schema.ts                # Schema Drizzle (736 linhas)
+│                                 # 15+ tabelas com relações complexas
 │
-├── drizzle/                 # Generated migrations
-│   └── migrations/
+├── drizzle/                      # Migrations geradas
+│   ├── migrations/
+│   └── meta/
 │
-├── hooks/                   # Custom React hooks
-├── public/                  # Static assets
-├── scripts/                 # Utility scripts
-│   ├── setup-env.sh        # Env setup automation
-│   └── postgres/init.sql   # PostgreSQL init script
+├── hooks/                        # React Hooks customizados
+│   ├── use-month-period.ts      # Gerenciamento de período
+│   ├── use-form-state.ts        # Estado de formulários
+│   ├── use-calculator-state.ts  # Estado da calculadora
+│   └── use-mobile.ts            # Detecção mobile
 │
-├── docker/                  # Docker configs
-│   └── postgres/init.sql
+├── public/                       # Assets estáticos
+│   ├── logos/                   # Logos de bancos
+│   ├── bandeiras/               # Bandeiras de cartões
+│   ├── icones/                  # Ícones de categorias
+│   ├── avatares/                # Avatares de usuários
+│   ├── providers/               # Logos de providers
+│   └── fonts/                   # Fontes customizadas
 │
-├── Dockerfile              # Production build
-├── docker-compose.yml      # Docker orchestration
-├── next.config.ts          # Next.js config
-├── drizzle.config.ts       # Drizzle ORM config
-├── tailwind.config.ts      # Tailwind config
-└── tsconfig.json           # TypeScript config
+├── scripts/                      # Scripts utilitários
+│   ├── setup-env.sh             # Setup de variáveis de ambiente
+│   └── postgres/
+│       ├── init.sql             # Script de inicialização do PostgreSQL
+│       └── enable-extensions.ts # Habilita extensões do PostgreSQL
+│
+├── Dockerfile                    # Multi-stage build otimizado
+├── docker-compose.yml            # Orquestração Docker
+├── next.config.ts                # Configuração Next.js
+├── drizzle.config.ts             # Configuração Drizzle ORM
+├── tailwind.config.ts            # Configuração Tailwind CSS
+├── postcss.config.mjs            # PostCSS config
+├── components.json               # shadcn/ui config
+├── eslint.config.mjs             # ESLint config
+├── tsconfig.json                 # TypeScript config
+├── package.json                  # Dependências e scripts
+├── .env.example                  # Template de variáveis de ambiente
+├── CLAUDE.md                     # Guia completo para IA
+└── README.md                     # Este arquivo
+```
+
+### Principais Diretórios
+
+| Diretório          | Descrição                                   | Arquivos |
+| ------------------ | ------------------------------------------- | -------- |
+| `app/(dashboard)/` | Páginas protegidas da aplicação             | ~50      |
+| `components/`      | Componentes React reutilizáveis             | ~200     |
+| `lib/`             | Lógica de negócio, helpers e utilitários    | ~80      |
+| `db/`              | Schema do banco de dados                    | 1        |
+| `hooks/`           | React hooks customizados                    | ~10      |
+| `public/`          | Assets estáticos (imagens, ícones, logos)   | ~100     |
+| `scripts/`         | Scripts de automação                        | ~5       |
+
+### Estrutura do Banco de Dados
+
+O OpenSheets possui um schema robusto com 15+ tabelas e relações complexas:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    TABELAS PRINCIPAIS                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  user                      user_preferences                      │
+│  ├── id                   ├── id                                │
+│  ├── name                 ├── user_id → user.id                 │
+│  ├── email                ├── disable_magnetlines                │
+│  └── ...                  └── ...                                │
+│                                                                  │
+│  contas                    cartoes                              │
+│  ├── id                   ├── id                                │
+│  ├── user_id → user.id    ├── user_id → user.id                 │
+│  ├── nome                 ├── conta_id → contas.id              │
+│  ├── tipo_conta           ├── nome                              │
+│  ├── saldo_inicial        ├── bandeira                          │
+│  └── ...                  ├── dt_fechamento                     │
+│                           ├── dt_vencimento                      │
+│                           └── ...                                │
+│                                                                  │
+│  categorias                pagadores                            │
+│  ├── id                   ├── id                                │
+│  ├── user_id → user.id    ├── user_id → user.id                 │
+│  ├── nome                 ├── nome                              │
+│  ├── tipo                 ├── email                             │
+│  ├── icone                ├── share_code (único)                │
+│  └── ...                  ├── role                              │
+│                           └── ...                                │
+│                                                                  │
+│  pagador_shares                                                 │
+│  ├── id                                                         │
+│  ├── pagador_id → pagadores.id                                  │
+│  ├── shared_with_user_id → user.id                             │
+│  ├── created_by_user_id → user.id                              │
+│  ├── permission (read/write)                                    │
+│  └── ...                                                         │
+│                                                                  │
+│  lancamentos (TABELA PRINCIPAL)                                │
+│  ├── id                                                         │
+│  ├── user_id → user.id                                          │
+│  ├── conta_id → contas.id                                       │
+│  ├── cartao_id → cartoes.id                                     │
+│  ├── categoria_id → categorias.id                              │
+│  ├── pagador_id → pagadores.id                                  │
+│  ├── nome                                                        │
+│  ├── valor                                                       │
+│  ├── tipo_transacao (receita/despesa/transferencia)            │
+│  ├── forma_pagamento                                            │
+│  ├── condicao (aberto/realizado/cancelado)                     │
+│  ├── data_compra                                                │
+│  ├── periodo (YYYY-MM)                                          │
+│  ├── qtde_parcela                                               │
+│  ├── parcela_atual                                              │
+│  ├── series_id (agrupa parcelas)                               │
+│  ├── transfer_id (agrupa transferências)                       │
+│  ├── antecipado (boolean)                                       │
+│  ├── antecipacao_id → installment_anticipations.id            │
+│  └── ...                                                         │
+│                                                                  │
+│  installment_anticipations                                      │
+│  ├── id                                                         │
+│  ├── user_id → user.id                                          │
+│  ├── series_id                                                  │
+│  ├── lancamento_id → lancamentos.id                            │
+│  ├── periodo_antecipacao                                        │
+│  ├── parcelas_antecipadas (JSONB array)                        │
+│  ├── valor_total                                                │
+│  ├── desconto                                                   │
+│  └── ...                                                         │
+│                                                                  │
+│  faturas                   orcamentos                           │
+│  ├── id                   ├── id                                │
+│  ├── user_id → user.id    ├── user_id → user.id                 │
+│  ├── cartao_id → cartoes  ├── categoria_id → categorias.id      │
+│  ├── periodo              ├── valor                             │
+│  ├── status_pagamento     ├── periodo                           │
+│  └── ...                  └── ...                                │
+│                                                                  │
+│  anotacoes                 saved_insights                       │
+│  ├── id                   ├── id                                │
+│  ├── user_id → user.id    ├── user_id → user.id                 │
+│  ├── titulo               ├── period                            │
+│  ├── descricao            ├── model_id                          │
+│  ├── tipo (nota/tarefa)   ├── data (JSON)                       │
+│  ├── tasks (JSON)         ├── created_at                        │
+│  ├── arquivada            └── updated_at                        │
+│  └── ...                                                         │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+
+ÍNDICES OTIMIZADOS:
+• user_id + period (queries do dashboard)
+• user_id + purchase_date (ordenação por data)
+• series_id (agrupamento de parcelas)
+• cartao_id + period (faturas)
+• user_id + condition (filtros de condição)
+• share_code (compartilhamento)
 ```
 
 ### Fluxo de Autenticação
@@ -778,15 +1122,45 @@ opensheets/
    ↓
 2. middleware.ts verifica sessão (Better Auth)
    ↓
-3. Se não autenticado → redirect /auth
+3. Se não autenticado → redirect /login
    ↓
-4. Usuário faz login (OAuth ou email)
+4. Usuário faz login (OAuth Google ou email/senha)
    ↓
-5. Better Auth valida e cria sessão
+5. Better Auth valida credenciais e cria sessão
    ↓
-6. Cookie de sessão é salvo
+6. Cookie de sessão é salvo no navegador
    ↓
-7. Usuário acessa rota protegida ✅
+7. Inicialização automática de dados do usuário:
+   - Categorias padrão criadas
+   - Preferências inicializadas
+   ↓
+8. Usuário acessa dashboard ✅
+```
+
+### Fluxo de Dados (Dashboard)
+
+```
+1. Usuário acessa /dashboard
+   ↓
+2. Server Component busca userId da sessão
+   ↓
+3. fetchDashboardData() executa 18+ queries em paralelo:
+   - Métricas (receitas, despesas, saldo)
+   - Contas e seus saldos
+   - Cartões e faturas
+   - Lançamentos recentes
+   - Gráficos de categorias
+   - Parcelas em aberto
+   - Orçamentos vs. realizado
+   - ... e mais 10+ datasets
+   ↓
+4. Dados retornados em ~200-500ms (otimizado)
+   ↓
+5. Server Component renderiza com dados
+   ↓
+6. Client Components hidratam com interatividade
+   ↓
+7. Dashboard totalmente funcional ✅
 ```
 
 ### Fluxo de Build (Docker)
@@ -800,6 +1174,90 @@ opensheets/
    ↓
 4. Container final: ~200MB (otimizado)
 ```
+
+---
+
+## 🆕 Destaques e Funcionalidades Recentes
+
+O OpenSheets está em desenvolvimento ativo. Aqui estão algumas das funcionalidades mais interessantes já implementadas:
+
+### 💸 Sistema Avançado de Parcelamentos
+
+O controle de parcelamentos vai além do básico:
+
+- **Séries de parcelas:** Agrupa todas as parcelas de uma compra
+- **Antecipação inteligente:** Antecipe parcelas com cálculo automático de desconto
+- **Análise consolidada:** Veja todas as parcelas em aberto e o impacto nos próximos meses
+- **Rastreamento completo:** Histórico de todas as operações de antecipação
+
+### 🤖 Insights Financeiros com IA
+
+Integração robusta com múltiplos providers de IA:
+
+- **Multi-provider:** Escolha entre Claude, GPT, Gemini ou OpenRouter
+- **Análises personalizadas:** IA analisa seus padrões de gastos e sugere melhorias
+- **Histórico persistente:** Insights salvos por período para acompanhamento
+- **Contextual:** A IA tem acesso aos seus dados financeiros para análises precisas
+
+### 👥 Colaboração e Compartilhamento
+
+Sistema completo para gestão colaborativa de finanças:
+
+- **Pagadores compartilhados:** Compartilhe acesso a pagadores específicos
+- **Permissões granulares:** Defina quem pode visualizar ou editar
+- **Códigos únicos:** Cada pagador tem um código de compartilhamento exclusivo
+- **Notificações automáticas:** E-mails enviados automaticamente via Resend
+- **Multi-usuário seguro:** Isolamento completo de dados entre usuários
+
+### 📊 Relatórios Detalhados
+
+Analytics poderosos para entender suas finanças:
+
+- **Dashboard interativo:** 20+ widgets com diferentes visualizações
+- **Relatórios de categorias:** Análise profunda por categoria com histórico
+- **Comparativos mensais:** Veja a evolução dos seus gastos ao longo do tempo
+- **Exportações:** PDF e Excel para análise externa
+- **Gráficos interativos:** Recharts com dados em tempo real
+
+### 📝 Produtividade Integrada
+
+Ferramentas para manter tudo organizado:
+
+- **Anotações:** Notas de texto para lembretes e planejamentos
+- **Tarefas:** Listas com checkboxes para acompanhamento
+- **Arquivamento:** Mantenha o histórico sem poluir a interface
+- **Calendário:** Visualize todos os lançamentos em um calendário mensal
+- **Calculadora:** Calculadora integrada para planejamento rápido
+
+### 🎨 Experiência do Usuário
+
+Atenção aos detalhes que fazem diferença:
+
+- **Modo privacidade:** Oculte valores sensíveis com um clique
+- **Tema adaptável:** Dark/light mode com persistência
+- **Preferências:** Customize o comportamento da aplicação
+- **Importação em massa:** Cole múltiplos lançamentos de uma vez
+- **Responsivo:** Funciona perfeitamente em desktop e mobile
+
+### 🔒 Segurança e Performance
+
+Construído com as melhores práticas:
+
+- **Isolamento de dados:** Cada usuário vê apenas seus próprios dados
+- **Índices otimizados:** Queries rápidas mesmo com milhares de registros
+- **Server Actions:** Mutações seguras no servidor
+- **Type-safety:** TypeScript strict em toda a codebase
+- **Validação robusta:** Zod schemas para todos os inputs
+
+### 📦 Developer Experience
+
+Feito por desenvolvedores, para desenvolvedores:
+
+- **Hot reload instantâneo:** Turbopack para desenvolvimento rápido
+- **Type inference:** Drizzle ORM com tipos automáticos
+- **Migrations automáticas:** Schema sync simplificado
+- **Docker completo:** Ambiente reproduzível em qualquer lugar
+- **Scripts facilitados:** Comandos npm para tudo
 
 ---
 

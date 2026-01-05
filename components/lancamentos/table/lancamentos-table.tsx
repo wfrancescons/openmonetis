@@ -91,8 +91,10 @@ const resolveLogoSrc = (logo: string | null) => {
 };
 
 type BuildColumnsArgs = {
+  currentUserId: string;
   onEdit?: (item: LancamentoItem) => void;
   onCopy?: (item: LancamentoItem) => void;
+  onImport?: (item: LancamentoItem) => void;
   onConfirmDelete?: (item: LancamentoItem) => void;
   onViewDetails?: (item: LancamentoItem) => void;
   onToggleSettlement?: (item: LancamentoItem) => void;
@@ -103,8 +105,10 @@ type BuildColumnsArgs = {
 };
 
 const buildColumns = ({
+  currentUserId,
   onEdit,
   onCopy,
+  onImport,
   onConfirmDelete,
   onViewDetails,
   onToggleSettlement,
@@ -116,6 +120,7 @@ const buildColumns = ({
   const noop = () => undefined;
   const handleEdit = onEdit ?? noop;
   const handleCopy = onCopy ?? noop;
+  const handleImport = onImport ?? noop;
   const handleConfirmDelete = onConfirmDelete ?? noop;
   const handleViewDetails = onViewDetails ?? noop;
   const handleToggleSettlement = onToggleSettlement ?? noop;
@@ -419,6 +424,7 @@ const buildColumns = ({
           contaLogo,
           cartaoId,
           contaId,
+          userId,
         } = row.original;
         const label = cartaoName ?? contaName;
         const logoSrc = resolveLogoSrc(cartaoLogo ?? contaLogo);
@@ -428,20 +434,14 @@ const buildColumns = ({
           ? `/contas/${contaId}/extrato`
           : null;
         const Icon = cartaoId ? RiBankCard2Line : contaId ? RiBankLine : null;
+        const isOwnData = userId === currentUserId;
 
         if (!label) {
           return "—";
         }
 
-        return (
-          <Link
-            href={href ?? "#"}
-            className={cn(
-              "flex items-center gap-2",
-              href ? "underline " : "pointer-events-none"
-            )}
-            aria-disabled={!href}
-          >
+        const content = (
+          <>
             {logoSrc ? (
               <Image
                 src={logoSrc}
@@ -455,6 +455,23 @@ const buildColumns = ({
             {Icon ? (
               <Icon className="size-4 text-muted-foreground" aria-hidden />
             ) : null}
+          </>
+        );
+
+        if (!isOwnData) {
+          return <div className="flex items-center gap-2">{content}</div>;
+        }
+
+        return (
+          <Link
+            href={href ?? "#"}
+            className={cn(
+              "flex items-center gap-2",
+              href ? "underline " : "pointer-events-none"
+            )}
+            aria-disabled={!href}
+          >
+            {content}
           </Link>
         );
       },
@@ -526,30 +543,41 @@ const buildColumns = ({
                 <RiEyeLine className="size-4" />
                 Detalhes
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() => handleEdit(row.original)}
-                disabled={row.original.readonly}
-              >
-                <RiPencilLine className="size-4" />
-                Editar
-              </DropdownMenuItem>
-              {row.original.categoriaName !== "Pagamentos" && (
+              {row.original.userId === currentUserId && (
+                <DropdownMenuItem
+                  onSelect={() => handleEdit(row.original)}
+                  disabled={row.original.readonly}
+                >
+                  <RiPencilLine className="size-4" />
+                  Editar
+                </DropdownMenuItem>
+              )}
+              {row.original.categoriaName !== "Pagamentos" && row.original.userId === currentUserId && (
                 <DropdownMenuItem onSelect={() => handleCopy(row.original)}>
                   <RiFileCopyLine className="size-4" />
                   Copiar
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem
-                variant="destructive"
-                onSelect={() => handleConfirmDelete(row.original)}
-                disabled={row.original.readonly}
-              >
-                <RiDeleteBin5Line className="size-4" />
-                Remover
-              </DropdownMenuItem>
+              {row.original.categoriaName !== "Pagamentos" && row.original.userId !== currentUserId && (
+                <DropdownMenuItem onSelect={() => handleImport(row.original)}>
+                  <RiFileCopyLine className="size-4" />
+                  Importar para Minha Conta
+                </DropdownMenuItem>
+              )}
+              {row.original.userId === currentUserId && (
+                <DropdownMenuItem
+                  variant="destructive"
+                  onSelect={() => handleConfirmDelete(row.original)}
+                  disabled={row.original.readonly}
+                >
+                  <RiDeleteBin5Line className="size-4" />
+                  Remover
+                </DropdownMenuItem>
+              )}
 
               {/* Opções de Antecipação */}
-              {row.original.condition === "Parcelado" &&
+              {row.original.userId === currentUserId &&
+                row.original.condition === "Parcelado" &&
                 row.original.seriesId && (
                   <>
                     <DropdownMenuSeparator />
@@ -594,6 +622,7 @@ const buildColumns = ({
 
 type LancamentosTableProps = {
   data: LancamentoItem[];
+  currentUserId: string;
   pagadorFilterOptions?: LancamentoFilterOption[];
   categoriaFilterOptions?: LancamentoFilterOption[];
   contaCartaoFilterOptions?: ContaCartaoFilterOption[];
@@ -601,8 +630,10 @@ type LancamentosTableProps = {
   onMassAdd?: () => void;
   onEdit?: (item: LancamentoItem) => void;
   onCopy?: (item: LancamentoItem) => void;
+  onImport?: (item: LancamentoItem) => void;
   onConfirmDelete?: (item: LancamentoItem) => void;
   onBulkDelete?: (items: LancamentoItem[]) => void;
+  onBulkImport?: (items: LancamentoItem[]) => void;
   onViewDetails?: (item: LancamentoItem) => void;
   onToggleSettlement?: (item: LancamentoItem) => void;
   onAnticipate?: (item: LancamentoItem) => void;
@@ -614,6 +645,7 @@ type LancamentosTableProps = {
 
 export function LancamentosTable({
   data,
+  currentUserId,
   pagadorFilterOptions = [],
   categoriaFilterOptions = [],
   contaCartaoFilterOptions = [],
@@ -621,8 +653,10 @@ export function LancamentosTable({
   onMassAdd,
   onEdit,
   onCopy,
+  onImport,
   onConfirmDelete,
   onBulkDelete,
+  onBulkImport,
   onViewDetails,
   onToggleSettlement,
   onAnticipate,
@@ -643,8 +677,10 @@ export function LancamentosTable({
   const columns = useMemo(
     () =>
       buildColumns({
+        currentUserId,
         onEdit,
         onCopy,
+        onImport,
         onConfirmDelete,
         onViewDetails,
         onToggleSettlement,
@@ -654,8 +690,10 @@ export function LancamentosTable({
         showActions,
       }),
     [
+      currentUserId,
       onEdit,
       onCopy,
+      onImport,
       onConfirmDelete,
       onViewDetails,
       onToggleSettlement,
@@ -693,6 +731,10 @@ export function LancamentosTable({
     0
   );
 
+  // Check if all data belongs to current user to determine if filters should be shown
+  const isOwnData = data.every((item) => item.userId === currentUserId);
+  const shouldShowFilters = showFilters && isOwnData;
+
   const handleBulkDelete = () => {
     if (onBulkDelete && selectedCount > 0) {
       const selectedItems = selectedRows.map((row) => row.original);
@@ -701,8 +743,16 @@ export function LancamentosTable({
     }
   };
 
+  const handleBulkImport = () => {
+    if (onBulkImport && selectedCount > 0) {
+      const selectedItems = selectedRows.map((row) => row.original);
+      onBulkImport(selectedItems);
+      setRowSelection({});
+    }
+  };
+
   const showTopControls =
-    Boolean(onCreate) || Boolean(onMassAdd) || showFilters;
+    Boolean(onCreate) || Boolean(onMassAdd) || shouldShowFilters;
 
   return (
     <TooltipProvider>
@@ -738,10 +788,10 @@ export function LancamentosTable({
               ) : null}
             </div>
           ) : (
-            <span className={showFilters ? "hidden sm:block" : ""} />
+            <span className={shouldShowFilters ? "hidden sm:block" : ""} />
           )}
 
-          {showFilters ? (
+          {shouldShowFilters ? (
             <LancamentosFilters
               pagadorOptions={pagadorFilterOptions}
               categoriaOptions={categoriaFilterOptions}
@@ -752,7 +802,7 @@ export function LancamentosTable({
         </div>
       ) : null}
 
-      {selectedCount > 0 && onBulkDelete ? (
+      {selectedCount > 0 && onBulkDelete && selectedRows.every(row => row.original.userId === currentUserId) ? (
         <div className="flex flex-wrap items-center gap-3 rounded-lg border bg-muted/50 px-4 py-2">
           <div className="flex flex-col text-sm text-muted-foreground sm:flex-row sm:items-center sm:gap-2">
             <span>
@@ -778,6 +828,36 @@ export function LancamentosTable({
           >
             <RiDeleteBin5Line className="size-4" />
             Remover selecionados
+          </Button>
+        </div>
+      ) : null}
+
+      {selectedCount > 0 && onBulkImport && selectedRows.some(row => row.original.userId !== currentUserId) ? (
+        <div className="flex flex-wrap items-center gap-3 rounded-lg border bg-muted/50 px-4 py-2">
+          <div className="flex flex-col text-sm text-muted-foreground sm:flex-row sm:items-center sm:gap-2">
+            <span>
+              {selectedCount}{" "}
+              {selectedCount === 1 ? "item selecionado" : "itens selecionados"}
+            </span>
+            <span className="hidden sm:inline" aria-hidden>
+              -
+            </span>
+            <span>
+              Total:{" "}
+              <MoneyValues
+                amount={selectedTotal}
+                className="inline font-medium text-foreground"
+              />
+            </span>
+          </div>
+          <Button
+            onClick={handleBulkImport}
+            variant="default"
+            size="sm"
+            className="ml-auto"
+          >
+            <RiFileCopyLine className="size-4" />
+            Importar selecionados
           </Button>
         </div>
       ) : null}

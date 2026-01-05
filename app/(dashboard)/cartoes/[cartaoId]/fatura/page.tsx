@@ -183,6 +183,7 @@ export default async function Page({ params, searchParams }: PageProps) {
 
       <section className="flex flex-col gap-4">
         <LancamentosSection
+          currentUserId={userId}
           lancamentos={lancamentosData}
           pagadorOptions={pagadorOptions}
           splitPagadorOptions={splitPagadorOptions}

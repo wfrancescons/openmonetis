@@ -79,6 +79,7 @@ export default async function Page({ params, searchParams }: PageProps) {
         transactionCount={detail.transactions.length}
       />
       <LancamentosPage
+        currentUserId={userId}
         lancamentos={detail.transactions}
         pagadorOptions={pagadorOptions}
         splitPagadorOptions={splitPagadorOptions}

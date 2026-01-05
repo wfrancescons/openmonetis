@@ -99,6 +99,9 @@ export default async function Page({ params, searchParams }: PageProps) {
   let filterSources: Awaited<
     ReturnType<typeof fetchLancamentoFilterSources>
   > | null = null;
+  let loggedUserFilterSources: Awaited<
+    ReturnType<typeof fetchLancamentoFilterSources>
+  > | null = null;
   let sluggedFilters: SluggedFilters;
   let slugMaps: SlugMaps;
 
@@ -107,6 +110,8 @@ export default async function Page({ params, searchParams }: PageProps) {
     sluggedFilters = buildSluggedFilters(filterSources);
     slugMaps = buildSlugMaps(sluggedFilters);
   } else {
+    // Buscar opções do usuário logado para usar ao importar
+    loggedUserFilterSources = await fetchLancamentoFilterSources(userId);
     sluggedFilters = {
       pagadorFiltersRaw: [],
       categoriaFiltersRaw: [],
@@ -170,6 +175,7 @@ export default async function Page({ params, searchParams }: PageProps) {
   const pagadorSharesData = shareRows;
 
   let optionSets: OptionSet;
+  let loggedUserOptionSets: OptionSet | null = null;
   let effectiveSluggedFilters = sluggedFilters;
 
   if (canEdit && filterSources) {
@@ -192,6 +198,15 @@ export default async function Page({ params, searchParams }: PageProps) {
       cartaoFiltersRaw: [],
     };
     optionSets = buildReadOnlyOptionSets(lancamentosData, pagador);
+
+    // Construir opções do usuário logado para usar ao importar
+    if (loggedUserFilterSources) {
+      const loggedUserSluggedFilters = buildSluggedFilters(loggedUserFilterSources);
+      loggedUserOptionSets = buildOptionSets({
+        ...loggedUserSluggedFilters,
+        pagadorRows: loggedUserFilterSources.pagadorRows,
+      });
+    }
   }
 
   const pagadorSlug =
@@ -286,6 +301,7 @@ export default async function Page({ params, searchParams }: PageProps) {
         <TabsContent value="lancamentos">
           <section className="flex flex-col gap-4">
             <LancamentosSection
+              currentUserId={userId}
               lancamentos={lancamentosData}
               pagadorOptions={optionSets.pagadorOptions}
               splitPagadorOptions={optionSets.splitPagadorOptions}
@@ -299,6 +315,12 @@ export default async function Page({ params, searchParams }: PageProps) {
               selectedPeriod={selectedPeriod}
               estabelecimentos={estabelecimentos}
               allowCreate={canEdit}
+              importPagadorOptions={loggedUserOptionSets?.pagadorOptions}
+              importSplitPagadorOptions={loggedUserOptionSets?.splitPagadorOptions}
+              importDefaultPagadorId={loggedUserOptionSets?.defaultPagadorId}
+              importContaOptions={loggedUserOptionSets?.contaOptions}
+              importCartaoOptions={loggedUserOptionSets?.cartaoOptions}
+              importCategoriaOptions={loggedUserOptionSets?.categoriaOptions}
             />
           </section>
         </TabsContent>

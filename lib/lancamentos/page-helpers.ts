@@ -388,6 +388,7 @@ type LancamentoRowWithRelations = typeof lancamentos.$inferSelect & {
 export const mapLancamentosData = (rows: LancamentoRowWithRelations[]) =>
   rows.map((item) => ({
     id: item.id,
+    userId: item.userId,
     name: item.name,
     purchaseDate: item.purchaseDate?.toISOString() ?? new Date().toISOString(),
     period: item.period ?? "",

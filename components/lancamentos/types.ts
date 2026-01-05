@@ -1,5 +1,6 @@
 export type LancamentoItem = {
   id: string;
+  userId: string;
   name: string;
   purchaseDate: string;
   period: string;

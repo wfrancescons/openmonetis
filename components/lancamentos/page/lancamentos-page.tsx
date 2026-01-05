@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { AnticipateInstallmentsDialog } from "../dialogs/anticipate-installments-dialog/anticipate-installments-dialog";
 import { AnticipationHistoryDialog } from "../dialogs/anticipate-installments-dialog/anticipation-history-dialog";
 import { BulkActionDialog, type BulkActionScope } from "../dialogs/bulk-action-dialog";
+import { BulkImportDialog } from "../dialogs/bulk-import-dialog";
 import { LancamentoDetailsDialog } from "../dialogs/lancamento-details-dialog";
 import { LancamentoDialog } from "../dialogs/lancamento-dialog/lancamento-dialog";
 import { LancamentosTable } from "../table/lancamentos-table";
@@ -27,6 +28,7 @@ import type {
 } from "../types";
 
 interface LancamentosPageProps {
+  currentUserId: string;
   lancamentos: LancamentoItem[];
   pagadorOptions: SelectOption[];
   splitPagadorOptions: SelectOption[];
@@ -44,9 +46,17 @@ interface LancamentosPageProps {
   defaultPaymentMethod?: string | null;
   lockCartaoSelection?: boolean;
   lockPaymentMethod?: boolean;
+  // Opções específicas para o dialog de importação (quando visualizando dados de outro usuário)
+  importPagadorOptions?: SelectOption[];
+  importSplitPagadorOptions?: SelectOption[];
+  importDefaultPagadorId?: string | null;
+  importContaOptions?: SelectOption[];
+  importCartaoOptions?: SelectOption[];
+  importCategoriaOptions?: SelectOption[];
 }
 
 export function LancamentosPage({
+  currentUserId,
   lancamentos,
   pagadorOptions,
   splitPagadorOptions,
@@ -64,6 +74,12 @@ export function LancamentosPage({
   defaultPaymentMethod,
   lockCartaoSelection,
   lockPaymentMethod,
+  importPagadorOptions,
+  importSplitPagadorOptions,
+  importDefaultPagadorId,
+  importContaOptions,
+  importCartaoOptions,
+  importCategoriaOptions,
 }: LancamentosPageProps) {
   const [selectedLancamento, setSelectedLancamento] =
     useState<LancamentoItem | null>(null);
@@ -71,6 +87,9 @@ export function LancamentosPage({
   const [createOpen, setCreateOpen] = useState(false);
   const [copyOpen, setCopyOpen] = useState(false);
   const [lancamentoToCopy, setLancamentoToCopy] =
+    useState<LancamentoItem | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
+  const [lancamentoToImport, setLancamentoToImport] =
     useState<LancamentoItem | null>(null);
   const [massAddOpen, setMassAddOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -105,6 +124,8 @@ export function LancamentosPage({
   const [anticipationHistoryOpen, setAnticipationHistoryOpen] = useState(false);
   const [selectedForAnticipation, setSelectedForAnticipation] =
     useState<LancamentoItem | null>(null);
+  const [bulkImportOpen, setBulkImportOpen] = useState(false);
+  const [lancamentosToImport, setLancamentosToImport] = useState<LancamentoItem[]>([]);
 
   const handleToggleSettlement = useCallback(async (item: LancamentoItem) => {
     if (item.paymentMethod === "Cartão de crédito") {
@@ -296,6 +317,16 @@ export function LancamentosPage({
     setCopyOpen(true);
   }, []);
 
+  const handleImport = useCallback((item: LancamentoItem) => {
+    setLancamentoToImport(item);
+    setImportOpen(true);
+  }, []);
+
+  const handleBulkImport = useCallback((items: LancamentoItem[]) => {
+    setLancamentosToImport(items);
+    setBulkImportOpen(true);
+  }, []);
+
   const handleConfirmDelete = useCallback((item: LancamentoItem) => {
     if (item.seriesId) {
       setPendingDeleteData(item);
@@ -325,6 +356,7 @@ export function LancamentosPage({
     <>
       <LancamentosTable
         data={lancamentos}
+        currentUserId={currentUserId}
         pagadorFilterOptions={pagadorFilterOptions}
         categoriaFilterOptions={categoriaFilterOptions}
         contaCartaoFilterOptions={contaCartaoFilterOptions}
@@ -332,8 +364,10 @@ export function LancamentosPage({
         onMassAdd={allowCreate ? handleMassAdd : undefined}
         onEdit={handleEdit}
         onCopy={handleCopy}
+        onImport={handleImport}
         onConfirmDelete={handleConfirmDelete}
         onBulkDelete={handleMultipleBulkDelete}
+        onBulkImport={handleBulkImport}
         onViewDetails={handleViewDetails}
         onToggleSettlement={handleToggleSettlement}
         onAnticipate={handleAnticipate}
@@ -379,6 +413,38 @@ export function LancamentosPage({
         estabelecimentos={estabelecimentos}
         lancamento={lancamentoToCopy ?? undefined}
         defaultPeriod={selectedPeriod}
+      />
+
+      <LancamentoDialog
+        mode="create"
+        open={importOpen && !!lancamentoToImport}
+        onOpenChange={(open) => {
+          setImportOpen(open);
+          if (!open) {
+            setLancamentoToImport(null);
+          }
+        }}
+        pagadorOptions={importPagadorOptions ?? pagadorOptions}
+        splitPagadorOptions={importSplitPagadorOptions ?? splitPagadorOptions}
+        defaultPagadorId={importDefaultPagadorId ?? defaultPagadorId}
+        contaOptions={importContaOptions ?? contaOptions}
+        cartaoOptions={importCartaoOptions ?? cartaoOptions}
+        categoriaOptions={importCategoriaOptions ?? categoriaOptions}
+        estabelecimentos={estabelecimentos}
+        lancamento={lancamentoToImport ?? undefined}
+        defaultPeriod={selectedPeriod}
+        isImporting={true}
+      />
+
+      <BulkImportDialog
+        open={bulkImportOpen && lancamentosToImport.length > 0}
+        onOpenChange={setBulkImportOpen}
+        items={lancamentosToImport}
+        pagadorOptions={importPagadorOptions ?? pagadorOptions}
+        contaOptions={importContaOptions ?? contaOptions}
+        cartaoOptions={importCartaoOptions ?? cartaoOptions}
+        categoriaOptions={importCategoriaOptions ?? categoriaOptions}
+        defaultPagadorId={importDefaultPagadorId ?? defaultPagadorId}
       />
 
       <LancamentoDialog

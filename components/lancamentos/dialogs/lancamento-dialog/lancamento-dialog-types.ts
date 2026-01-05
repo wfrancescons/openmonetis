@@ -22,6 +22,7 @@ export interface LancamentoDialogProps {
   defaultPurchaseDate?: string | null;
   lockCartaoSelection?: boolean;
   lockPaymentMethod?: boolean;
+  isImporting?: boolean;
   onBulkEditRequest?: (data: {
     id: string;
     name: string;

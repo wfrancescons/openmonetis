@@ -62,6 +62,7 @@ export function LancamentoDialog({
   defaultPurchaseDate,
   lockCartaoSelection,
   lockPaymentMethod,
+  isImporting = false,
   onBulkEditRequest,
 }: LancamentoDialogProps) {
   const [dialogOpen, setDialogOpen] = useControlledState(
@@ -75,6 +76,7 @@ export function LancamentoDialog({
       defaultCartaoId,
       defaultPaymentMethod,
       defaultPurchaseDate,
+      isImporting,
     })
   );
   const [periodDirty, setPeriodDirty] = useState(false);
@@ -92,6 +94,7 @@ export function LancamentoDialog({
             defaultCartaoId,
             defaultPaymentMethod,
             defaultPurchaseDate,
+            isImporting,
           }
         )
       );
@@ -106,6 +109,7 @@ export function LancamentoDialog({
     defaultCartaoId,
     defaultPaymentMethod,
     defaultPurchaseDate,
+    isImporting,
   ]);
 
   const primaryPagador = formState.pagadorId;
@@ -301,15 +305,20 @@ export function LancamentoDialog({
     ]
   );
 
-  const isCopyMode = mode === "create" && Boolean(lancamento);
+  const isCopyMode = mode === "create" && Boolean(lancamento) && !isImporting;
+  const isImportMode = mode === "create" && Boolean(lancamento) && isImporting;
   const title = mode === "create"
-    ? isCopyMode
+    ? isImportMode
+      ? "Importar para Minha Conta"
+      : isCopyMode
       ? "Copiar lançamento"
       : "Novo lançamento"
     : "Editar lançamento";
   const description =
     mode === "create"
-      ? isCopyMode
+      ? isImportMode
+        ? "Importando lançamento de outro usuário. Ajuste a categoria, pagador e cartão/conta antes de salvar."
+        : isCopyMode
         ? "Os dados do lançamento foram copiados. Revise e ajuste conforme necessário antes de salvar."
         : "Informe os dados abaixo para registrar um novo lançamento."
       : "Atualize as informações do lançamento selecionado.";

@@ -20,6 +20,13 @@ import {
   RiShieldCheckLine,
   RiTimeLine,
   RiWalletLine,
+  RiRobot2Line,
+  RiTeamLine,
+  RiFileTextLine,
+  RiDownloadCloudLine,
+  RiEyeOffLine,
+  RiFlashlightLine,
+  RiPercentLine,
 } from "@remixicon/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -209,7 +216,47 @@ export default async function Page() {
                       <p className="text-sm text-muted-foreground">
                         Registre suas contas bancárias, cartões e dinheiro.
                         Adicione receitas, despesas e transferências. Organize
-                        por categorias.
+                        por categorias. Extratos detalhados por conta.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border hover:border-primary/50 transition-colors">
+                <CardContent className="pt-6">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                      <RiPercentLine size={24} className="text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">
+                        Parcelamentos avançados
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Controle completo de compras parceladas. Antecipe parcelas
+                        com cálculo automático de desconto. Veja análise
+                        consolidada de todas as parcelas em aberto.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border hover:border-primary/50 transition-colors">
+                <CardContent className="pt-6">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                      <RiRobot2Line size={24} className="text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">
+                        Insights com IA
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Análises financeiras geradas por IA (Claude, GPT, Gemini).
+                        Insights personalizados sobre seus padrões de gastos e
+                        recomendações inteligentes.
                       </p>
                     </div>
                   </div>
@@ -227,8 +274,9 @@ export default async function Page() {
                         Relatórios e gráficos
                       </h3>
                       <p className="text-sm text-muted-foreground">
-                        Dashboard com resumo mensal. Gráficos de evolução do
-                        patrimônio. Entenda pra onde seu dinheiro está indo.
+                        Dashboard com 20+ widgets interativos. Relatórios
+                        detalhados por categoria. Gráficos de evolução e
+                        comparativos. Exportação em PDF e Excel.
                       </p>
                     </div>
                   </div>
@@ -246,8 +294,29 @@ export default async function Page() {
                         Faturas de cartão
                       </h3>
                       <p className="text-sm text-muted-foreground">
-                        Cadastre seus cartões e acompanhe as faturas. Veja o que
-                        ainda não foi fechado. Controle limites e vencimentos.
+                        Cadastre seus cartões e acompanhe as faturas por período.
+                        Veja o que ainda não foi fechado. Controle limites,
+                        vencimentos e fechamentos.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border hover:border-primary/50 transition-colors">
+                <CardContent className="pt-6">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                      <RiTeamLine size={24} className="text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">
+                        Gestão colaborativa
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Compartilhe pagadores com permissões granulares (admin/
+                        viewer). Notificações automáticas por e-mail. Colabore em
+                        lançamentos compartilhados.
                       </p>
                     </div>
                   </div>
@@ -262,12 +331,12 @@ export default async function Page() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-lg mb-2">
-                        Categorias personalizadas
+                        Categorias e orçamentos
                       </h3>
                       <p className="text-sm text-muted-foreground">
-                        Crie e organize suas próprias categorias. Moradia,
-                        alimentação, transporte, ou o que fizer sentido pra
-                        você.
+                        Crie categorias personalizadas. Defina orçamentos mensais
+                        e acompanhe o quanto gastou vs. planejado com indicadores
+                        visuais.
                       </p>
                     </div>
                   </div>
@@ -278,16 +347,16 @@ export default async function Page() {
                 <CardContent className="pt-6">
                   <div className="flex flex-col gap-4">
                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                      <RiMoneyDollarCircleLine
-                        size={24}
-                        className="text-primary"
-                      />
+                      <RiFileTextLine size={24} className="text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg mb-2">Orçamentos</h3>
+                      <h3 className="font-semibold text-lg mb-2">
+                        Anotações e tarefas
+                      </h3>
                       <p className="text-sm text-muted-foreground">
-                        Defina quanto quer gastar por categoria no mês.
-                        Acompanhe se está dentro do planejado.
+                        Crie notas de texto e listas de tarefas com checkboxes.
+                        Sistema de arquivamento para manter histórico. Organize
+                        seus planejamentos financeiros.
                       </p>
                     </div>
                   </div>
@@ -305,8 +374,69 @@ export default async function Page() {
                         Calendário financeiro
                       </h3>
                       <p className="text-sm text-muted-foreground">
-                        Visualize suas transações em calendário mensal. Nunca
-                        perca prazos importantes.
+                        Visualize todas as transações em calendário mensal.
+                        Navegação intuitiva por data. Nunca perca prazos de
+                        pagamentos importantes.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border hover:border-primary/50 transition-colors">
+                <CardContent className="pt-6">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                      <RiDownloadCloudLine size={24} className="text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">
+                        Importação em massa
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Cole múltiplos lançamentos de uma vez. Economize tempo ao
+                        registrar várias transações. Formatação inteligente para
+                        facilitar a entrada de dados.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border hover:border-primary/50 transition-colors">
+                <CardContent className="pt-6">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                      <RiEyeOffLine size={24} className="text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">
+                        Modo privacidade
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Oculte valores sensíveis com um clique. Tema dark/light
+                        adaptável. Preferências personalizáveis. Calculadora
+                        integrada para planejamento.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border hover:border-primary/50 transition-colors">
+                <CardContent className="pt-6">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                      <RiFlashlightLine size={24} className="text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">
+                        Performance otimizada
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Dashboard carrega em ~200-500ms com 18+ queries paralelas.
+                        Índices otimizados. Type-safe em toda codebase. Isolamento
+                        completo de dados por usuário.
                       </p>
                     </div>
                   </div>

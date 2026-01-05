@@ -1,14 +1,14 @@
 import localFont from "next/font/local";
 
-const laranjinha = localFont({
+const ai_sans = localFont({
   src: [
     {
-      path: "./LaranjinhaTextPro_Rg.woff2",
+      path: "./AISans-Regular.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "./LaranjinhaDisplayPro_Bd.woff2",
+      path: "./AISans-Semibold.woff2",
       weight: "700",
       style: "normal",
     },
@@ -16,8 +16,8 @@ const laranjinha = localFont({
   display: "swap",
 });
 
-const main_font = laranjinha;
-const money_font = laranjinha;
-const title_font = laranjinha;
+const main_font = ai_sans;
+const money_font = ai_sans;
+const title_font = ai_sans;
 
 export { main_font, money_font, title_font };
