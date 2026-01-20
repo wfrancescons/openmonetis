@@ -20,7 +20,7 @@ export default async function DashboardLayout({
 
   // Encontrar o pagador admin do usuário
   const adminPagador = pagadoresList.find(
-    (p) => p.role === PAGADOR_ROLE_ADMIN && p.userId === session.user.id
+    (p) => p.role === PAGADOR_ROLE_ADMIN && p.userId === session.user.id,
   );
 
   // Buscar notificações para o período atual
@@ -30,14 +30,14 @@ export default async function DashboardLayout({
     typeof periodoParam === "string"
       ? periodoParam
       : Array.isArray(periodoParam)
-      ? periodoParam[0]
-      : null;
+        ? periodoParam[0]
+        : null;
   const { period: currentPeriod } = parsePeriodParam(
-    singlePeriodoParam ?? null
+    singlePeriodoParam ?? null,
   );
   const notificationsSnapshot = await fetchDashboardNotifications(
     session.user.id,
-    currentPeriod
+    currentPeriod,
   );
 
   return (
