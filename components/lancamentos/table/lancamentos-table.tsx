@@ -1,4 +1,5 @@
 "use client";
+import { CategoryIcon } from "@/components/categorias/category-icon";
 import { EmptyState } from "@/components/empty-state";
 import MoneyValues from "@/components/money-values";
 import { TypeBadge } from "@/components/type-badge";
@@ -45,8 +46,6 @@ import {
   RiAddCircleFill,
   RiAddCircleLine,
   RiArrowLeftRightLine,
-  RiBankCard2Line,
-  RiBankLine,
   RiChat1Line,
   RiCheckLine,
   RiDeleteBin5Line,
@@ -69,6 +68,7 @@ import {
   RowSelectionState,
   SortingState,
   useReactTable,
+  VisibilityState,
 } from "@tanstack/react-table";
 import Image from "next/image";
 import Link from "next/link";
@@ -152,13 +152,10 @@ const buildColumns = ({
       enableHiding: false,
     },
     {
+      id: "purchaseDate",
       accessorKey: "purchaseDate",
-      header: "Data",
-      cell: ({ row }) => (
-        <span className="whitespace-nowrap text-muted-foreground">
-          {formatDate(row.original.purchaseDate)}
-        </span>
-      ),
+      header: () => null,
+      cell: () => null,
     },
     {
       accessorKey: "name",
@@ -166,6 +163,7 @@ const buildColumns = ({
       cell: ({ row }) => {
         const {
           name,
+          purchaseDate,
           installmentCount,
           currentInstallment,
           paymentMethod,
@@ -192,16 +190,21 @@ const buildColumns = ({
         return (
           <span className="flex items-center gap-2">
             <EstabelecimentoLogo name={name} size={28} />
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="line-clamp-2 max-w-[160px] font-semibold truncate">
+            <span className="flex flex-col">
+              <span className="text-[11px] text-muted-foreground">
+                {formatDate(purchaseDate)}
+              </span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="line-clamp-2 max-w-[160px] font-semibold truncate">
+                    {name}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-xs">
                   {name}
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-xs">
-                {name}
-              </TooltipContent>
-            </Tooltip>
+                </TooltipContent>
+              </Tooltip>
+            </span>
 
             {isDivided && (
               <Tooltip>
@@ -360,14 +363,28 @@ const buildColumns = ({
       },
     },
     {
+      accessorKey: "categoriaName",
+      header: "Categoria",
+      cell: ({ row }) => {
+        const { categoriaName, categoriaIcon } = row.original;
+
+        if (!categoriaName) {
+          return <span className="text-muted-foreground">—</span>;
+        }
+
+        return (
+          <span className="flex items-center gap-2">
+            <CategoryIcon name={categoriaIcon} className="size-4" />
+            <span>{categoriaName}</span>
+          </span>
+        );
+      },
+    },
+    {
       accessorKey: "pagadorName",
       header: "Pagador",
       cell: ({ row }) => {
         const { pagadorId, pagadorName, pagadorAvatar } = row.original;
-
-        if (!pagadorName) {
-          return <Badge variant="outline">—</Badge>;
-        }
 
         const label = pagadorName.trim() || "Sem pagador";
         const displayName = label.split(/\s+/)[0] ?? label;
@@ -375,7 +392,7 @@ const buildColumns = ({
         const initial = displayName.charAt(0).toUpperCase() || "?";
         const content = (
           <>
-            <Avatar className="size-6 border border-border/60 bg-background">
+            <Avatar className="size-7">
               <AvatarImage src={avatarSrc} alt={`Avatar de ${label}`} />
               <AvatarFallback className="text-[10px] font-medium uppercase">
                 {initial}
@@ -387,30 +404,18 @@ const buildColumns = ({
 
         if (!pagadorId) {
           return (
-            <Badge
-              variant="outline"
-              className="max-w-[200px] px-2 py-0.5"
-              title={label}
-            >
-              <span className="inline-flex items-center gap-2">{content}</span>
-            </Badge>
+            <span className="inline-flex items-center gap-2">{content}</span>
           );
         }
 
         return (
-          <Badge
-            asChild
-            variant="outline"
-            className="max-w-[200px] px-2 py-0.5"
+          <Link
+            href={`/pagadores/${pagadorId}`}
+            className="inline-flex items-center gap-2 hover:underline"
+            title={label}
           >
-            <Link
-              href={`/pagadores/${pagadorId}`}
-              className="inline-flex items-center gap-2"
-              title={label}
-            >
-              {content}
-            </Link>
-          </Badge>
+            {content}
+          </Link>
         );
       },
     },
@@ -427,6 +432,7 @@ const buildColumns = ({
           contaId,
           userId,
         } = row.original;
+        const isCartao = Boolean(cartaoName);
         const label = cartaoName ?? contaName;
         const logoSrc = resolveLogoSrc(cartaoLogo ?? contaLogo);
         const href = cartaoId
@@ -434,46 +440,57 @@ const buildColumns = ({
           : contaId
             ? `/contas/${contaId}/extrato`
             : null;
-        const Icon = cartaoId ? RiBankCard2Line : contaId ? RiBankLine : null;
         const isOwnData = userId === currentUserId;
 
-        if (!label) {
-          return "—";
-        }
-
         const content = (
-          <>
-            {logoSrc ? (
+          <span className="inline-flex items-center gap-2">
+            {logoSrc && (
               <Image
                 src={logoSrc}
                 alt={`Logo de ${label}`}
-                width={32}
-                height={32}
-                className="rounded-lg"
+                width={30}
+                height={30}
+                className="rounded-md"
               />
-            ) : null}
+            )}
             <span className="truncate">{label}</span>
-            {Icon ? (
-              <Icon className="size-4 text-muted-foreground" aria-hidden />
-            ) : null}
-          </>
+          </span>
         );
 
-        if (!isOwnData) {
-          return <div className="flex items-center gap-2">{content}</div>;
+        if (!isOwnData || !href) {
+          return (
+            <Tooltip>
+              <TooltipTrigger asChild>{content}</TooltipTrigger>
+              <TooltipContent side="top">
+                {isCartao ? "Cartão" : "Conta"}: {label}
+              </TooltipContent>
+            </Tooltip>
+          );
         }
 
         return (
-          <Link
-            href={href ?? "#"}
-            className={cn(
-              "flex items-center gap-2",
-              href ? "underline " : "pointer-events-none",
-            )}
-            aria-disabled={!href}
-          >
-            {content}
-          </Link>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href={href}
+                className="inline-flex items-center gap-2 hover:underline"
+              >
+                {logoSrc && (
+                  <Image
+                    src={logoSrc}
+                    alt={`Logo de ${label}`}
+                    width={30}
+                    height={30}
+                    className="rounded-md"
+                  />
+                )}
+                <span className="truncate">{label}</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              {isCartao ? "Cartão" : "Conta"}: {label}
+            </TooltipContent>
+          </Tooltip>
         );
       },
     },
@@ -494,6 +511,8 @@ const buildColumns = ({
               "Cartão de crédito",
               "Dinheiro",
               "Cartão de débito",
+              "Transferência bancária",
+              "Pré-Pago | VR/VA",
             ].includes(paymentMethod);
 
             if (!showSettlementButton) {
@@ -504,7 +523,9 @@ const buildColumns = ({
               paymentMethod === "Pix" ||
               paymentMethod === "Boleto" ||
               paymentMethod === "Dinheiro" ||
-              paymentMethod === "Cartão de débito";
+              paymentMethod === "Cartão de débito" ||
+              paymentMethod === "Transferência bancária" ||
+              paymentMethod === "Pré-Pago | VR/VA";
             const readOnly = row.original.readonly;
             const loading = isSettlementLoading(row.original.id);
             const settled = Boolean(row.original.isSettled);
@@ -512,11 +533,15 @@ const buildColumns = ({
 
             return (
               <Button
-                variant={settled ? "secondary" : "ghost"}
+                variant={"outline"}
                 size="icon-sm"
                 onClick={() => handleToggleSettlement(row.original)}
                 disabled={loading || readOnly || !canToggleSettlement}
-                className={canToggleSettlement ? undefined : "opacity-70"}
+                className={cn(
+                  "border-none",
+                  !canToggleSettlement && "opacity-70 ",
+                  settled && "border-none",
+                )}
               >
                 {loading ? (
                   <Spinner className="size-4" />
@@ -673,6 +698,9 @@ export function LancamentosTable({
   const [sorting, setSorting] = useState<SortingState>([
     { id: "purchaseDate", desc: true },
   ]);
+  const [columnVisibility] = useState<VisibilityState>({
+    purchaseDate: false,
+  });
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 30,
@@ -714,6 +742,7 @@ export function LancamentosTable({
     columns,
     state: {
       sorting,
+      columnVisibility,
       pagination,
       rowSelection,
     },
