@@ -39,9 +39,9 @@ export function InboxPage({
       [...items].sort(
         (a, b) =>
           new Date(b.notificationTimestamp).getTime() -
-          new Date(a.notificationTimestamp).getTime()
+          new Date(a.notificationTimestamp).getTime(),
       ),
-    [items]
+    [items],
   );
 
   const handleProcessOpenChange = useCallback((open: boolean) => {
@@ -99,17 +99,6 @@ export function InboxPage({
   return (
     <>
       <div className="flex w-full flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold">Caixa de Entrada</h1>
-            <p className="text-sm text-muted-foreground">
-              {items.length === 0
-                ? "Nenhuma notificação pendente"
-                : `${items.length} notificação${items.length > 1 ? "ões" : ""} pendente${items.length > 1 ? "s" : ""}`}
-            </p>
-          </div>
-        </div>
-
         {sortedItems.length === 0 ? (
           <Card className="flex min-h-[50vh] w-full items-center justify-center py-12">
             <EmptyState

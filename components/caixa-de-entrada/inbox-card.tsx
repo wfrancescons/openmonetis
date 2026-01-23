@@ -9,8 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import {
   RiCheckLine,
   RiDeleteBinLine,
@@ -18,6 +16,8 @@ import {
   RiMoreLine,
   RiSmartphoneLine,
 } from "@remixicon/react";
+import { formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import type { InboxItem } from "./types";
 
 interface InboxCardProps {
@@ -47,7 +47,7 @@ export function InboxCard({
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="flex flex-row items-start justify-between gap-2 pb-2">
+      <CardHeader className="flex flex-row items-start justify-between gap-2">
         <div className="flex items-center gap-2">
           <RiSmartphoneLine className="size-4 text-muted-foreground" />
           <span className="text-sm font-medium">
@@ -95,9 +95,7 @@ export function InboxCard({
 
       <CardContent className="flex flex-1 flex-col gap-3">
         <div className="flex-1">
-          {item.parsedName && (
-            <p className="font-medium">{item.parsedName}</p>
-          )}
+          {item.parsedName && <p className="font-medium">{item.parsedName}</p>}
           <p className="line-clamp-2 text-sm text-muted-foreground">
             {item.originalText}
           </p>
@@ -113,19 +111,11 @@ export function InboxCard({
         </div>
 
         <div className="flex gap-2">
-          <Button
-            size="sm"
-            className="flex-1"
-            onClick={() => onProcess(item)}
-          >
+          <Button size="sm" className="flex-1" onClick={() => onProcess(item)}>
             <RiCheckLine className="mr-1 size-4" />
             Processar
           </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => onDiscard(item)}
-          >
+          <Button size="sm" variant="outline" onClick={() => onDiscard(item)}>
             <RiDeleteBinLine className="size-4" />
           </Button>
         </div>
