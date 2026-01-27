@@ -1,14 +1,9 @@
-/**
- * POST /api/auth/device/token
- *
- * Gera um novo token de API para dispositivo.
- * Requer sessão web autenticada.
- */
+
 
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { apiTokens } from "@/db/schema";
+import { tokensApi } from "@/db/schema";
 import {
 	generateTokenPair,
 	getTokenPrefix,
@@ -42,7 +37,7 @@ export async function POST(request: Request) {
 		);
 
 		// Salvar hash do token no banco
-		await db.insert(apiTokens).values({
+		await db.insert(tokensApi).values({
 			id: tokenId,
 			userId: session.user.id,
 			name,

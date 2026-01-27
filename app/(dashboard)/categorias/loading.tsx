@@ -1,9 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-/**
- * Loading state para a página de categorias
- * Layout: Header + Tabs + Grid de cards
- */
 export default function CategoriasLoading() {
 	return (
 		<main className="flex flex-col items-start gap-6">

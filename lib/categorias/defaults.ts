@@ -1,9 +1,4 @@
-/**
- * Category defaults and seeding
- *
- * Consolidated from:
- * - /lib/category-defaults.ts
- */
+
 
 import { eq } from "drizzle-orm";
 import { categorias } from "@/db/schema";

@@ -1,14 +1,9 @@
-/**
- * POST /api/inbox/batch
- *
- * Recebe múltiplas notificações do app Android (sync offline).
- * Requer autenticação via API token (formato os_xxx).
- */
+
 
 import { and, eq, isNull } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { apiTokens, inboxItems } from "@/db/schema";
+import { tokensApi, preLancamentos } from "@/db/schema";
 import { extractBearerToken, hashToken } from "@/lib/auth/api-token";
 import { db } from "@/lib/db";
 import { inboxBatchSchema } from "@/lib/schemas/inbox";
@@ -66,10 +61,10 @@ export async function POST(request: Request) {
 		const tokenHash = hashToken(token);
 
 		// Buscar token no banco
-		const tokenRecord = await db.query.apiTokens.findFirst({
+		const tokenRecord = await db.query.tokensApi.findFirst({
 			where: and(
-				eq(apiTokens.tokenHash, tokenHash),
-				isNull(apiTokens.revokedAt),
+				eq(tokensApi.tokenHash, tokenHash),
+				isNull(tokensApi.revokedAt),
 			),
 		});
 
@@ -98,7 +93,7 @@ export async function POST(request: Request) {
 		for (const item of items) {
 			try {
 				const [inserted] = await db
-					.insert(inboxItems)
+					.insert(preLancamentos)
 					.values({
 						userId: tokenRecord.userId,
 						sourceApp: item.sourceApp,
@@ -111,7 +106,7 @@ export async function POST(request: Request) {
 						parsedTransactionType: item.parsedTransactionType,
 						status: "pending",
 					})
-					.returning({ id: inboxItems.id });
+					.returning({ id: preLancamentos.id });
 
 				results.push({
 					clientId: item.clientId,
@@ -134,12 +129,12 @@ export async function POST(request: Request) {
 			null;
 
 		await db
-			.update(apiTokens)
+			.update(tokensApi)
 			.set({
 				lastUsedAt: new Date(),
 				lastUsedIp: clientIp,
 			})
-			.where(eq(apiTokens.id, tokenRecord.id));
+			.where(eq(tokensApi.id, tokenRecord.id));
 
 		const successCount = results.filter((r) => r.success).length;
 		const failCount = results.filter((r) => !r.success).length;

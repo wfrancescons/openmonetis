@@ -1,14 +1,9 @@
-/**
- * POST /api/inbox
- *
- * Recebe uma notificação do app Android.
- * Requer autenticação via API token (formato os_xxx).
- */
+
 
 import { and, eq, isNull } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { apiTokens, inboxItems } from "@/db/schema";
+import { tokensApi, preLancamentos } from "@/db/schema";
 import { extractBearerToken, hashToken } from "@/lib/auth/api-token";
 import { db } from "@/lib/db";
 import { inboxItemSchema } from "@/lib/schemas/inbox";
@@ -59,10 +54,10 @@ export async function POST(request: Request) {
 		const tokenHash = hashToken(token);
 
 		// Buscar token no banco
-		const tokenRecord = await db.query.apiTokens.findFirst({
+		const tokenRecord = await db.query.tokensApi.findFirst({
 			where: and(
-				eq(apiTokens.tokenHash, tokenHash),
-				isNull(apiTokens.revokedAt),
+				eq(tokensApi.tokenHash, tokenHash),
+				isNull(tokensApi.revokedAt),
 			),
 		});
 
@@ -87,7 +82,7 @@ export async function POST(request: Request) {
 
 		// Inserir item na inbox
 		const [inserted] = await db
-			.insert(inboxItems)
+			.insert(preLancamentos)
 			.values({
 				userId: tokenRecord.userId,
 				sourceApp: data.sourceApp,
@@ -100,7 +95,7 @@ export async function POST(request: Request) {
 				parsedTransactionType: data.parsedTransactionType,
 				status: "pending",
 			})
-			.returning({ id: inboxItems.id });
+			.returning({ id: preLancamentos.id });
 
 		// Atualizar último uso do token
 		const clientIp =
@@ -109,12 +104,12 @@ export async function POST(request: Request) {
 			null;
 
 		await db
-			.update(apiTokens)
+			.update(tokensApi)
 			.set({
 				lastUsedAt: new Date(),
 				lastUsedIp: clientIp,
 			})
-			.where(eq(apiTokens.id, tokenRecord.id));
+			.where(eq(tokensApi.id, tokenRecord.id));
 
 		return NextResponse.json(
 			{

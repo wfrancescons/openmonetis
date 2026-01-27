@@ -1,14 +1,14 @@
 "use server";
 
-import { apiTokens, pagadores } from "@/db/schema";
-import { auth } from "@/lib/auth/config";
-import { db, schema } from "@/lib/db";
-import { PAGADOR_ROLE_ADMIN } from "@/lib/pagadores/constants";
+import { createHash, randomBytes } from "node:crypto";
 import { and, eq, isNull, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-import { createHash, randomBytes } from "node:crypto";
 import { z } from "zod";
+import { tokensApi, pagadores } from "@/db/schema";
+import { auth } from "@/lib/auth/config";
+import { db, schema } from "@/lib/db";
+import { PAGADOR_ROLE_ADMIN } from "@/lib/pagadores/constants";
 
 type ActionResponse<T = void> = {
 	success: boolean;
@@ -373,8 +373,8 @@ export async function updatePreferencesAction(
 		// Check if preferences exist, if not create them
 		const existingResult = await db
 			.select()
-			.from(schema.userPreferences)
-			.where(eq(schema.userPreferences.userId, session.user.id))
+			.from(schema.preferenciasUsuario)
+			.where(eq(schema.preferenciasUsuario.userId, session.user.id))
 			.limit(1);
 
 		const existing = existingResult[0] || null;
@@ -382,15 +382,15 @@ export async function updatePreferencesAction(
 		if (existing) {
 			// Update existing preferences
 			await db
-				.update(schema.userPreferences)
+				.update(schema.preferenciasUsuario)
 				.set({
 					disableMagnetlines: validated.disableMagnetlines,
 					updatedAt: new Date(),
 				})
-				.where(eq(schema.userPreferences.userId, session.user.id));
+				.where(eq(schema.preferenciasUsuario.userId, session.user.id));
 		} else {
 			// Create new preferences
-			await db.insert(schema.userPreferences).values({
+			await db.insert(schema.preferenciasUsuario).values({
 				userId: session.user.id,
 				disableMagnetlines: validated.disableMagnetlines,
 			});
@@ -463,7 +463,7 @@ export async function createApiTokenAction(
 
 		// Save to database
 		const [newToken] = await db
-			.insert(apiTokens)
+			.insert(tokensApi)
 			.values({
 				userId: session.user.id,
 				name: validated.name,
@@ -471,7 +471,7 @@ export async function createApiTokenAction(
 				tokenPrefix,
 				expiresAt: null, // No expiration for now
 			})
-			.returning({ id: apiTokens.id });
+			.returning({ id: tokensApi.id });
 
 		revalidatePath("/ajustes");
 
@@ -519,12 +519,12 @@ export async function revokeApiTokenAction(
 		// Find token and verify ownership
 		const [existingToken] = await db
 			.select()
-			.from(apiTokens)
+			.from(tokensApi)
 			.where(
 				and(
-					eq(apiTokens.id, validated.tokenId),
-					eq(apiTokens.userId, session.user.id),
-					isNull(apiTokens.revokedAt),
+					eq(tokensApi.id, validated.tokenId),
+					eq(tokensApi.userId, session.user.id),
+					isNull(tokensApi.revokedAt),
 				),
 			)
 			.limit(1);
@@ -538,11 +538,11 @@ export async function revokeApiTokenAction(
 
 		// Revoke token
 		await db
-			.update(apiTokens)
+			.update(tokensApi)
 			.set({
 				revokedAt: new Date(),
 			})
-			.where(eq(apiTokens.id, validated.tokenId));
+			.where(eq(tokensApi.id, validated.tokenId));
 
 		revalidatePath("/ajustes");
 

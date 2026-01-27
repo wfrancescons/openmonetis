@@ -1,14 +1,9 @@
-/**
- * GET /api/auth/device/tokens
- *
- * Lista todos os tokens de API do usuário.
- * Requer sessão web autenticada.
- */
+
 
 import { desc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { apiTokens } from "@/db/schema";
+import { tokensApi } from "@/db/schema";
 import { auth } from "@/lib/auth/config";
 import { db } from "@/lib/db";
 
@@ -24,17 +19,17 @@ export async function GET() {
 		// Buscar tokens ativos do usuário
 		const tokens = await db
 			.select({
-				id: apiTokens.id,
-				name: apiTokens.name,
-				tokenPrefix: apiTokens.tokenPrefix,
-				lastUsedAt: apiTokens.lastUsedAt,
-				lastUsedIp: apiTokens.lastUsedIp,
-				expiresAt: apiTokens.expiresAt,
-				createdAt: apiTokens.createdAt,
+				id: tokensApi.id,
+				name: tokensApi.name,
+				tokenPrefix: tokensApi.tokenPrefix,
+				lastUsedAt: tokensApi.lastUsedAt,
+				lastUsedIp: tokensApi.lastUsedIp,
+				expiresAt: tokensApi.expiresAt,
+				createdAt: tokensApi.createdAt,
 			})
-			.from(apiTokens)
-			.where(eq(apiTokens.userId, session.user.id))
-			.orderBy(desc(apiTokens.createdAt));
+			.from(tokensApi)
+			.where(eq(tokensApi.userId, session.user.id))
+			.orderBy(desc(tokensApi.createdAt));
 
 		// Separar tokens ativos e revogados
 		const activeTokens = tokens.filter(

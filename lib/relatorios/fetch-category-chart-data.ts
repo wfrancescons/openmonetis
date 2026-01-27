@@ -1,6 +1,4 @@
-/**
- * Data fetching function for Category Chart (based on selected filters)
- */
+
 
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";

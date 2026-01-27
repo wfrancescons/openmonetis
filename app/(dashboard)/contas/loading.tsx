@@ -1,8 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-/**
- * Loading state para a página de contas
- */
 export default function ContasLoading() {
 	return (
 		<main className="flex flex-col gap-6">

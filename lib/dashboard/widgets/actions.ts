@@ -18,21 +18,21 @@ export async function updateWidgetPreferences(
 
 		// Check if preferences exist
 		const existing = await db
-			.select({ id: schema.userPreferences.id })
-			.from(schema.userPreferences)
-			.where(eq(schema.userPreferences.userId, user.id))
+			.select({ id: schema.preferenciasUsuario.id })
+			.from(schema.preferenciasUsuario)
+			.where(eq(schema.preferenciasUsuario.userId, user.id))
 			.limit(1);
 
 		if (existing.length > 0) {
 			await db
-				.update(schema.userPreferences)
+				.update(schema.preferenciasUsuario)
 				.set({
 					dashboardWidgets: preferences,
 					updatedAt: new Date(),
 				})
-				.where(eq(schema.userPreferences.userId, user.id));
+				.where(eq(schema.preferenciasUsuario.userId, user.id));
 		} else {
-			await db.insert(schema.userPreferences).values({
+			await db.insert(schema.preferenciasUsuario).values({
 				userId: user.id,
 				dashboardWidgets: preferences,
 			});
@@ -54,12 +54,12 @@ export async function resetWidgetPreferences(): Promise<{
 		const user = await getUser();
 
 		await db
-			.update(schema.userPreferences)
+			.update(schema.preferenciasUsuario)
 			.set({
 				dashboardWidgets: null,
 				updatedAt: new Date(),
 			})
-			.where(eq(schema.userPreferences.userId, user.id));
+			.where(eq(schema.preferenciasUsuario.userId, user.id));
 
 		revalidatePath("/dashboard");
 		return { success: true };
@@ -74,9 +74,9 @@ export async function getWidgetPreferences(): Promise<WidgetPreferences | null> 
 		const user = await getUser();
 
 		const result = await db
-			.select({ dashboardWidgets: schema.userPreferences.dashboardWidgets })
-			.from(schema.userPreferences)
-			.where(eq(schema.userPreferences.userId, user.id))
+			.select({ dashboardWidgets: schema.preferenciasUsuario.dashboardWidgets })
+			.from(schema.preferenciasUsuario)
+			.where(eq(schema.preferenciasUsuario.userId, user.id))
 			.limit(1);
 
 		return result[0]?.dashboardWidgets ?? null;

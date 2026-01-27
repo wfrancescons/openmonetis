@@ -1,6 +1,3 @@
-import { cartoes, lancamentos } from "@/db/schema";
-import { ACCOUNT_AUTO_INVOICE_NOTE_PREFIX } from "@/lib/accounts/constants";
-import { db } from "@/lib/db";
 import {
 	and,
 	eq,
@@ -13,6 +10,9 @@ import {
 	sql,
 	sum,
 } from "drizzle-orm";
+import { cartoes, lancamentos } from "@/db/schema";
+import { ACCOUNT_AUTO_INVOICE_NOTE_PREFIX } from "@/lib/accounts/constants";
+import { db } from "@/lib/db";
 
 const RECEITA = "Receita";
 const DESPESA = "Despesa";

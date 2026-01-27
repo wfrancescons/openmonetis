@@ -1,6 +1,4 @@
-/**
- * Data fetching function for Category Report
- */
+
 
 import { and, eq, inArray, isNull, or, sql } from "drizzle-orm";
 import { categorias, lancamentos, pagadores } from "@/db/schema";

@@ -4,7 +4,7 @@ import { randomBytes } from "node:crypto";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { pagadores, pagadorShares, user } from "@/db/schema";
+import { pagadores, compartilhamentosPagador, user } from "@/db/schema";
 import { handleActionError, revalidateForEntity } from "@/lib/actions/helpers";
 import type { ActionResult } from "@/lib/actions/types";
 import { getUser } from "@/lib/auth/server";
@@ -223,10 +223,10 @@ export async function joinPagadorByShareCodeAction(
 			};
 		}
 
-		const existingShare = await db.query.pagadorShares.findFirst({
+		const existingShare = await db.query.compartilhamentosPagador.findFirst({
 			where: and(
-				eq(pagadorShares.pagadorId, pagadorRow.id),
-				eq(pagadorShares.sharedWithUserId, user.id),
+				eq(compartilhamentosPagador.pagadorId, pagadorRow.id),
+				eq(compartilhamentosPagador.sharedWithUserId, user.id),
 			),
 		});
 
@@ -237,7 +237,7 @@ export async function joinPagadorByShareCodeAction(
 			};
 		}
 
-		await db.insert(pagadorShares).values({
+		await db.insert(compartilhamentosPagador).values({
 			pagadorId: pagadorRow.id,
 			sharedWithUserId: user.id,
 			permission: "read",
@@ -259,13 +259,13 @@ export async function deletePagadorShareAction(
 		const user = await getUser();
 		const data = shareDeleteSchema.parse(input);
 
-		const existing = await db.query.pagadorShares.findFirst({
+		const existing = await db.query.compartilhamentosPagador.findFirst({
 			columns: {
 				id: true,
 				pagadorId: true,
 				sharedWithUserId: true,
 			},
-			where: eq(pagadorShares.id, data.shareId),
+			where: eq(compartilhamentosPagador.id, data.shareId),
 			with: {
 				pagador: {
 					columns: {
@@ -287,7 +287,7 @@ export async function deletePagadorShareAction(
 			};
 		}
 
-		await db.delete(pagadorShares).where(eq(pagadorShares.id, data.shareId));
+		await db.delete(compartilhamentosPagador).where(eq(compartilhamentosPagador.id, data.shareId));
 
 		revalidate();
 		revalidatePath(`/pagadores/${existing.pagadorId}`);

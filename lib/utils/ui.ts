@@ -1,8 +1,4 @@
-/**
- * UI utilities - Functions for UI manipulation and styling
- *
- * This module contains UI-related utilities, primarily for className manipulation.
- */
+
 
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";

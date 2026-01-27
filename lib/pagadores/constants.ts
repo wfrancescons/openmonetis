@@ -1,9 +1,3 @@
-/**
- * Pagador constants
- *
- * Extracted from /lib/pagadores.ts
- */
-
 export const PAGADOR_STATUS_OPTIONS = ["Ativo", "Inativo"] as const;
 
 export type PagadorStatus = (typeof PAGADOR_STATUS_OPTIONS)[number];

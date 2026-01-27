@@ -1,6 +1,4 @@
-/**
- * Zod schemas for inbox items (OpenSheets Companion)
- */
+
 
 import { z } from "zod";
 

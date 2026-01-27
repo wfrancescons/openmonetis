@@ -1,15 +1,8 @@
-/**
- * POST /api/auth/device/verify
- *
- * Valida se um token de API é válido.
- * Usado pelo app Android durante o setup.
- *
- * Aceita tokens no formato os_xxx (hash-based, sem expiração).
- */
+
 
 import { and, eq, isNull } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { apiTokens } from "@/db/schema";
+import { tokensApi } from "@/db/schema";
 import { extractBearerToken, hashToken } from "@/lib/auth/api-token";
 import { db } from "@/lib/db";
 
@@ -38,10 +31,10 @@ export async function POST(request: Request) {
 		const tokenHash = hashToken(token);
 
 		// Buscar token no banco
-		const tokenRecord = await db.query.apiTokens.findFirst({
+		const tokenRecord = await db.query.tokensApi.findFirst({
 			where: and(
-				eq(apiTokens.tokenHash, tokenHash),
-				isNull(apiTokens.revokedAt),
+				eq(tokensApi.tokenHash, tokenHash),
+				isNull(tokensApi.revokedAt),
 			),
 		});
 
@@ -59,12 +52,12 @@ export async function POST(request: Request) {
 			null;
 
 		await db
-			.update(apiTokens)
+			.update(tokensApi)
 			.set({
 				lastUsedAt: new Date(),
 				lastUsedIp: clientIp,
 			})
-			.where(eq(apiTokens.id, tokenRecord.id));
+			.where(eq(tokensApi.id, tokenRecord.id));
 
 		return NextResponse.json({
 			valid: true,

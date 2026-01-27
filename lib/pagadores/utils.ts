@@ -1,8 +1,4 @@
-/**
- * Pagador utility functions
- *
- * Extracted from /lib/pagadores.ts
- */
+
 
 import { DEFAULT_PAGADOR_AVATAR } from "./constants";
 

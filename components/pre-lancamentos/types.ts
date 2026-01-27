@@ -1,6 +1,4 @@
-/**
- * Types for Pré-Lançamentos feature
- */
+
 
 import type { SelectOption as LancamentoSelectOption } from "@/components/lancamentos/types";
 

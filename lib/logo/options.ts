@@ -1,9 +1,4 @@
-/**
- * Logo options loader
- *
- * Consolidated from:
- * - /lib/logo-options.ts (async logo loading)
- */
+
 
 import { readdir } from "node:fs/promises";
 import path from "node:path";

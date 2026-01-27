@@ -5,7 +5,7 @@ import {
 	contas,
 	lancamentos,
 	pagadores,
-	pagadorShares,
+	compartilhamentosPagador,
 	user as usersTable,
 } from "@/db/schema";
 import { db } from "@/lib/db";
@@ -23,15 +23,15 @@ export async function fetchPagadorShares(
 ): Promise<ShareData[]> {
 	const shareRows = await db
 		.select({
-			id: pagadorShares.id,
-			sharedWithUserId: pagadorShares.sharedWithUserId,
-			createdAt: pagadorShares.createdAt,
+			id: compartilhamentosPagador.id,
+			sharedWithUserId: compartilhamentosPagador.sharedWithUserId,
+			createdAt: compartilhamentosPagador.createdAt,
 			userName: usersTable.name,
 			userEmail: usersTable.email,
 		})
-		.from(pagadorShares)
-		.innerJoin(usersTable, eq(pagadorShares.sharedWithUserId, usersTable.id))
-		.where(eq(pagadorShares.pagadorId, pagadorId));
+		.from(compartilhamentosPagador)
+		.innerJoin(usersTable, eq(compartilhamentosPagador.sharedWithUserId, usersTable.id))
+		.where(eq(compartilhamentosPagador.pagadorId, pagadorId));
 
 	return shareRows.map((share) => ({
 		id: share.id,
@@ -46,14 +46,14 @@ export async function fetchCurrentUserShare(
 	pagadorId: string,
 	userId: string,
 ): Promise<{ id: string; createdAt: string } | null> {
-	const shareRow = await db.query.pagadorShares.findFirst({
+	const shareRow = await db.query.compartilhamentosPagador.findFirst({
 		columns: {
 			id: true,
 			createdAt: true,
 		},
 		where: and(
-			eq(pagadorShares.pagadorId, pagadorId),
-			eq(pagadorShares.sharedWithUserId, userId),
+			eq(compartilhamentosPagador.pagadorId, pagadorId),
+			eq(compartilhamentosPagador.sharedWithUserId, userId),
 		),
 	});
 

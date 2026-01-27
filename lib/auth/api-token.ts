@@ -1,8 +1,4 @@
-/**
- * API Token utilities for OpenSheets Companion
- *
- * Handles JWT generation, validation, and token hashing for device authentication.
- */
+
 
 import crypto from "node:crypto";
 

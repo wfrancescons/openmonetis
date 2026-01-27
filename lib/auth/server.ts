@@ -1,14 +1,4 @@
-/**
- * Server-side authentication utilities
- *
- * This module consolidates server-side auth functions from:
- * - /lib/get-user.tsx
- * - /lib/get-user-id.tsx
- * - /lib/get-user-session.tsx
- *
- * All functions in this module are server-side only and will redirect
- * to /login if the user is not authenticated.
- */
+
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";

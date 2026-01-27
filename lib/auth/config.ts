@@ -1,9 +1,4 @@
-/**
- * Better Auth Configuration
- *
- * Configuração central de autenticação usando Better Auth.
- * Suporta email/password e Google OAuth.
- */
+
 
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";

@@ -1,6 +1,4 @@
-/**
- * Categoria grouping and sorting helpers for lancamentos
- */
+
 
 import type { SelectOption } from "@/components/lancamentos/types";
 

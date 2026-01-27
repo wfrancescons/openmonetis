@@ -1,6 +1,4 @@
-/**
- * Form state management helpers for lancamentos
- */
+
 
 import type { LancamentoItem } from "@/components/lancamentos/types";
 import { getTodayDateString } from "@/lib/utils/date";

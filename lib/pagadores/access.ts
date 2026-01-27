@@ -1,5 +1,5 @@
 import { and, eq } from "drizzle-orm";
-import { pagadores, pagadorShares, user as usersTable } from "@/db/schema";
+import { pagadores, compartilhamentosPagador, user as usersTable } from "@/db/schema";
 import { db } from "@/lib/db";
 
 export type PagadorWithAccess = typeof pagadores.$inferSelect & {
@@ -18,15 +18,15 @@ export async function fetchPagadoresWithAccess(
 		}),
 		db
 			.select({
-				shareId: pagadorShares.id,
+				shareId: compartilhamentosPagador.id,
 				pagador: pagadores,
 				ownerName: usersTable.name,
 				ownerEmail: usersTable.email,
 			})
-			.from(pagadorShares)
-			.innerJoin(pagadores, eq(pagadorShares.pagadorId, pagadores.id))
+			.from(compartilhamentosPagador)
+			.innerJoin(pagadores, eq(compartilhamentosPagador.pagadorId, pagadores.id))
 			.leftJoin(usersTable, eq(pagadores.userId, usersTable.id))
-			.where(eq(pagadorShares.sharedWithUserId, userId)),
+			.where(eq(compartilhamentosPagador.sharedWithUserId, userId)),
 	]);
 
 	const ownedMapped: PagadorWithAccess[] = owned.map((item) => ({
@@ -62,14 +62,14 @@ export async function getPagadorAccess(userId: string, pagadorId: string) {
 		return {
 			pagador,
 			canEdit: true,
-			share: null as typeof pagadorShares.$inferSelect | null,
+			share: null as typeof compartilhamentosPagador.$inferSelect | null,
 		};
 	}
 
-	const share = await db.query.pagadorShares.findFirst({
+	const share = await db.query.compartilhamentosPagador.findFirst({
 		where: and(
-			eq(pagadorShares.pagadorId, pagadorId),
-			eq(pagadorShares.sharedWithUserId, userId),
+			eq(compartilhamentosPagador.pagadorId, pagadorId),
+			eq(compartilhamentosPagador.sharedWithUserId, userId),
 		),
 	});
 

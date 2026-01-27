@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import {
 	categorias,
-	installmentAnticipations,
+	antecipacoesParcelas,
 	lancamentos,
 	pagadores,
 } from "@/db/schema";
@@ -235,7 +235,7 @@ export async function createInstallmentAnticipationAction(
 
 			// 4.2. Criar registro de antecipação
 			const [anticipation] = await tx
-				.insert(installmentAnticipations)
+				.insert(antecipacoesParcelas)
 				.values({
 					seriesId: data.seriesId,
 					anticipationPeriod: data.anticipationPeriod,
@@ -294,43 +294,43 @@ export async function getInstallmentAnticipationsAction(
 		// Usar query builder ao invés de db.query para evitar problemas de tipagem
 		const anticipations = await db
 			.select({
-				id: installmentAnticipations.id,
-				seriesId: installmentAnticipations.seriesId,
-				anticipationPeriod: installmentAnticipations.anticipationPeriod,
-				anticipationDate: installmentAnticipations.anticipationDate,
+				id: antecipacoesParcelas.id,
+				seriesId: antecipacoesParcelas.seriesId,
+				anticipationPeriod: antecipacoesParcelas.anticipationPeriod,
+				anticipationDate: antecipacoesParcelas.anticipationDate,
 				anticipatedInstallmentIds:
-					installmentAnticipations.anticipatedInstallmentIds,
-				totalAmount: installmentAnticipations.totalAmount,
-				installmentCount: installmentAnticipations.installmentCount,
-				discount: installmentAnticipations.discount,
-				lancamentoId: installmentAnticipations.lancamentoId,
-				pagadorId: installmentAnticipations.pagadorId,
-				categoriaId: installmentAnticipations.categoriaId,
-				note: installmentAnticipations.note,
-				userId: installmentAnticipations.userId,
-				createdAt: installmentAnticipations.createdAt,
+					antecipacoesParcelas.anticipatedInstallmentIds,
+				totalAmount: antecipacoesParcelas.totalAmount,
+				installmentCount: antecipacoesParcelas.installmentCount,
+				discount: antecipacoesParcelas.discount,
+				lancamentoId: antecipacoesParcelas.lancamentoId,
+				pagadorId: antecipacoesParcelas.pagadorId,
+				categoriaId: antecipacoesParcelas.categoriaId,
+				note: antecipacoesParcelas.note,
+				userId: antecipacoesParcelas.userId,
+				createdAt: antecipacoesParcelas.createdAt,
 				// Joins
 				lancamento: lancamentos,
 				pagador: pagadores,
 				categoria: categorias,
 			})
-			.from(installmentAnticipations)
+			.from(antecipacoesParcelas)
 			.leftJoin(
 				lancamentos,
-				eq(installmentAnticipations.lancamentoId, lancamentos.id),
+				eq(antecipacoesParcelas.lancamentoId, lancamentos.id),
 			)
-			.leftJoin(pagadores, eq(installmentAnticipations.pagadorId, pagadores.id))
+			.leftJoin(pagadores, eq(antecipacoesParcelas.pagadorId, pagadores.id))
 			.leftJoin(
 				categorias,
-				eq(installmentAnticipations.categoriaId, categorias.id),
+				eq(antecipacoesParcelas.categoriaId, categorias.id),
 			)
 			.where(
 				and(
-					eq(installmentAnticipations.seriesId, validatedSeriesId),
-					eq(installmentAnticipations.userId, user.id),
+					eq(antecipacoesParcelas.seriesId, validatedSeriesId),
+					eq(antecipacoesParcelas.userId, user.id),
 				),
 			)
-			.orderBy(desc(installmentAnticipations.createdAt));
+			.orderBy(desc(antecipacoesParcelas.createdAt));
 
 		return {
 			success: true,
@@ -356,32 +356,32 @@ export async function cancelInstallmentAnticipationAction(
 			// 1. Buscar antecipação usando query builder
 			const anticipationRows = await tx
 				.select({
-					id: installmentAnticipations.id,
-					seriesId: installmentAnticipations.seriesId,
-					anticipationPeriod: installmentAnticipations.anticipationPeriod,
-					anticipationDate: installmentAnticipations.anticipationDate,
+					id: antecipacoesParcelas.id,
+					seriesId: antecipacoesParcelas.seriesId,
+					anticipationPeriod: antecipacoesParcelas.anticipationPeriod,
+					anticipationDate: antecipacoesParcelas.anticipationDate,
 					anticipatedInstallmentIds:
-						installmentAnticipations.anticipatedInstallmentIds,
-					totalAmount: installmentAnticipations.totalAmount,
-					installmentCount: installmentAnticipations.installmentCount,
-					discount: installmentAnticipations.discount,
-					lancamentoId: installmentAnticipations.lancamentoId,
-					pagadorId: installmentAnticipations.pagadorId,
-					categoriaId: installmentAnticipations.categoriaId,
-					note: installmentAnticipations.note,
-					userId: installmentAnticipations.userId,
-					createdAt: installmentAnticipations.createdAt,
+						antecipacoesParcelas.anticipatedInstallmentIds,
+					totalAmount: antecipacoesParcelas.totalAmount,
+					installmentCount: antecipacoesParcelas.installmentCount,
+					discount: antecipacoesParcelas.discount,
+					lancamentoId: antecipacoesParcelas.lancamentoId,
+					pagadorId: antecipacoesParcelas.pagadorId,
+					categoriaId: antecipacoesParcelas.categoriaId,
+					note: antecipacoesParcelas.note,
+					userId: antecipacoesParcelas.userId,
+					createdAt: antecipacoesParcelas.createdAt,
 					lancamento: lancamentos,
 				})
-				.from(installmentAnticipations)
+				.from(antecipacoesParcelas)
 				.leftJoin(
 					lancamentos,
-					eq(installmentAnticipations.lancamentoId, lancamentos.id),
+					eq(antecipacoesParcelas.lancamentoId, lancamentos.id),
 				)
 				.where(
 					and(
-						eq(installmentAnticipations.id, data.anticipationId),
-						eq(installmentAnticipations.userId, user.id),
+						eq(antecipacoesParcelas.id, data.anticipationId),
+						eq(antecipacoesParcelas.userId, user.id),
 					),
 				)
 				.limit(1);
@@ -426,8 +426,8 @@ export async function cancelInstallmentAnticipationAction(
 
 			// 6. Deletar registro de antecipação
 			await tx
-				.delete(installmentAnticipations)
-				.where(eq(installmentAnticipations.id, data.anticipationId));
+				.delete(antecipacoesParcelas)
+				.where(eq(antecipacoesParcelas.id, data.anticipationId));
 		});
 
 		revalidatePath("/lancamentos");
@@ -454,10 +454,10 @@ export async function getAnticipationDetailsAction(
 		// Validar anticipationId
 		const validatedId = uuidSchema("Antecipação").parse(anticipationId);
 
-		const anticipation = await db.query.installmentAnticipations.findFirst({
+		const anticipation = await db.query.antecipacoesParcelas.findFirst({
 			where: and(
-				eq(installmentAnticipations.id, validatedId),
-				eq(installmentAnticipations.userId, user.id),
+				eq(antecipacoesParcelas.id, validatedId),
+				eq(antecipacoesParcelas.userId, user.id),
 			),
 			with: {
 				lancamento: true,

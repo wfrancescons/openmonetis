@@ -1,6 +1,4 @@
-/**
- * Data fetching functions for Pré-Lançamentos
- */
+
 
 import { and, desc, eq, gte } from "drizzle-orm";
 import type {
@@ -11,7 +9,7 @@ import {
 	cartoes,
 	categorias,
 	contas,
-	inboxItems,
+	preLancamentos,
 	lancamentos,
 } from "@/db/schema";
 import { db } from "@/lib/db";
@@ -27,9 +25,9 @@ export async function fetchInboxItems(
 ): Promise<InboxItem[]> {
 	const items = await db
 		.select()
-		.from(inboxItems)
-		.where(and(eq(inboxItems.userId, userId), eq(inboxItems.status, status)))
-		.orderBy(desc(inboxItems.createdAt));
+		.from(preLancamentos)
+		.where(and(eq(preLancamentos.userId, userId), eq(preLancamentos.status, status)))
+		.orderBy(desc(preLancamentos.createdAt));
 
 	return items;
 }
@@ -40,8 +38,8 @@ export async function fetchInboxItemById(
 ): Promise<InboxItem | null> {
 	const [item] = await db
 		.select()
-		.from(inboxItems)
-		.where(and(eq(inboxItems.id, itemId), eq(inboxItems.userId, userId)))
+		.from(preLancamentos)
+		.where(and(eq(preLancamentos.id, itemId), eq(preLancamentos.userId, userId)))
 		.limit(1);
 
 	return item ?? null;
@@ -90,10 +88,10 @@ export async function fetchCartoesForSelect(
 
 export async function fetchPendingInboxCount(userId: string): Promise<number> {
 	const items = await db
-		.select({ id: inboxItems.id })
-		.from(inboxItems)
+		.select({ id: preLancamentos.id })
+		.from(preLancamentos)
 		.where(
-			and(eq(inboxItems.userId, userId), eq(inboxItems.status, "pending")),
+			and(eq(preLancamentos.userId, userId), eq(preLancamentos.status, "pending")),
 		);
 
 	return items.length;

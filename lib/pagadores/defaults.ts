@@ -1,9 +1,3 @@
-/**
- * Pagador defaults - User seeding logic
- *
- * Moved from /lib/pagador-defaults.ts to /lib/pagadores/defaults.ts
- */
-
 import { eq } from "drizzle-orm";
 import { pagadores } from "@/db/schema";
 import { db } from "@/lib/db";

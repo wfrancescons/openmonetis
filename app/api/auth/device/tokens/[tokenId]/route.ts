@@ -1,14 +1,9 @@
-/**
- * DELETE /api/auth/device/tokens/[tokenId]
- *
- * Revoga um token de API específico.
- * Requer sessão web autenticada.
- */
+
 
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { apiTokens } from "@/db/schema";
+import { tokensApi } from "@/db/schema";
 import { auth } from "@/lib/auth/config";
 import { db } from "@/lib/db";
 
@@ -28,10 +23,10 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
 		}
 
 		// Verificar se token pertence ao usuário
-		const token = await db.query.apiTokens.findFirst({
+		const token = await db.query.tokensApi.findFirst({
 			where: and(
-				eq(apiTokens.id, tokenId),
-				eq(apiTokens.userId, session.user.id),
+				eq(tokensApi.id, tokenId),
+				eq(tokensApi.userId, session.user.id),
 			),
 		});
 
@@ -44,9 +39,9 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
 
 		// Revogar token (soft delete)
 		await db
-			.update(apiTokens)
+			.update(tokensApi)
 			.set({ revokedAt: new Date() })
-			.where(eq(apiTokens.id, tokenId));
+			.where(eq(tokensApi.id, tokenId));
 
 		return NextResponse.json({
 			message: "Token revogado com sucesso",

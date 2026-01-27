@@ -3,7 +3,7 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { inboxItems } from "@/db/schema";
+import { preLancamentos } from "@/db/schema";
 import { handleActionError } from "@/lib/actions/helpers";
 import type { ActionResult } from "@/lib/actions/types";
 import { getUser } from "@/lib/auth/server";
@@ -40,12 +40,12 @@ export async function markInboxAsProcessedAction(
 		// Verificar se item existe e pertence ao usuário
 		const [item] = await db
 			.select()
-			.from(inboxItems)
+			.from(preLancamentos)
 			.where(
 				and(
-					eq(inboxItems.id, data.inboxItemId),
-					eq(inboxItems.userId, user.id),
-					eq(inboxItems.status, "pending"),
+					eq(preLancamentos.id, data.inboxItemId),
+					eq(preLancamentos.userId, user.id),
+					eq(preLancamentos.status, "pending"),
 				),
 			)
 			.limit(1);
@@ -56,13 +56,13 @@ export async function markInboxAsProcessedAction(
 
 		// Marcar item como processado
 		await db
-			.update(inboxItems)
+			.update(preLancamentos)
 			.set({
 				status: "processed",
 				processedAt: new Date(),
 				updatedAt: new Date(),
 			})
-			.where(eq(inboxItems.id, data.inboxItemId));
+			.where(eq(preLancamentos.id, data.inboxItemId));
 
 		revalidateInbox();
 
@@ -82,12 +82,12 @@ export async function discardInboxItemAction(
 		// Verificar se item existe e pertence ao usuário
 		const [item] = await db
 			.select()
-			.from(inboxItems)
+			.from(preLancamentos)
 			.where(
 				and(
-					eq(inboxItems.id, data.inboxItemId),
-					eq(inboxItems.userId, user.id),
-					eq(inboxItems.status, "pending"),
+					eq(preLancamentos.id, data.inboxItemId),
+					eq(preLancamentos.userId, user.id),
+					eq(preLancamentos.status, "pending"),
 				),
 			)
 			.limit(1);
@@ -98,13 +98,13 @@ export async function discardInboxItemAction(
 
 		// Marcar item como descartado
 		await db
-			.update(inboxItems)
+			.update(preLancamentos)
 			.set({
 				status: "discarded",
 				discardedAt: new Date(),
 				updatedAt: new Date(),
 			})
-			.where(eq(inboxItems.id, data.inboxItemId));
+			.where(eq(preLancamentos.id, data.inboxItemId));
 
 		revalidateInbox();
 
@@ -123,7 +123,7 @@ export async function bulkDiscardInboxItemsAction(
 
 		// Marcar todos os itens como descartados
 		await db
-			.update(inboxItems)
+			.update(preLancamentos)
 			.set({
 				status: "discarded",
 				discardedAt: new Date(),
@@ -131,9 +131,9 @@ export async function bulkDiscardInboxItemsAction(
 			})
 			.where(
 				and(
-					inArray(inboxItems.id, data.inboxItemIds),
-					eq(inboxItems.userId, user.id),
-					eq(inboxItems.status, "pending"),
+					inArray(preLancamentos.id, data.inboxItemIds),
+					eq(preLancamentos.userId, user.id),
+					eq(preLancamentos.status, "pending"),
 				),
 			);
 

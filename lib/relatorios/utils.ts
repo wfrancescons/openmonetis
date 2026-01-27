@@ -1,6 +1,4 @@
-/**
- * Utility functions for Category Report feature
- */
+
 
 import { currencyFormatter } from "@/lib/lancamentos/formatting-helpers";
 import { calculatePercentageChange } from "@/lib/utils/math";

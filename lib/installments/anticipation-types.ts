@@ -1,6 +1,6 @@
 import type {
+	AntecipacaoParcela,
 	Categoria,
-	InstallmentAnticipation,
 	Lancamento,
 	Pagador,
 } from "@/db/schema";
@@ -25,7 +25,7 @@ export type EligibleInstallment = {
 /**
  * Antecipação com dados completos
  */
-export type InstallmentAnticipationWithRelations = InstallmentAnticipation & {
+export type InstallmentAnticipationWithRelations = AntecipacaoParcela & {
 	lancamento: Lancamento;
 	pagador: Pagador | null;
 	categoria: Categoria | null;

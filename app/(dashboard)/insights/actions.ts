@@ -14,7 +14,7 @@ import {
 	lancamentos,
 	orcamentos,
 	pagadores,
-	savedInsights,
+	insightsSalvos,
 } from "@/db/schema";
 import { ACCOUNT_AUTO_INVOICE_NOTE_PREFIX } from "@/lib/accounts/constants";
 import { getUser } from "@/lib/auth/server";
@@ -697,11 +697,11 @@ export async function saveInsightsAction(
 		// Verificar se já existe um insight salvo para este período
 		const existing = await db
 			.select()
-			.from(savedInsights)
+			.from(insightsSalvos)
 			.where(
 				and(
-					eq(savedInsights.userId, user.id),
-					eq(savedInsights.period, period),
+					eq(insightsSalvos.userId, user.id),
+					eq(insightsSalvos.period, period),
 				),
 			)
 			.limit(1);
@@ -709,7 +709,7 @@ export async function saveInsightsAction(
 		if (existing.length > 0) {
 			// Atualizar existente
 			const updated = await db
-				.update(savedInsights)
+				.update(insightsSalvos)
 				.set({
 					modelId,
 					data: JSON.stringify(data),
@@ -717,13 +717,13 @@ export async function saveInsightsAction(
 				})
 				.where(
 					and(
-						eq(savedInsights.userId, user.id),
-						eq(savedInsights.period, period),
+						eq(insightsSalvos.userId, user.id),
+						eq(insightsSalvos.period, period),
 					),
 				)
 				.returning({
-					id: savedInsights.id,
-					createdAt: savedInsights.createdAt,
+					id: insightsSalvos.id,
+					createdAt: insightsSalvos.createdAt,
 				});
 
 			const updatedRecord = updated[0];
@@ -745,14 +745,14 @@ export async function saveInsightsAction(
 
 		// Criar novo
 		const result = await db
-			.insert(savedInsights)
+			.insert(insightsSalvos)
 			.values({
 				userId: user.id,
 				period,
 				modelId,
 				data: JSON.stringify(data),
 			})
-			.returning({ id: savedInsights.id, createdAt: savedInsights.createdAt });
+			.returning({ id: insightsSalvos.id, createdAt: insightsSalvos.createdAt });
 
 		const insertedRecord = result[0];
 		if (!insertedRecord) {
@@ -796,11 +796,11 @@ export async function loadSavedInsightsAction(period: string): Promise<
 
 		const result = await db
 			.select()
-			.from(savedInsights)
+			.from(insightsSalvos)
 			.where(
 				and(
-					eq(savedInsights.userId, user.id),
-					eq(savedInsights.period, period),
+					eq(insightsSalvos.userId, user.id),
+					eq(insightsSalvos.period, period),
 				),
 			)
 			.limit(1);
@@ -852,11 +852,11 @@ export async function deleteSavedInsightsAction(
 		const user = await getUser();
 
 		await db
-			.delete(savedInsights)
+			.delete(insightsSalvos)
 			.where(
 				and(
-					eq(savedInsights.userId, user.id),
-					eq(savedInsights.period, period),
+					eq(insightsSalvos.userId, user.id),
+					eq(insightsSalvos.period, period),
 				),
 			);
 

@@ -11,11 +11,11 @@ export async function fetchUserDashboardPreferences(
 ): Promise<UserDashboardPreferences> {
 	const result = await db
 		.select({
-			disableMagnetlines: schema.userPreferences.disableMagnetlines,
-			dashboardWidgets: schema.userPreferences.dashboardWidgets,
+			disableMagnetlines: schema.preferenciasUsuario.disableMagnetlines,
+			dashboardWidgets: schema.preferenciasUsuario.dashboardWidgets,
 		})
-		.from(schema.userPreferences)
-		.where(eq(schema.userPreferences.userId, userId))
+		.from(schema.preferenciasUsuario)
+		.where(eq(schema.preferenciasUsuario.userId, userId))
 		.limit(1);
 
 	return {

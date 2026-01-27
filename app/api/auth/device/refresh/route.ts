@@ -1,13 +1,8 @@
-/**
- * POST /api/auth/device/refresh
- *
- * Atualiza access token usando refresh token.
- * Usado pelo app Android quando o access token expira.
- */
+
 
 import { and, eq, isNull } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { apiTokens } from "@/db/schema";
+import { tokensApi } from "@/db/schema";
 import {
 	extractBearerToken,
 	hashToken,
@@ -40,11 +35,11 @@ export async function POST(request: Request) {
 		}
 
 		// Verificar se token não foi revogado
-		const tokenRecord = await db.query.apiTokens.findFirst({
+		const tokenRecord = await db.query.tokensApi.findFirst({
 			where: and(
-				eq(apiTokens.id, payload.tokenId),
-				eq(apiTokens.userId, payload.sub),
-				isNull(apiTokens.revokedAt),
+				eq(tokensApi.id, payload.tokenId),
+				eq(tokensApi.userId, payload.sub),
+				isNull(tokensApi.revokedAt),
 			),
 		});
 
@@ -67,7 +62,7 @@ export async function POST(request: Request) {
 
 		// Atualizar hash do token e último uso
 		await db
-			.update(apiTokens)
+			.update(tokensApi)
 			.set({
 				tokenHash: hashToken(result.accessToken),
 				lastUsedAt: new Date(),
@@ -76,7 +71,7 @@ export async function POST(request: Request) {
 					request.headers.get("x-real-ip"),
 				expiresAt: result.expiresAt,
 			})
-			.where(eq(apiTokens.id, payload.tokenId));
+			.where(eq(tokensApi.id, payload.tokenId));
 
 		return NextResponse.json({
 			accessToken: result.accessToken,
