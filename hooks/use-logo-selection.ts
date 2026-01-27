@@ -2,10 +2,10 @@ import { useCallback } from "react";
 import { deriveNameFromLogo } from "@/lib/logo";
 
 interface UseLogoSelectionProps {
-  mode: "create" | "update";
-  currentLogo: string;
-  currentName: string;
-  onUpdate: (updates: { logo: string; name?: string }) => void;
+	mode: "create" | "update";
+	currentLogo: string;
+	currentName: string;
+	onUpdate: (updates: { logo: string; name?: string }) => void;
 }
 
 /**
@@ -30,29 +30,29 @@ interface UseLogoSelectionProps {
  * ```
  */
 export function useLogoSelection({
-  mode,
-  currentLogo,
-  currentName,
-  onUpdate,
+	mode,
+	currentLogo,
+	currentName,
+	onUpdate,
 }: UseLogoSelectionProps) {
-  const handleLogoSelection = useCallback(
-    (newLogo: string) => {
-      const derived = deriveNameFromLogo(newLogo);
-      const previousDerived = deriveNameFromLogo(currentLogo);
+	const handleLogoSelection = useCallback(
+		(newLogo: string) => {
+			const derived = deriveNameFromLogo(newLogo);
+			const previousDerived = deriveNameFromLogo(currentLogo);
 
-      const shouldUpdateName =
-        mode === "create" ||
-        currentName.trim().length === 0 ||
-        previousDerived === currentName.trim();
+			const shouldUpdateName =
+				mode === "create" ||
+				currentName.trim().length === 0 ||
+				previousDerived === currentName.trim();
 
-      if (shouldUpdateName) {
-        onUpdate({ logo: newLogo, name: derived });
-      } else {
-        onUpdate({ logo: newLogo });
-      }
-    },
-    [mode, currentLogo, currentName, onUpdate]
-  );
+			if (shouldUpdateName) {
+				onUpdate({ logo: newLogo, name: derived });
+			} else {
+				onUpdate({ logo: newLogo });
+			}
+		},
+		[mode, currentLogo, currentName, onUpdate],
+	);
 
-  return handleLogoSelection;
+	return handleLogoSelection;
 }

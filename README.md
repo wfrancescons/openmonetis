@@ -266,7 +266,7 @@ O projeto é open source, seus dados ficam no seu controle (pode rodar localment
 - Next.js 16.1 com App Router
 - Turbopack (fast refresh)
 - TypeScript 5.9 (strict mode)
-- ESLint 9
+- Biome (linting + formatting)
 - React 19.2 (com Compiler)
 - Server Actions
 - Parallel data fetching
@@ -322,7 +322,7 @@ O projeto é open source, seus dados ficam no seu controle (pode rodar localment
 - **Containerization:** Docker + Docker Compose
 - **Package Manager:** pnpm
 - **Build Tool:** Turbopack
-- **Linting:** ESLint 9.39.2
+- **Linting & Formatting:** Biome 2.x
 - **Analytics:** Vercel Analytics + Speed Insights
 
 ---
@@ -991,7 +991,7 @@ opensheets/
 ├── tailwind.config.ts            # Configuração Tailwind CSS
 ├── postcss.config.mjs            # PostCSS config
 ├── components.json               # shadcn/ui config
-├── eslint.config.mjs             # ESLint config
+├── biome.json                    # Biome config (linting + formatting)
 ├── tsconfig.json                 # TypeScript config
 ├── package.json                  # Dependências e scripts
 ├── .env.example                  # Template de variáveis de ambiente

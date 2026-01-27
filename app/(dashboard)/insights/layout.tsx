@@ -1,23 +1,23 @@
-import PageDescription from "@/components/page-description";
 import { RiSparklingLine } from "@remixicon/react";
+import PageDescription from "@/components/page-description";
 
 export const metadata = {
-  title: "Insights | Opensheets",
+	title: "Insights | Opensheets",
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <section className="space-y-6 px-6">
-      <PageDescription
-        icon={<RiSparklingLine />}
-        title="Insights"
-        subtitle="Análise inteligente dos seus dados financeiros para identificar padrões, comportamentos e oportunidades de melhoria."
-      />
-      {children}
-    </section>
-  );
+	return (
+		<section className="space-y-6 px-6">
+			<PageDescription
+				icon={<RiSparklingLine />}
+				title="Insights"
+				subtitle="Análise inteligente dos seus dados financeiros para identificar padrões, comportamentos e oportunidades de melhoria."
+			/>
+			{children}
+		</section>
+	);
 }

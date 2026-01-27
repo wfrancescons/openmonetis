@@ -1,45 +1,45 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { config } from "dotenv";
 import { drizzle } from "drizzle-orm/node-postgres";
-import * as fs from "fs";
-import * as path from "path";
 import { Pool } from "pg";
 
 // Load environment variables from .env
 config();
 
 async function initDatabase() {
-  const databaseUrl = process.env.DATABASE_URL;
+	const databaseUrl = process.env.DATABASE_URL;
 
-  if (!databaseUrl) {
-    console.error("DATABASE_URL environment variable is required");
-    process.exit(1);
-  }
+	if (!databaseUrl) {
+		console.error("DATABASE_URL environment variable is required");
+		process.exit(1);
+	}
 
-  const pool = new Pool({ connectionString: databaseUrl });
-  const db = drizzle(pool);
+	const pool = new Pool({ connectionString: databaseUrl });
+	const db = drizzle(pool);
 
-  try {
-    console.log("🔧 Initializing database extensions...");
+	try {
+		console.log("🔧 Initializing database extensions...");
 
-    // Read and execute init.sql as a single query
-    const initSqlPath = path.join(
-      process.cwd(),
-      "scripts",
-      "postgres",
-      "init.sql"
-    );
-    const initSql = fs.readFileSync(initSqlPath, "utf-8");
+		// Read and execute init.sql as a single query
+		const initSqlPath = path.join(
+			process.cwd(),
+			"scripts",
+			"postgres",
+			"init.sql",
+		);
+		const initSql = fs.readFileSync(initSqlPath, "utf-8");
 
-    console.log("Executing init.sql...");
-    await db.execute(initSql);
+		console.log("Executing init.sql...");
+		await db.execute(initSql);
 
-    console.log("✅ Database initialization completed");
-  } catch (error) {
-    console.error("❌ Database initialization failed:", error);
-    process.exit(1);
-  } finally {
-    await pool.end();
-  }
+		console.log("✅ Database initialization completed");
+	} catch (error) {
+		console.error("❌ Database initialization failed:", error);
+		process.exit(1);
+	} finally {
+		await pool.end();
+	}
 }
 
 initDatabase();

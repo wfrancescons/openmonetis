@@ -7,84 +7,84 @@ export type AIProvider = "openai" | "anthropic" | "google" | "openrouter";
  * Metadados dos providers
  */
 export const PROVIDERS = {
-  openai: {
-    id: "openai" as const,
-    name: "ChatGPT",
-    icon: "RiOpenaiLine",
-  },
-  anthropic: {
-    id: "anthropic" as const,
-    name: "Claude AI",
-    icon: "RiRobot2Line",
-  },
-  google: {
-    id: "google" as const,
-    name: "Gemini",
-    icon: "RiGoogleLine",
-  },
-  openrouter: {
-    id: "openrouter" as const,
-    name: "OpenRouter",
-    icon: "RiRouterLine",
-  },
+	openai: {
+		id: "openai" as const,
+		name: "ChatGPT",
+		icon: "RiOpenaiLine",
+	},
+	anthropic: {
+		id: "anthropic" as const,
+		name: "Claude AI",
+		icon: "RiRobot2Line",
+	},
+	google: {
+		id: "google" as const,
+		name: "Gemini",
+		icon: "RiGoogleLine",
+	},
+	openrouter: {
+		id: "openrouter" as const,
+		name: "OpenRouter",
+		icon: "RiRouterLine",
+	},
 } as const;
 
 /**
  * Lista de modelos de IA disponíveis para análise de insights
  */
 export const AVAILABLE_MODELS = [
-  // OpenAI Models - GPT-5.2 Family (Latest)
-  { id: "gpt-5.2", name: "GPT-5.2", provider: "openai" as const },
-  {
-    id: "gpt-5.2-instant",
-    name: "GPT-5.2 Instant",
-    provider: "openai" as const,
-  },
-  {
-    id: "gpt-5.2-thinking",
-    name: "GPT-5.2 Thinking",
-    provider: "openai" as const,
-  },
+	// OpenAI Models - GPT-5.2 Family (Latest)
+	{ id: "gpt-5.2", name: "GPT-5.2", provider: "openai" as const },
+	{
+		id: "gpt-5.2-instant",
+		name: "GPT-5.2 Instant",
+		provider: "openai" as const,
+	},
+	{
+		id: "gpt-5.2-thinking",
+		name: "GPT-5.2 Thinking",
+		provider: "openai" as const,
+	},
 
-  // OpenAI Models - GPT-5 Family
-  { id: "gpt-5", name: "GPT-5", provider: "openai" as const },
-  { id: "gpt-5-instant", name: "GPT-5 Instant", provider: "openai" as const },
+	// OpenAI Models - GPT-5 Family
+	{ id: "gpt-5", name: "GPT-5", provider: "openai" as const },
+	{ id: "gpt-5-instant", name: "GPT-5 Instant", provider: "openai" as const },
 
-  // Anthropic Models - Claude 4.5
-  {
-    id: "claude-4.5-haiku",
-    name: "Claude 4.5 Haiku",
-    provider: "anthropic" as const,
-  },
-  {
-    id: "claude-4.5-sonnet",
-    name: "Claude 4.5 Sonnet",
-    provider: "anthropic" as const,
-  },
-  {
-    id: "claude-opus-4.1",
-    name: "Claude 4.1 Opus",
-    provider: "anthropic" as const,
-  },
+	// Anthropic Models - Claude 4.5
+	{
+		id: "claude-4.5-haiku",
+		name: "Claude 4.5 Haiku",
+		provider: "anthropic" as const,
+	},
+	{
+		id: "claude-4.5-sonnet",
+		name: "Claude 4.5 Sonnet",
+		provider: "anthropic" as const,
+	},
+	{
+		id: "claude-opus-4.1",
+		name: "Claude 4.1 Opus",
+		provider: "anthropic" as const,
+	},
 
-  // Google Models - Gemini 3 (Latest)
-  {
-    id: "gemini-3-flash-preview",
-    name: "Gemini 3 Flash",
-    provider: "google" as const,
-  },
-  {
-    id: "gemini-3-pro-preview",
-    name: "Gemini 3 Pro",
-    provider: "google" as const,
-  },
+	// Google Models - Gemini 3 (Latest)
+	{
+		id: "gemini-3-flash-preview",
+		name: "Gemini 3 Flash",
+		provider: "google" as const,
+	},
+	{
+		id: "gemini-3-pro-preview",
+		name: "Gemini 3 Pro",
+		provider: "google" as const,
+	},
 
-  // Google Models - Gemini 2.0
-  {
-    id: "gemini-2.0-flash",
-    name: "Gemini 2.0 Flash",
-    provider: "google" as const,
-  },
+	// Google Models - Gemini 2.0
+	{
+		id: "gemini-2.0-flash",
+		name: "Gemini 2.0 Flash",
+		provider: "google" as const,
+	},
 ] as const;
 
 export const DEFAULT_MODEL = "gpt-5.2";

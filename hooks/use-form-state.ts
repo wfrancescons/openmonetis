@@ -16,40 +16,38 @@ import { useCallback, useState } from "react";
  * updateField('name', 'John');
  * ```
  */
-export function useFormState<T extends Record<string, any>>(
-  initialValues: T
-) {
-  const [formState, setFormState] = useState<T>(initialValues);
+export function useFormState<T extends Record<string, any>>(initialValues: T) {
+	const [formState, setFormState] = useState<T>(initialValues);
 
-  /**
-   * Updates a single field in the form state
-   */
-  const updateField = useCallback(<K extends keyof T>(
-    field: K,
-    value: T[K]
-  ) => {
-    setFormState((prev) => ({ ...prev, [field]: value }));
-  }, []);
+	/**
+	 * Updates a single field in the form state
+	 */
+	const updateField = useCallback(
+		<K extends keyof T>(field: K, value: T[K]) => {
+			setFormState((prev) => ({ ...prev, [field]: value }));
+		},
+		[],
+	);
 
-  /**
-   * Resets form to initial values
-   */
-  const resetForm = useCallback(() => {
-    setFormState(initialValues);
-  }, [initialValues]);
+	/**
+	 * Resets form to initial values
+	 */
+	const resetForm = useCallback(() => {
+		setFormState(initialValues);
+	}, [initialValues]);
 
-  /**
-   * Updates multiple fields at once
-   */
-  const updateFields = useCallback((updates: Partial<T>) => {
-    setFormState((prev) => ({ ...prev, ...updates }));
-  }, []);
+	/**
+	 * Updates multiple fields at once
+	 */
+	const updateFields = useCallback((updates: Partial<T>) => {
+		setFormState((prev) => ({ ...prev, ...updates }));
+	}, []);
 
-  return {
-    formState,
-    updateField,
-    updateFields,
-    resetForm,
-    setFormState,
-  };
+	return {
+		formState,
+		updateField,
+		updateFields,
+		resetForm,
+		setFormState,
+	};
 }

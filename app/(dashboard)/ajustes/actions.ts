@@ -1,562 +1,567 @@
 "use server";
 
+import { apiTokens, pagadores } from "@/db/schema";
 import { auth } from "@/lib/auth/config";
 import { db, schema } from "@/lib/db";
-import { apiTokens, pagadores } from "@/db/schema";
 import { PAGADOR_ROLE_ADMIN } from "@/lib/pagadores/constants";
-import { eq, and, ne, isNull } from "drizzle-orm";
-import { headers } from "next/headers";
+import { and, eq, isNull, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
+import { createHash, randomBytes } from "node:crypto";
 import { z } from "zod";
-import { createHash, randomBytes } from "crypto";
 
 type ActionResponse<T = void> = {
-  success: boolean;
-  message?: string;
-  error?: string;
-  data?: T;
+	success: boolean;
+	message?: string;
+	error?: string;
+	data?: T;
 };
 
 // Schema de validação
 const updateNameSchema = z.object({
-  firstName: z.string().min(1, "Primeiro nome é obrigatório"),
-  lastName: z.string().min(1, "Sobrenome é obrigatório"),
+	firstName: z.string().min(1, "Primeiro nome é obrigatório"),
+	lastName: z.string().min(1, "Sobrenome é obrigatório"),
 });
 
 const updatePasswordSchema = z
-  .object({
-    currentPassword: z.string().min(1, "Senha atual é obrigatória"),
-    newPassword: z.string().min(6, "A senha deve ter no mínimo 6 caracteres"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "As senhas não coincidem",
-    path: ["confirmPassword"],
-  });
+	.object({
+		currentPassword: z.string().min(1, "Senha atual é obrigatória"),
+		newPassword: z.string().min(6, "A senha deve ter no mínimo 6 caracteres"),
+		confirmPassword: z.string(),
+	})
+	.refine((data) => data.newPassword === data.confirmPassword, {
+		message: "As senhas não coincidem",
+		path: ["confirmPassword"],
+	});
 
 const updateEmailSchema = z
-  .object({
-    password: z.string().optional(), // Opcional para usuários Google OAuth
-    newEmail: z.string().email("E-mail inválido"),
-    confirmEmail: z.string().email("E-mail inválido"),
-  })
-  .refine((data) => data.newEmail === data.confirmEmail, {
-    message: "Os e-mails não coincidem",
-    path: ["confirmEmail"],
-  });
+	.object({
+		password: z.string().optional(), // Opcional para usuários Google OAuth
+		newEmail: z.string().email("E-mail inválido"),
+		confirmEmail: z.string().email("E-mail inválido"),
+	})
+	.refine((data) => data.newEmail === data.confirmEmail, {
+		message: "Os e-mails não coincidem",
+		path: ["confirmEmail"],
+	});
 
 const deleteAccountSchema = z.object({
-  confirmation: z.literal("DELETAR", {
-    errorMap: () => ({ message: 'Você deve digitar "DELETAR" para confirmar' }),
-  }),
+	confirmation: z.literal("DELETAR", {
+		errorMap: () => ({ message: 'Você deve digitar "DELETAR" para confirmar' }),
+	}),
 });
 
 const updatePreferencesSchema = z.object({
-  disableMagnetlines: z.boolean(),
+	disableMagnetlines: z.boolean(),
 });
 
 // Actions
 
 export async function updateNameAction(
-  data: z.infer<typeof updateNameSchema>
+	data: z.infer<typeof updateNameSchema>,
 ): Promise<ActionResponse> {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+	try {
+		const session = await auth.api.getSession({
+			headers: await headers(),
+		});
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: "Não autenticado",
-      };
-    }
+		if (!session?.user?.id) {
+			return {
+				success: false,
+				error: "Não autenticado",
+			};
+		}
 
-    const validated = updateNameSchema.parse(data);
-    const fullName = `${validated.firstName} ${validated.lastName}`;
+		const validated = updateNameSchema.parse(data);
+		const fullName = `${validated.firstName} ${validated.lastName}`;
 
-    // Atualizar nome do usuário
-    await db
-      .update(schema.user)
-      .set({ name: fullName })
-      .where(eq(schema.user.id, session.user.id));
+		// Atualizar nome do usuário
+		await db
+			.update(schema.user)
+			.set({ name: fullName })
+			.where(eq(schema.user.id, session.user.id));
 
-    // Sincronizar nome com o pagador admin
-    await db
-      .update(pagadores)
-      .set({ name: fullName })
-      .where(
-        and(
-          eq(pagadores.userId, session.user.id),
-          eq(pagadores.role, PAGADOR_ROLE_ADMIN)
-        )
-      );
+		// Sincronizar nome com o pagador admin
+		await db
+			.update(pagadores)
+			.set({ name: fullName })
+			.where(
+				and(
+					eq(pagadores.userId, session.user.id),
+					eq(pagadores.role, PAGADOR_ROLE_ADMIN),
+				),
+			);
 
-    // Revalidar o layout do dashboard para atualizar a sidebar
-    revalidatePath("/", "layout");
-    revalidatePath("/pagadores");
+		// Revalidar o layout do dashboard para atualizar a sidebar
+		revalidatePath("/", "layout");
+		revalidatePath("/pagadores");
 
-    return {
-      success: true,
-      message: "Nome atualizado com sucesso",
-    };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: error.issues[0]?.message || "Dados inválidos",
-      };
-    }
+		return {
+			success: true,
+			message: "Nome atualizado com sucesso",
+		};
+	} catch (error) {
+		if (error instanceof z.ZodError) {
+			return {
+				success: false,
+				error: error.issues[0]?.message || "Dados inválidos",
+			};
+		}
 
-    console.error("Erro ao atualizar nome:", error);
-    return {
-      success: false,
-      error: "Erro ao atualizar nome. Tente novamente.",
-    };
-  }
+		console.error("Erro ao atualizar nome:", error);
+		return {
+			success: false,
+			error: "Erro ao atualizar nome. Tente novamente.",
+		};
+	}
 }
 
 export async function updatePasswordAction(
-  data: z.infer<typeof updatePasswordSchema>
+	data: z.infer<typeof updatePasswordSchema>,
 ): Promise<ActionResponse> {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+	try {
+		const session = await auth.api.getSession({
+			headers: await headers(),
+		});
 
-    if (!session?.user?.id || !session?.user?.email) {
-      return {
-        success: false,
-        error: "Não autenticado",
-      };
-    }
+		if (!session?.user?.id || !session?.user?.email) {
+			return {
+				success: false,
+				error: "Não autenticado",
+			};
+		}
 
-    const validated = updatePasswordSchema.parse(data);
+		const validated = updatePasswordSchema.parse(data);
 
-    // Verificar se o usuário tem conta com provedor Google
-    const userAccount = await db.query.account.findFirst({
-      where: and(
-        eq(schema.account.userId, session.user.id),
-        eq(schema.account.providerId, "google")
-      ),
-    });
+		// Verificar se o usuário tem conta com provedor Google
+		const userAccount = await db.query.account.findFirst({
+			where: and(
+				eq(schema.account.userId, session.user.id),
+				eq(schema.account.providerId, "google"),
+			),
+		});
 
-    if (userAccount) {
-      return {
-        success: false,
-        error: "Não é possível alterar senha para contas autenticadas via Google",
-      };
-    }
+		if (userAccount) {
+			return {
+				success: false,
+				error:
+					"Não é possível alterar senha para contas autenticadas via Google",
+			};
+		}
 
-    // Usar a API do Better Auth para atualizar a senha
-    try {
-      await auth.api.changePassword({
-        body: {
-          newPassword: validated.newPassword,
-          currentPassword: validated.currentPassword,
-        },
-        headers: await headers(),
-      });
+		// Usar a API do Better Auth para atualizar a senha
+		try {
+			await auth.api.changePassword({
+				body: {
+					newPassword: validated.newPassword,
+					currentPassword: validated.currentPassword,
+				},
+				headers: await headers(),
+			});
 
-      return {
-        success: true,
-        message: "Senha atualizada com sucesso",
-      };
-    } catch (authError: any) {
-      console.error("Erro na API do Better Auth:", authError);
+			return {
+				success: true,
+				message: "Senha atualizada com sucesso",
+			};
+		} catch (authError: any) {
+			console.error("Erro na API do Better Auth:", authError);
 
-      // Verificar se o erro é de senha incorreta
-      if (authError?.message?.includes("password") || authError?.message?.includes("incorrect")) {
-        return {
-          success: false,
-          error: "Senha atual incorreta",
-        };
-      }
+			// Verificar se o erro é de senha incorreta
+			if (
+				authError?.message?.includes("password") ||
+				authError?.message?.includes("incorrect")
+			) {
+				return {
+					success: false,
+					error: "Senha atual incorreta",
+				};
+			}
 
-      return {
-        success: false,
-        error: "Erro ao atualizar senha. Verifique se a senha atual está correta.",
-      };
-    }
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: error.issues[0]?.message || "Dados inválidos",
-      };
-    }
+			return {
+				success: false,
+				error:
+					"Erro ao atualizar senha. Verifique se a senha atual está correta.",
+			};
+		}
+	} catch (error) {
+		if (error instanceof z.ZodError) {
+			return {
+				success: false,
+				error: error.issues[0]?.message || "Dados inválidos",
+			};
+		}
 
-    console.error("Erro ao atualizar senha:", error);
-    return {
-      success: false,
-      error: "Erro ao atualizar senha. Tente novamente.",
-    };
-  }
+		console.error("Erro ao atualizar senha:", error);
+		return {
+			success: false,
+			error: "Erro ao atualizar senha. Tente novamente.",
+		};
+	}
 }
 
 export async function updateEmailAction(
-  data: z.infer<typeof updateEmailSchema>
+	data: z.infer<typeof updateEmailSchema>,
 ): Promise<ActionResponse> {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+	try {
+		const session = await auth.api.getSession({
+			headers: await headers(),
+		});
 
-    if (!session?.user?.id || !session?.user?.email) {
-      return {
-        success: false,
-        error: "Não autenticado",
-      };
-    }
+		if (!session?.user?.id || !session?.user?.email) {
+			return {
+				success: false,
+				error: "Não autenticado",
+			};
+		}
 
-    const validated = updateEmailSchema.parse(data);
+		const validated = updateEmailSchema.parse(data);
 
-    // Verificar se o usuário tem conta com provedor Google
-    const userAccount = await db.query.account.findFirst({
-      where: and(
-        eq(schema.account.userId, session.user.id),
-        eq(schema.account.providerId, "google")
-      ),
-    });
+		// Verificar se o usuário tem conta com provedor Google
+		const userAccount = await db.query.account.findFirst({
+			where: and(
+				eq(schema.account.userId, session.user.id),
+				eq(schema.account.providerId, "google"),
+			),
+		});
 
-    const isGoogleAuth = !!userAccount;
+		const isGoogleAuth = !!userAccount;
 
-    // Se não for Google OAuth, validar senha
-    if (!isGoogleAuth) {
-      if (!validated.password) {
-        return {
-          success: false,
-          error: "Senha é obrigatória para confirmar a alteração",
-        };
-      }
+		// Se não for Google OAuth, validar senha
+		if (!isGoogleAuth) {
+			if (!validated.password) {
+				return {
+					success: false,
+					error: "Senha é obrigatória para confirmar a alteração",
+				};
+			}
 
-      // Validar senha tentando fazer changePassword para a mesma senha
-      // Se falhar, a senha atual está incorreta
-      try {
-        await auth.api.changePassword({
-          body: {
-            newPassword: validated.password,
-            currentPassword: validated.password,
-          },
-          headers: await headers(),
-        });
-      } catch (authError: any) {
-        // Se der erro é porque a senha está incorreta
-        console.error("Erro ao validar senha:", authError);
-        return {
-          success: false,
-          error: "Senha incorreta",
-        };
-      }
-    }
+			// Validar senha tentando fazer changePassword para a mesma senha
+			// Se falhar, a senha atual está incorreta
+			try {
+				await auth.api.changePassword({
+					body: {
+						newPassword: validated.password,
+						currentPassword: validated.password,
+					},
+					headers: await headers(),
+				});
+			} catch (authError: any) {
+				// Se der erro é porque a senha está incorreta
+				console.error("Erro ao validar senha:", authError);
+				return {
+					success: false,
+					error: "Senha incorreta",
+				};
+			}
+		}
 
-    // Verificar se o e-mail já está em uso por outro usuário
-    const existingUser = await db.query.user.findFirst({
-      where: and(
-        eq(schema.user.email, validated.newEmail),
-        ne(schema.user.id, session.user.id)
-      ),
-    });
+		// Verificar se o e-mail já está em uso por outro usuário
+		const existingUser = await db.query.user.findFirst({
+			where: and(
+				eq(schema.user.email, validated.newEmail),
+				ne(schema.user.id, session.user.id),
+			),
+		});
 
-    if (existingUser) {
-      return {
-        success: false,
-        error: "Este e-mail já está em uso",
-      };
-    }
+		if (existingUser) {
+			return {
+				success: false,
+				error: "Este e-mail já está em uso",
+			};
+		}
 
-    // Verificar se o novo e-mail é diferente do atual
-    if (validated.newEmail.toLowerCase() === session.user.email.toLowerCase()) {
-      return {
-        success: false,
-        error: "O novo e-mail deve ser diferente do atual",
-      };
-    }
+		// Verificar se o novo e-mail é diferente do atual
+		if (validated.newEmail.toLowerCase() === session.user.email.toLowerCase()) {
+			return {
+				success: false,
+				error: "O novo e-mail deve ser diferente do atual",
+			};
+		}
 
-    // Atualizar e-mail
-    await db
-      .update(schema.user)
-      .set({
-        email: validated.newEmail,
-        emailVerified: false, // Marcar como não verificado
-      })
-      .where(eq(schema.user.id, session.user.id));
+		// Atualizar e-mail
+		await db
+			.update(schema.user)
+			.set({
+				email: validated.newEmail,
+				emailVerified: false, // Marcar como não verificado
+			})
+			.where(eq(schema.user.id, session.user.id));
 
-    // Revalidar o layout do dashboard para atualizar a sidebar
-    revalidatePath("/", "layout");
+		// Revalidar o layout do dashboard para atualizar a sidebar
+		revalidatePath("/", "layout");
 
-    return {
-      success: true,
-      message:
-        "E-mail atualizado com sucesso. Por favor, verifique seu novo e-mail.",
-    };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: error.issues[0]?.message || "Dados inválidos",
-      };
-    }
+		return {
+			success: true,
+			message:
+				"E-mail atualizado com sucesso. Por favor, verifique seu novo e-mail.",
+		};
+	} catch (error) {
+		if (error instanceof z.ZodError) {
+			return {
+				success: false,
+				error: error.issues[0]?.message || "Dados inválidos",
+			};
+		}
 
-    console.error("Erro ao atualizar e-mail:", error);
-    return {
-      success: false,
-      error: "Erro ao atualizar e-mail. Tente novamente.",
-    };
-  }
+		console.error("Erro ao atualizar e-mail:", error);
+		return {
+			success: false,
+			error: "Erro ao atualizar e-mail. Tente novamente.",
+		};
+	}
 }
 
 export async function deleteAccountAction(
-  data: z.infer<typeof deleteAccountSchema>
+	data: z.infer<typeof deleteAccountSchema>,
 ): Promise<ActionResponse> {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+	try {
+		const session = await auth.api.getSession({
+			headers: await headers(),
+		});
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: "Não autenticado",
-      };
-    }
+		if (!session?.user?.id) {
+			return {
+				success: false,
+				error: "Não autenticado",
+			};
+		}
 
-    // Validar confirmação
-    deleteAccountSchema.parse(data);
+		// Validar confirmação
+		deleteAccountSchema.parse(data);
 
-    // Deletar todos os dados do usuário em cascade
-    // O schema deve ter as relações configuradas com onDelete: cascade
-    await db.delete(schema.user).where(eq(schema.user.id, session.user.id));
+		// Deletar todos os dados do usuário em cascade
+		// O schema deve ter as relações configuradas com onDelete: cascade
+		await db.delete(schema.user).where(eq(schema.user.id, session.user.id));
 
-    return {
-      success: true,
-      message: "Conta deletada com sucesso",
-    };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: error.issues[0]?.message || "Dados inválidos",
-      };
-    }
+		return {
+			success: true,
+			message: "Conta deletada com sucesso",
+		};
+	} catch (error) {
+		if (error instanceof z.ZodError) {
+			return {
+				success: false,
+				error: error.issues[0]?.message || "Dados inválidos",
+			};
+		}
 
-    console.error("Erro ao deletar conta:", error);
-    return {
-      success: false,
-      error: "Erro ao deletar conta. Tente novamente.",
-    };
-  }
+		console.error("Erro ao deletar conta:", error);
+		return {
+			success: false,
+			error: "Erro ao deletar conta. Tente novamente.",
+		};
+	}
 }
 
 export async function updatePreferencesAction(
-  data: z.infer<typeof updatePreferencesSchema>
+	data: z.infer<typeof updatePreferencesSchema>,
 ): Promise<ActionResponse> {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+	try {
+		const session = await auth.api.getSession({
+			headers: await headers(),
+		});
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: "Não autenticado",
-      };
-    }
+		if (!session?.user?.id) {
+			return {
+				success: false,
+				error: "Não autenticado",
+			};
+		}
 
-    const validated = updatePreferencesSchema.parse(data);
+		const validated = updatePreferencesSchema.parse(data);
 
-    // Check if preferences exist, if not create them
-    const existingResult = await db
-      .select()
-      .from(schema.userPreferences)
-      .where(eq(schema.userPreferences.userId, session.user.id))
-      .limit(1);
+		// Check if preferences exist, if not create them
+		const existingResult = await db
+			.select()
+			.from(schema.userPreferences)
+			.where(eq(schema.userPreferences.userId, session.user.id))
+			.limit(1);
 
-    const existing = existingResult[0] || null;
+		const existing = existingResult[0] || null;
 
-    if (existing) {
-      // Update existing preferences
-      await db
-        .update(schema.userPreferences)
-        .set({
-          disableMagnetlines: validated.disableMagnetlines,
-          updatedAt: new Date(),
-        })
-        .where(eq(schema.userPreferences.userId, session.user.id));
-    } else {
-      // Create new preferences
-      await db.insert(schema.userPreferences).values({
-        userId: session.user.id,
-        disableMagnetlines: validated.disableMagnetlines,
-      });
-    }
+		if (existing) {
+			// Update existing preferences
+			await db
+				.update(schema.userPreferences)
+				.set({
+					disableMagnetlines: validated.disableMagnetlines,
+					updatedAt: new Date(),
+				})
+				.where(eq(schema.userPreferences.userId, session.user.id));
+		} else {
+			// Create new preferences
+			await db.insert(schema.userPreferences).values({
+				userId: session.user.id,
+				disableMagnetlines: validated.disableMagnetlines,
+			});
+		}
 
-    // Revalidar o layout do dashboard
-    revalidatePath("/", "layout");
+		// Revalidar o layout do dashboard
+		revalidatePath("/", "layout");
 
-    return {
-      success: true,
-      message: "Preferências atualizadas com sucesso",
-    };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: error.issues[0]?.message || "Dados inválidos",
-      };
-    }
+		return {
+			success: true,
+			message: "Preferências atualizadas com sucesso",
+		};
+	} catch (error) {
+		if (error instanceof z.ZodError) {
+			return {
+				success: false,
+				error: error.issues[0]?.message || "Dados inválidos",
+			};
+		}
 
-    console.error("Erro ao atualizar preferências:", error);
-    return {
-      success: false,
-      error: "Erro ao atualizar preferências. Tente novamente.",
-    };
-  }
+		console.error("Erro ao atualizar preferências:", error);
+		return {
+			success: false,
+			error: "Erro ao atualizar preferências. Tente novamente.",
+		};
+	}
 }
 
 // API Token Actions
 
 const createApiTokenSchema = z.object({
-  name: z.string().min(1, "Nome do dispositivo é obrigatório").max(100),
+	name: z.string().min(1, "Nome do dispositivo é obrigatório").max(100),
 });
 
 const revokeApiTokenSchema = z.object({
-  tokenId: z.string().uuid("ID do token inválido"),
+	tokenId: z.string().uuid("ID do token inválido"),
 });
 
 function generateSecureToken(): string {
-  const prefix = "os";
-  const randomPart = randomBytes(32).toString("base64url");
-  return `${prefix}_${randomPart}`;
+	const prefix = "os";
+	const randomPart = randomBytes(32).toString("base64url");
+	return `${prefix}_${randomPart}`;
 }
 
 function hashToken(token: string): string {
-  return createHash("sha256").update(token).digest("hex");
+	return createHash("sha256").update(token).digest("hex");
 }
 
 export async function createApiTokenAction(
-  data: z.infer<typeof createApiTokenSchema>
+	data: z.infer<typeof createApiTokenSchema>,
 ): Promise<ActionResponse<{ token: string; tokenId: string }>> {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+	try {
+		const session = await auth.api.getSession({
+			headers: await headers(),
+		});
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: "Não autenticado",
-      };
-    }
+		if (!session?.user?.id) {
+			return {
+				success: false,
+				error: "Não autenticado",
+			};
+		}
 
-    const validated = createApiTokenSchema.parse(data);
+		const validated = createApiTokenSchema.parse(data);
 
-    // Generate token
-    const token = generateSecureToken();
-    const tokenHash = hashToken(token);
-    const tokenPrefix = token.substring(0, 10);
+		// Generate token
+		const token = generateSecureToken();
+		const tokenHash = hashToken(token);
+		const tokenPrefix = token.substring(0, 10);
 
-    // Save to database
-    const [newToken] = await db
-      .insert(apiTokens)
-      .values({
-        userId: session.user.id,
-        name: validated.name,
-        tokenHash,
-        tokenPrefix,
-        expiresAt: null, // No expiration for now
-      })
-      .returning({ id: apiTokens.id });
+		// Save to database
+		const [newToken] = await db
+			.insert(apiTokens)
+			.values({
+				userId: session.user.id,
+				name: validated.name,
+				tokenHash,
+				tokenPrefix,
+				expiresAt: null, // No expiration for now
+			})
+			.returning({ id: apiTokens.id });
 
-    revalidatePath("/ajustes");
+		revalidatePath("/ajustes");
 
-    return {
-      success: true,
-      message: "Token criado com sucesso",
-      data: {
-        token,
-        tokenId: newToken.id,
-      },
-    };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: error.issues[0]?.message || "Dados inválidos",
-      };
-    }
+		return {
+			success: true,
+			message: "Token criado com sucesso",
+			data: {
+				token,
+				tokenId: newToken.id,
+			},
+		};
+	} catch (error) {
+		if (error instanceof z.ZodError) {
+			return {
+				success: false,
+				error: error.issues[0]?.message || "Dados inválidos",
+			};
+		}
 
-    console.error("Erro ao criar token:", error);
-    return {
-      success: false,
-      error: "Erro ao criar token. Tente novamente.",
-    };
-  }
+		console.error("Erro ao criar token:", error);
+		return {
+			success: false,
+			error: "Erro ao criar token. Tente novamente.",
+		};
+	}
 }
 
 export async function revokeApiTokenAction(
-  data: z.infer<typeof revokeApiTokenSchema>
+	data: z.infer<typeof revokeApiTokenSchema>,
 ): Promise<ActionResponse> {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+	try {
+		const session = await auth.api.getSession({
+			headers: await headers(),
+		});
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: "Não autenticado",
-      };
-    }
+		if (!session?.user?.id) {
+			return {
+				success: false,
+				error: "Não autenticado",
+			};
+		}
 
-    const validated = revokeApiTokenSchema.parse(data);
+		const validated = revokeApiTokenSchema.parse(data);
 
-    // Find token and verify ownership
-    const [existingToken] = await db
-      .select()
-      .from(apiTokens)
-      .where(
-        and(
-          eq(apiTokens.id, validated.tokenId),
-          eq(apiTokens.userId, session.user.id),
-          isNull(apiTokens.revokedAt)
-        )
-      )
-      .limit(1);
+		// Find token and verify ownership
+		const [existingToken] = await db
+			.select()
+			.from(apiTokens)
+			.where(
+				and(
+					eq(apiTokens.id, validated.tokenId),
+					eq(apiTokens.userId, session.user.id),
+					isNull(apiTokens.revokedAt),
+				),
+			)
+			.limit(1);
 
-    if (!existingToken) {
-      return {
-        success: false,
-        error: "Token não encontrado",
-      };
-    }
+		if (!existingToken) {
+			return {
+				success: false,
+				error: "Token não encontrado",
+			};
+		}
 
-    // Revoke token
-    await db
-      .update(apiTokens)
-      .set({
-        revokedAt: new Date(),
-      })
-      .where(eq(apiTokens.id, validated.tokenId));
+		// Revoke token
+		await db
+			.update(apiTokens)
+			.set({
+				revokedAt: new Date(),
+			})
+			.where(eq(apiTokens.id, validated.tokenId));
 
-    revalidatePath("/ajustes");
+		revalidatePath("/ajustes");
 
-    return {
-      success: true,
-      message: "Token revogado com sucesso",
-    };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: error.issues[0]?.message || "Dados inválidos",
-      };
-    }
+		return {
+			success: true,
+			message: "Token revogado com sucesso",
+		};
+	} catch (error) {
+		if (error instanceof z.ZodError) {
+			return {
+				success: false,
+				error: error.issues[0]?.message || "Dados inválidos",
+			};
+		}
 
-    console.error("Erro ao revogar token:", error);
-    return {
-      success: false,
-      error: "Erro ao revogar token. Tente novamente.",
-    };
-  }
+		console.error("Erro ao revogar token:", error);
+		return {
+			success: false,
+			error: "Erro ao revogar token. Tente novamente.",
+		};
+	}
 }

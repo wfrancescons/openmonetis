@@ -6,32 +6,34 @@
  * Capitalizes the first letter of a string
  */
 function capitalize(value: string): string {
-  return value.length > 0 ? value[0]?.toUpperCase().concat(value.slice(1)) : value;
+	return value.length > 0
+		? value[0]?.toUpperCase().concat(value.slice(1))
+		: value;
 }
 
 /**
  * Currency formatter for pt-BR locale (BRL)
  */
 export const currencyFormatter = new Intl.NumberFormat("pt-BR", {
-  style: "currency",
-  currency: "BRL",
+	style: "currency",
+	currency: "BRL",
 });
 
 /**
  * Date formatter for pt-BR locale (dd/mm/yyyy)
  */
 export const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
+	day: "2-digit",
+	month: "2-digit",
+	year: "numeric",
 });
 
 /**
  * Month formatter for pt-BR locale (Month Year)
  */
 export const monthFormatter = new Intl.DateTimeFormat("pt-BR", {
-  month: "long",
-  year: "numeric",
+	month: "long",
+	year: "numeric",
 });
 
 /**
@@ -41,10 +43,10 @@ export const monthFormatter = new Intl.DateTimeFormat("pt-BR", {
  * @example formatDate("2024-01-15") => "15/01/2024"
  */
 export function formatDate(value?: string | null): string {
-  if (!value) return "—";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
-  return dateFormatter.format(date);
+	if (!value) return "—";
+	const date = new Date(value);
+	if (Number.isNaN(date.getTime())) return "—";
+	return dateFormatter.format(date);
 }
 
 /**
@@ -54,11 +56,11 @@ export function formatDate(value?: string | null): string {
  * @example formatPeriod("2024-01") => "Janeiro 2024"
  */
 export function formatPeriod(value?: string | null): string {
-  if (!value) return "—";
-  const [year, month] = value.split("-").map(Number);
-  if (!year || !month) return value;
-  const date = new Date(year, month - 1, 1);
-  return capitalize(monthFormatter.format(date));
+	if (!value) return "—";
+	const [year, month] = value.split("-").map(Number);
+	if (!year || !month) return value;
+	const date = new Date(year, month - 1, 1);
+	return capitalize(monthFormatter.format(date));
 }
 
 /**
@@ -68,9 +70,9 @@ export function formatPeriod(value?: string | null): string {
  * @example formatCondition("vista") => "À vista"
  */
 export function formatCondition(value?: string | null): string {
-  if (!value) return "—";
-  if (value.toLowerCase() === "vista") return "À vista";
-  return capitalize(value);
+	if (!value) return "—";
+	if (value.toLowerCase() === "vista") return "À vista";
+	return capitalize(value);
 }
 
 /**
@@ -78,12 +80,14 @@ export function formatCondition(value?: string | null): string {
  * @param type - Transaction type (Receita/Despesa)
  * @returns Badge variant
  */
-export function getTransactionBadgeVariant(type?: string | null): "default" | "destructive" | "secondary" {
-  if (!type) return "secondary";
-  const normalized = type.toLowerCase();
-  return normalized === "receita" || normalized === "saldo inicial"
-    ? "default"
-    : "destructive";
+export function getTransactionBadgeVariant(
+	type?: string | null,
+): "default" | "destructive" | "secondary" {
+	if (!type) return "secondary";
+	const normalized = type.toLowerCase();
+	return normalized === "receita" || normalized === "saldo inicial"
+		? "default"
+		: "destructive";
 }
 
 /**
@@ -93,5 +97,5 @@ export function getTransactionBadgeVariant(type?: string | null): "default" | "d
  * @example formatCurrency(1234.56) => "R$ 1.234,56"
  */
 export function formatCurrency(value: number): string {
-  return currencyFormatter.format(value);
+	return currencyFormatter.format(value);
 }

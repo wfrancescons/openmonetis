@@ -1,23 +1,23 @@
-import PageDescription from "@/components/page-description";
 import { RiTodoLine } from "@remixicon/react";
+import PageDescription from "@/components/page-description";
 
 export const metadata = {
-  title: "Anotações | Opensheets",
+	title: "Anotações | Opensheets",
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <section className="space-y-6 px-6">
-      <PageDescription
-        icon={<RiTodoLine />}
-        title="Notas"
-        subtitle="Gerencie suas anotações e mantenha o controle sobre suas ideias e tarefas."
-      />
-      {children}
-    </section>
-  );
+	return (
+		<section className="space-y-6 px-6">
+			<PageDescription
+				icon={<RiTodoLine />}
+				title="Notas"
+				subtitle="Gerencie suas anotações e mantenha o controle sobre suas ideias e tarefas."
+			/>
+			{children}
+		</section>
+	);
 }

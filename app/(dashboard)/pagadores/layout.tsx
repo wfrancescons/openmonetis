@@ -1,23 +1,23 @@
-import PageDescription from "@/components/page-description";
 import { RiGroupLine } from "@remixicon/react";
+import PageDescription from "@/components/page-description";
 
 export const metadata = {
-  title: "Pagadores | Opensheets",
+	title: "Pagadores | Opensheets",
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <section className="space-y-6 px-6">
-      <PageDescription
-        icon={<RiGroupLine />}
-        title="Pagadores"
-        subtitle="Gerencie as pessoas ou entidades responsáveis pelos pagamentos."
-      />
-      {children}
-    </section>
-  );
+	return (
+		<section className="space-y-6 px-6">
+			<PageDescription
+				icon={<RiGroupLine />}
+				title="Pagadores"
+				subtitle="Gerencie as pessoas ou entidades responsáveis pelos pagamentos."
+			/>
+			{children}
+		</section>
+	);
 }

@@ -6,34 +6,34 @@
  * @returns Data da última parcela
  */
 export function calculateLastInstallmentDate(
-  currentPeriod: string,
-  currentInstallment: number,
-  totalInstallments: number
+	currentPeriod: string,
+	currentInstallment: number,
+	totalInstallments: number,
 ): Date {
-  // Parse do período atual (formato: "YYYY-MM")
-  const [yearStr, monthStr] = currentPeriod.split("-");
-  const year = Number.parseInt(yearStr ?? "", 10);
-  const monthIndex = Number.parseInt(monthStr ?? "", 10) - 1; // 0-indexed
+	// Parse do período atual (formato: "YYYY-MM")
+	const [yearStr, monthStr] = currentPeriod.split("-");
+	const year = Number.parseInt(yearStr ?? "", 10);
+	const monthIndex = Number.parseInt(monthStr ?? "", 10) - 1; // 0-indexed
 
-  if (Number.isNaN(year) || Number.isNaN(monthIndex)) {
-    return new Date();
-  }
+	if (Number.isNaN(year) || Number.isNaN(monthIndex)) {
+		return new Date();
+	}
 
-  // Cria data do período atual (parcela atual)
-  const currentDate = new Date(year, monthIndex, 1);
+	// Cria data do período atual (parcela atual)
+	const currentDate = new Date(year, monthIndex, 1);
 
-  // Calcula quantas parcelas faltam (incluindo a atual)
-  // Ex: parcela 2 de 6 -> restam 5 parcelas (2, 3, 4, 5, 6)
-  const remainingInstallments = totalInstallments - currentInstallment + 1;
+	// Calcula quantas parcelas faltam (incluindo a atual)
+	// Ex: parcela 2 de 6 -> restam 5 parcelas (2, 3, 4, 5, 6)
+	const remainingInstallments = totalInstallments - currentInstallment + 1;
 
-  // Calcula quantos meses adicionar para chegar na última parcela
-  // Ex: restam 5 parcelas -> adicionar 4 meses (parcela atual + 4 = 5 parcelas)
-  const monthsToAdd = remainingInstallments - 1;
+	// Calcula quantos meses adicionar para chegar na última parcela
+	// Ex: restam 5 parcelas -> adicionar 4 meses (parcela atual + 4 = 5 parcelas)
+	const monthsToAdd = remainingInstallments - 1;
 
-  // Simplificando: monthsToAdd = totalInstallments - currentInstallment
-  currentDate.setMonth(currentDate.getMonth() + monthsToAdd);
+	// Simplificando: monthsToAdd = totalInstallments - currentInstallment
+	currentDate.setMonth(currentDate.getMonth() + monthsToAdd);
 
-  return currentDate;
+	return currentDate;
 }
 
 /**
@@ -41,15 +41,15 @@ export function calculateLastInstallmentDate(
  * Exemplo: "Março de 2026"
  */
 export function formatLastInstallmentDate(date: Date): string {
-  const formatter = new Intl.DateTimeFormat("pt-BR", {
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  });
+	const formatter = new Intl.DateTimeFormat("pt-BR", {
+		month: "long",
+		year: "numeric",
+		timeZone: "UTC",
+	});
 
-  const formatted = formatter.format(date);
-  // Capitaliza a primeira letra
-  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+	const formatted = formatter.format(date);
+	// Capitaliza a primeira letra
+	return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }
 
 /**
@@ -57,14 +57,14 @@ export function formatLastInstallmentDate(date: Date): string {
  * Exemplo: "qua, 24 set"
  */
 export function formatPurchaseDate(date: Date): string {
-  const formatter = new Intl.DateTimeFormat("pt-BR", {
-    weekday: "short",
-    day: "2-digit",
-    month: "short",
-    timeZone: "UTC",
-  });
+	const formatter = new Intl.DateTimeFormat("pt-BR", {
+		weekday: "short",
+		day: "2-digit",
+		month: "short",
+		timeZone: "UTC",
+	});
 
-  return formatter.format(date);
+	return formatter.format(date);
 }
 
 /**
@@ -72,8 +72,8 @@ export function formatPurchaseDate(date: Date): string {
  * Exemplo: "1 de 6"
  */
 export function formatCurrentInstallment(
-  current: number,
-  total: number
+	current: number,
+	total: number,
 ): string {
-  return `${current} de ${total}`;
+	return `${current} de ${total}`;
 }

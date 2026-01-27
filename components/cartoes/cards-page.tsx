@@ -1,189 +1,189 @@
 "use client";
 
+import { RiAddCircleLine, RiBankCard2Line } from "@remixicon/react";
+import { useRouter } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { deleteCardAction } from "@/app/(dashboard)/cartoes/actions";
 import { ConfirmActionDialog } from "@/components/confirm-action-dialog";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { RiAddCircleLine, RiBankCard2Line } from "@remixicon/react";
-import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
-import { toast } from "sonner";
 import { CardDialog } from "./card-dialog";
 import { CardItem } from "./card-item";
 
 type AccountOption = {
-  id: string;
-  name: string;
+	id: string;
+	name: string;
 };
 
 interface CardsPageProps {
-  cards: Card[];
-  accounts: AccountOption[];
-  logoOptions: string[];
-  isInativos?: boolean;
+	cards: Card[];
+	accounts: AccountOption[];
+	logoOptions: string[];
+	isInativos?: boolean;
 }
 
 export function CardsPage({
-  cards,
-  accounts,
-  logoOptions,
-  isInativos = false,
+	cards,
+	accounts,
+	logoOptions,
+	isInativos = false,
 }: CardsPageProps) {
-  const router = useRouter();
-  const [editOpen, setEditOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
-  const [removeOpen, setRemoveOpen] = useState(false);
-  const [cardToRemove, setCardToRemove] = useState<Card | null>(null);
+	const router = useRouter();
+	const [editOpen, setEditOpen] = useState(false);
+	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+	const [removeOpen, setRemoveOpen] = useState(false);
+	const [cardToRemove, setCardToRemove] = useState<Card | null>(null);
 
-  const hasCards = cards.length > 0;
+	const hasCards = cards.length > 0;
 
-  const orderedCards = useMemo(
-    () =>
-      [...cards].sort((a, b) => {
-        // Coloca inativos no final
-        const aIsInactive = a.status?.toLowerCase() === "inativo";
-        const bIsInactive = b.status?.toLowerCase() === "inativo";
+	const orderedCards = useMemo(
+		() =>
+			[...cards].sort((a, b) => {
+				// Coloca inativos no final
+				const aIsInactive = a.status?.toLowerCase() === "inativo";
+				const bIsInactive = b.status?.toLowerCase() === "inativo";
 
-        if (aIsInactive && !bIsInactive) return 1;
-        if (!aIsInactive && bIsInactive) return -1;
+				if (aIsInactive && !bIsInactive) return 1;
+				if (!aIsInactive && bIsInactive) return -1;
 
-        // Mesma ordem alfabética dentro de cada grupo
-        return a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" });
-      }),
-    [cards]
-  );
+				// Mesma ordem alfabética dentro de cada grupo
+				return a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" });
+			}),
+		[cards],
+	);
 
-  const handleEdit = useCallback((card: Card) => {
-    setSelectedCard(card);
-    setEditOpen(true);
-  }, []);
+	const handleEdit = useCallback((card: Card) => {
+		setSelectedCard(card);
+		setEditOpen(true);
+	}, []);
 
-  const handleEditOpenChange = useCallback((open: boolean) => {
-    setEditOpen(open);
-    if (!open) {
-      setSelectedCard(null);
-    }
-  }, []);
+	const handleEditOpenChange = useCallback((open: boolean) => {
+		setEditOpen(open);
+		if (!open) {
+			setSelectedCard(null);
+		}
+	}, []);
 
-  const handleRemoveRequest = useCallback((card: Card) => {
-    setCardToRemove(card);
-    setRemoveOpen(true);
-  }, []);
+	const handleRemoveRequest = useCallback((card: Card) => {
+		setCardToRemove(card);
+		setRemoveOpen(true);
+	}, []);
 
-  const handleInvoice = useCallback(
-    (card: Card) => {
-      router.push(`/cartoes/${card.id}/fatura`);
-    },
-    [router]
-  );
+	const handleInvoice = useCallback(
+		(card: Card) => {
+			router.push(`/cartoes/${card.id}/fatura`);
+		},
+		[router],
+	);
 
-  const handleRemoveOpenChange = useCallback((open: boolean) => {
-    setRemoveOpen(open);
-    if (!open) {
-      setCardToRemove(null);
-    }
-  }, []);
+	const handleRemoveOpenChange = useCallback((open: boolean) => {
+		setRemoveOpen(open);
+		if (!open) {
+			setCardToRemove(null);
+		}
+	}, []);
 
-  const handleRemoveConfirm = useCallback(async () => {
-    if (!cardToRemove) {
-      return;
-    }
+	const handleRemoveConfirm = useCallback(async () => {
+		if (!cardToRemove) {
+			return;
+		}
 
-    const result = await deleteCardAction({ id: cardToRemove.id });
+		const result = await deleteCardAction({ id: cardToRemove.id });
 
-    if (result.success) {
-      toast.success(result.message);
-      return;
-    }
+		if (result.success) {
+			toast.success(result.message);
+			return;
+		}
 
-    toast.error(result.error);
-    throw new Error(result.error);
-  }, [cardToRemove]);
+		toast.error(result.error);
+		throw new Error(result.error);
+	}, [cardToRemove]);
 
-  const removeTitle = cardToRemove
-    ? `Remover cartão "${cardToRemove.name}"?`
-    : "Remover cartão?";
+	const removeTitle = cardToRemove
+		? `Remover cartão "${cardToRemove.name}"?`
+		: "Remover cartão?";
 
-  return (
-    <>
-      <div className="flex w-full flex-col gap-6">
-        {!isInativos && (
-          <div className="flex justify-start">
-            <CardDialog
-              mode="create"
-              accounts={accounts}
-              logoOptions={logoOptions}
-              trigger={
-                <Button>
-                  <RiAddCircleLine className="size-4" />
-                  Novo cartão
-                </Button>
-              }
-            />
-          </div>
-        )}
+	return (
+		<>
+			<div className="flex w-full flex-col gap-6">
+				{!isInativos && (
+					<div className="flex justify-start">
+						<CardDialog
+							mode="create"
+							accounts={accounts}
+							logoOptions={logoOptions}
+							trigger={
+								<Button>
+									<RiAddCircleLine className="size-4" />
+									Novo cartão
+								</Button>
+							}
+						/>
+					</div>
+				)}
 
-        {hasCards ? (
-          <div className="flex flex-wrap gap-4">
-            {orderedCards.map((card) => (
-              <CardItem
-                key={card.id}
-                name={card.name}
-                brand={card.brand}
-                status={card.status}
-                closingDay={card.closingDay}
-                dueDay={card.dueDay}
-                limit={card.limit}
-                limitInUse={card.limitInUse ?? null}
-                limitAvailable={card.limitAvailable ?? card.limit ?? null}
-                contaName={card.contaName}
-                logo={card.logo}
-                note={card.note}
-                onEdit={() => handleEdit(card)}
-                onInvoice={() => handleInvoice(card)}
-                onRemove={() => handleRemoveRequest(card)}
-              />
-            ))}
-          </div>
-        ) : (
-          <Card className="flex w-full items-center justify-center py-12">
-            <EmptyState
-              media={<RiBankCard2Line className="size-6 text-primary" />}
-              title={
-                isInativos
-                  ? "Nenhum cartão inativo"
-                  : "Nenhum cartão cadastrado"
-              }
-              description={
-                isInativos
-                  ? "Os cartões inativos aparecerão aqui."
-                  : "Adicione seu primeiro cartão para acompanhar limites e faturas com mais controle."
-              }
-            />
-          </Card>
-        )}
-      </div>
+				{hasCards ? (
+					<div className="flex flex-wrap gap-4">
+						{orderedCards.map((card) => (
+							<CardItem
+								key={card.id}
+								name={card.name}
+								brand={card.brand}
+								status={card.status}
+								closingDay={card.closingDay}
+								dueDay={card.dueDay}
+								limit={card.limit}
+								limitInUse={card.limitInUse ?? null}
+								limitAvailable={card.limitAvailable ?? card.limit ?? null}
+								contaName={card.contaName}
+								logo={card.logo}
+								note={card.note}
+								onEdit={() => handleEdit(card)}
+								onInvoice={() => handleInvoice(card)}
+								onRemove={() => handleRemoveRequest(card)}
+							/>
+						))}
+					</div>
+				) : (
+					<Card className="flex w-full items-center justify-center py-12">
+						<EmptyState
+							media={<RiBankCard2Line className="size-6 text-primary" />}
+							title={
+								isInativos
+									? "Nenhum cartão inativo"
+									: "Nenhum cartão cadastrado"
+							}
+							description={
+								isInativos
+									? "Os cartões inativos aparecerão aqui."
+									: "Adicione seu primeiro cartão para acompanhar limites e faturas com mais controle."
+							}
+						/>
+					</Card>
+				)}
+			</div>
 
-      <CardDialog
-        mode="update"
-        accounts={accounts}
-        logoOptions={logoOptions}
-        card={selectedCard ?? undefined}
-        open={editOpen && !!selectedCard}
-        onOpenChange={handleEditOpenChange}
-      />
+			<CardDialog
+				mode="update"
+				accounts={accounts}
+				logoOptions={logoOptions}
+				card={selectedCard ?? undefined}
+				open={editOpen && !!selectedCard}
+				onOpenChange={handleEditOpenChange}
+			/>
 
-      <ConfirmActionDialog
-        open={removeOpen && !!cardToRemove}
-        onOpenChange={handleRemoveOpenChange}
-        title={removeTitle}
-        description="Ao remover este cartão, os registros relacionados a ele serão excluídos permanentemente."
-        confirmLabel="Remover cartão"
-        pendingLabel="Removendo..."
-        confirmVariant="destructive"
-        onConfirm={handleRemoveConfirm}
-      />
-    </>
-  );
+			<ConfirmActionDialog
+				open={removeOpen && !!cardToRemove}
+				onOpenChange={handleRemoveOpenChange}
+				title={removeTitle}
+				description="Ao remover este cartão, os registros relacionados a ele serão excluídos permanentemente."
+				confirmLabel="Remover cartão"
+				pendingLabel="Removendo..."
+				confirmVariant="destructive"
+				onConfirm={handleRemoveConfirm}
+			/>
+		</>
+	);
 }

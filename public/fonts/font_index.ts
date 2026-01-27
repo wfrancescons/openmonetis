@@ -1,19 +1,19 @@
 import localFont from "next/font/local";
 
 const ai_sans = localFont({
-  src: [
-    {
-      path: "./AISans-Regular.woff2",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "./AISans-Semibold.woff2",
-      weight: "700",
-      style: "normal",
-    },
-  ],
-  display: "swap",
+	src: [
+		{
+			path: "./AISans-Regular.woff2",
+			weight: "400",
+			style: "normal",
+		},
+		{
+			path: "./AISans-Semibold.woff2",
+			weight: "700",
+			style: "normal",
+		},
+	],
+	display: "swap",
 });
 
 const main_font = ai_sans;

@@ -11,7 +11,7 @@
  * @returns Filename only
  */
 export const normalizeLogo = (logo?: string | null) =>
-  logo?.split("/").filter(Boolean).pop() ?? "";
+	logo?.split("/").filter(Boolean).pop() ?? "";
 
 /**
  * Derives a display name from a logo filename
@@ -21,20 +21,20 @@ export const normalizeLogo = (logo?: string | null) =>
  * deriveNameFromLogo("my-company-logo.png") // "My Company Logo"
  */
 export const deriveNameFromLogo = (logo?: string | null) => {
-  if (!logo) {
-    return "";
-  }
+	if (!logo) {
+		return "";
+	}
 
-  const fileName = normalizeLogo(logo);
+	const fileName = normalizeLogo(logo);
 
-  if (!fileName) {
-    return "";
-  }
+	if (!fileName) {
+		return "";
+	}
 
-  const withoutExtension = fileName.replace(/\.[^/.]+$/, "");
-  return withoutExtension
-    .split(/[-_.\s]+/)
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-    .join(" ");
+	const withoutExtension = fileName.replace(/\.[^/.]+$/, "");
+	return withoutExtension
+		.split(/[-_.\s]+/)
+		.filter(Boolean)
+		.map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+		.join(" ");
 };

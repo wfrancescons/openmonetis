@@ -5,24 +5,24 @@ import * as RemixIcons from "@remixicon/react";
 import { cn } from "@/lib/utils/ui";
 
 const ICONS = RemixIcons as Record<string, RemixiconComponentType | undefined>;
-const FALLBACK_ICON = ICONS["RiPriceTag3Line"];
+const FALLBACK_ICON = ICONS.RiPriceTag3Line;
 
 interface CategoryIconProps {
-  name?: string | null;
-  className?: string;
+	name?: string | null;
+	className?: string;
 }
 
 export function CategoryIcon({ name, className }: CategoryIconProps) {
-  const IconComponent =
-    (name ? ICONS[name] : undefined) ?? FALLBACK_ICON ?? null;
+	const IconComponent =
+		(name ? ICONS[name] : undefined) ?? FALLBACK_ICON ?? null;
 
-  if (!IconComponent) {
-    return (
-      <span className={cn("text-xs text-muted-foreground", className)}>
-        {name ?? "Categoria"}
-      </span>
-    );
-  }
+	if (!IconComponent) {
+		return (
+			<span className={cn("text-xs text-muted-foreground", className)}>
+				{name ?? "Categoria"}
+			</span>
+		);
+	}
 
-  return <IconComponent className={cn("size-5", className)} aria-hidden />;
+	return <IconComponent className={cn("size-5", className)} aria-hidden />;
 }

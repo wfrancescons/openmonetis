@@ -15,18 +15,18 @@
 // ============================================================================
 
 export const MONTH_NAMES = [
-  "janeiro",
-  "fevereiro",
-  "março",
-  "abril",
-  "maio",
-  "junho",
-  "julho",
-  "agosto",
-  "setembro",
-  "outubro",
-  "novembro",
-  "dezembro",
+	"janeiro",
+	"fevereiro",
+	"março",
+	"abril",
+	"maio",
+	"junho",
+	"julho",
+	"agosto",
+	"setembro",
+	"outubro",
+	"novembro",
+	"dezembro",
 ] as const;
 
 export type MonthName = (typeof MONTH_NAMES)[number];
@@ -42,15 +42,15 @@ export type MonthName = (typeof MONTH_NAMES)[number];
  * @throws Error if period format is invalid
  */
 export function parsePeriod(period: string): { year: number; month: number } {
-  const [yearStr, monthStr] = period.split("-");
-  const year = Number.parseInt(yearStr ?? "", 10);
-  const month = Number.parseInt(monthStr ?? "", 10);
+	const [yearStr, monthStr] = period.split("-");
+	const year = Number.parseInt(yearStr ?? "", 10);
+	const month = Number.parseInt(monthStr ?? "", 10);
 
-  if (Number.isNaN(year) || Number.isNaN(month) || month < 1 || month > 12) {
-    throw new Error(`Período inválido: ${period}`);
-  }
+	if (Number.isNaN(year) || Number.isNaN(month) || month < 1 || month > 12) {
+		throw new Error(`Período inválido: ${period}`);
+	}
 
-  return { year, month };
+	return { year, month };
 }
 
 /**
@@ -60,7 +60,7 @@ export function parsePeriod(period: string): { year: number; month: number } {
  * @returns Period string in YYYY-MM format
  */
 export function formatPeriod(year: number, month: number): string {
-  return `${year}-${String(month).padStart(2, "0")}`;
+	return `${year}-${String(month).padStart(2, "0")}`;
 }
 
 /**
@@ -69,12 +69,12 @@ export function formatPeriod(year: number, month: number): string {
  * @returns True if valid, false otherwise
  */
 export function isPeriodValid(period: string): boolean {
-  try {
-    parsePeriod(period);
-    return true;
-  } catch {
-    return false;
-  }
+	try {
+		parsePeriod(period);
+		return true;
+	} catch {
+		return false;
+	}
 }
 
 // ============================================================================
@@ -87,8 +87,8 @@ export function isPeriodValid(period: string): boolean {
  * getCurrentPeriod() // "2025-11"
  */
 export function getCurrentPeriod(): string {
-  const now = new Date();
-  return formatPeriod(now.getFullYear(), now.getMonth() + 1);
+	const now = new Date();
+	return formatPeriod(now.getFullYear(), now.getMonth() + 1);
 }
 
 /**
@@ -97,13 +97,13 @@ export function getCurrentPeriod(): string {
  * @returns Previous period string
  */
 export function getPreviousPeriod(period: string): string {
-  const { year, month } = parsePeriod(period);
+	const { year, month } = parsePeriod(period);
 
-  if (month === 1) {
-    return formatPeriod(year - 1, 12);
-  }
+	if (month === 1) {
+		return formatPeriod(year - 1, 12);
+	}
 
-  return formatPeriod(year, month - 1);
+	return formatPeriod(year, month - 1);
 }
 
 /**
@@ -112,13 +112,13 @@ export function getPreviousPeriod(period: string): string {
  * @returns Next period string
  */
 export function getNextPeriod(period: string): string {
-  const { year, month } = parsePeriod(period);
+	const { year, month } = parsePeriod(period);
 
-  if (month === 12) {
-    return formatPeriod(year + 1, 1);
-  }
+	if (month === 12) {
+		return formatPeriod(year + 1, 1);
+	}
 
-  return formatPeriod(year, month + 1);
+	return formatPeriod(year, month + 1);
 }
 
 /**
@@ -128,15 +128,15 @@ export function getNextPeriod(period: string): string {
  * @returns New period string
  */
 export function addMonthsToPeriod(period: string, offset: number): string {
-  const { year: baseYear, month: baseMonth } = parsePeriod(period);
+	const { year: baseYear, month: baseMonth } = parsePeriod(period);
 
-  const date = new Date(baseYear, baseMonth - 1, 1);
-  date.setMonth(date.getMonth() + offset);
+	const date = new Date(baseYear, baseMonth - 1, 1);
+	date.setMonth(date.getMonth() + offset);
 
-  const nextYear = date.getFullYear();
-  const nextMonth = date.getMonth() + 1;
+	const nextYear = date.getFullYear();
+	const nextMonth = date.getMonth() + 1;
 
-  return formatPeriod(nextYear, nextMonth);
+	return formatPeriod(nextYear, nextMonth);
 }
 
 /**
@@ -146,13 +146,13 @@ export function addMonthsToPeriod(period: string, offset: number): string {
  * @returns Array of period strings
  */
 export function getLastPeriods(current: string, length: number): string[] {
-  const periods: string[] = [];
+	const periods: string[] = [];
 
-  for (let offset = length - 1; offset >= 0; offset -= 1) {
-    periods.push(addMonthsToPeriod(current, -offset));
-  }
+	for (let offset = length - 1; offset >= 0; offset -= 1) {
+		periods.push(addMonthsToPeriod(current, -offset));
+	}
 
-  return periods;
+	return periods;
 }
 
 // ============================================================================
@@ -166,8 +166,8 @@ export function getLastPeriods(current: string, length: number): string[] {
  * @returns -1 if a < b, 0 if equal, 1 if a > b
  */
 export function comparePeriods(a: string, b: string): number {
-  if (a === b) return 0;
-  return a < b ? -1 : 1;
+	if (a === b) return 0;
+	return a < b ? -1 : 1;
 }
 
 /**
@@ -177,34 +177,34 @@ export function comparePeriods(a: string, b: string): number {
  * @returns Array of period strings
  */
 export function buildPeriodRange(start: string, end: string): string[] {
-  const [startKey, endKey] =
-    comparePeriods(start, end) <= 0 ? [start, end] : [end, start];
+	const [startKey, endKey] =
+		comparePeriods(start, end) <= 0 ? [start, end] : [end, start];
 
-  const startParts = parsePeriod(startKey);
-  const endParts = parsePeriod(endKey);
+	const startParts = parsePeriod(startKey);
+	const endParts = parsePeriod(endKey);
 
-  const items: string[] = [];
-  let currentYear = startParts.year;
-  let currentMonth = startParts.month;
+	const items: string[] = [];
+	let currentYear = startParts.year;
+	let currentMonth = startParts.month;
 
-  while (
-    currentYear < endParts.year ||
-    (currentYear === endParts.year && currentMonth <= endParts.month)
-  ) {
-    items.push(formatPeriod(currentYear, currentMonth));
+	while (
+		currentYear < endParts.year ||
+		(currentYear === endParts.year && currentMonth <= endParts.month)
+	) {
+		items.push(formatPeriod(currentYear, currentMonth));
 
-    if (currentYear === endParts.year && currentMonth === endParts.month) {
-      break;
-    }
+		if (currentYear === endParts.year && currentMonth === endParts.month) {
+			break;
+		}
 
-    currentMonth += 1;
-    if (currentMonth > 12) {
-      currentMonth = 1;
-      currentYear += 1;
-    }
-  }
+		currentMonth += 1;
+		if (currentMonth > 12) {
+			currentMonth = 1;
+			currentYear += 1;
+		}
+	}
 
-  return items;
+	return items;
 }
 
 // ============================================================================
@@ -214,12 +214,12 @@ export function buildPeriodRange(start: string, end: string): string[] {
 const MONTH_MAP = new Map(MONTH_NAMES.map((name, index) => [name, index]));
 
 const normalize = (value: string | null | undefined) =>
-  (value ?? "").trim().toLowerCase();
+	(value ?? "").trim().toLowerCase();
 
 export type ParsedPeriod = {
-  period: string;
-  monthName: string;
-  year: number;
+	period: string;
+	monthName: string;
+	year: number;
 };
 
 /**
@@ -229,34 +229,34 @@ export type ParsedPeriod = {
  * @returns Parsed period object
  */
 export function parsePeriodParam(
-  periodParam: string | null | undefined,
-  referenceDate = new Date()
+	periodParam: string | null | undefined,
+	referenceDate = new Date(),
 ): ParsedPeriod {
-  const fallbackMonthIndex = referenceDate.getMonth();
-  const fallbackYear = referenceDate.getFullYear();
-  const fallbackPeriod = formatPeriod(fallbackYear, fallbackMonthIndex + 1);
+	const fallbackMonthIndex = referenceDate.getMonth();
+	const fallbackYear = referenceDate.getFullYear();
+	const fallbackPeriod = formatPeriod(fallbackYear, fallbackMonthIndex + 1);
 
-  if (!periodParam) {
-    const monthName = MONTH_NAMES[fallbackMonthIndex];
-    return { period: fallbackPeriod, monthName, year: fallbackYear };
-  }
+	if (!periodParam) {
+		const monthName = MONTH_NAMES[fallbackMonthIndex];
+		return { period: fallbackPeriod, monthName, year: fallbackYear };
+	}
 
-  const [rawMonth, rawYear] = periodParam.split("-");
-  const normalizedMonth = normalize(rawMonth);
-  const monthIndex = MONTH_MAP.get(normalizedMonth);
-  const parsedYear = Number.parseInt(rawYear ?? "", 10);
+	const [rawMonth, rawYear] = periodParam.split("-");
+	const normalizedMonth = normalize(rawMonth);
+	const monthIndex = MONTH_MAP.get(normalizedMonth);
+	const parsedYear = Number.parseInt(rawYear ?? "", 10);
 
-  if (monthIndex === undefined || Number.isNaN(parsedYear)) {
-    const monthName = MONTH_NAMES[fallbackMonthIndex];
-    return { period: fallbackPeriod, monthName, year: fallbackYear };
-  }
+	if (monthIndex === undefined || Number.isNaN(parsedYear)) {
+		const monthName = MONTH_NAMES[fallbackMonthIndex];
+		return { period: fallbackPeriod, monthName, year: fallbackYear };
+	}
 
-  const monthName = MONTH_NAMES[monthIndex];
-  return {
-    period: formatPeriod(parsedYear, monthIndex + 1),
-    monthName,
-    year: parsedYear,
-  };
+	const monthName = MONTH_NAMES[monthIndex];
+	return {
+		period: formatPeriod(parsedYear, monthIndex + 1),
+		monthName,
+		year: parsedYear,
+	};
 }
 
 /**
@@ -266,7 +266,7 @@ export function parsePeriodParam(
  * @returns URL param string in "mes-ano" format
  */
 export function formatPeriodParam(monthName: string, year: number): string {
-  return `${normalize(monthName)}-${year}`;
+	return `${normalize(monthName)}-${year}`;
 }
 
 /**
@@ -276,21 +276,21 @@ export function formatPeriodParam(monthName: string, year: number): string {
  * formatPeriodForUrl("2025-01") // "janeiro-2025"
  */
 export function formatPeriodForUrl(period: string): string {
-  const [yearStr, monthStr] = period.split("-");
-  const year = Number.parseInt(yearStr ?? "", 10);
-  const monthIndex = Number.parseInt(monthStr ?? "", 10) - 1;
+	const [yearStr, monthStr] = period.split("-");
+	const year = Number.parseInt(yearStr ?? "", 10);
+	const monthIndex = Number.parseInt(monthStr ?? "", 10) - 1;
 
-  if (
-    Number.isNaN(year) ||
-    Number.isNaN(monthIndex) ||
-    monthIndex < 0 ||
-    monthIndex > 11
-  ) {
-    return period;
-  }
+	if (
+		Number.isNaN(year) ||
+		Number.isNaN(monthIndex) ||
+		monthIndex < 0 ||
+		monthIndex > 11
+	) {
+		return period;
+	}
 
-  const monthName = MONTH_NAMES[monthIndex] ?? "";
-  return formatPeriodParam(monthName, year);
+	const monthName = MONTH_NAMES[monthIndex] ?? "";
+	return formatPeriodParam(monthName, year);
 }
 
 // ============================================================================
@@ -298,9 +298,9 @@ export function formatPeriodForUrl(period: string): string {
 // ============================================================================
 
 function capitalize(value: string): string {
-  return value.length > 0
-    ? value[0]?.toUpperCase().concat(value.slice(1))
-    : value;
+	return value.length > 0
+		? value[0]?.toUpperCase().concat(value.slice(1))
+		: value;
 }
 
 /**
@@ -309,9 +309,9 @@ function capitalize(value: string): string {
  * displayPeriod("2025-11") // "Novembro de 2025"
  */
 export function displayPeriod(period: string): string {
-  const { year, month } = parsePeriod(period);
-  const monthName = MONTH_NAMES[month - 1] ?? "";
-  return `${capitalize(monthName)} de ${year}`;
+	const { year, month } = parsePeriod(period);
+	const monthName = MONTH_NAMES[month - 1] ?? "";
+	return `${capitalize(monthName)} de ${year}`;
 }
 
 /**
@@ -320,7 +320,7 @@ export function displayPeriod(period: string): string {
  * formatMonthLabel("2024-01") // "Janeiro de 2024"
  */
 export function formatMonthLabel(period: string): string {
-  return displayPeriod(period);
+	return displayPeriod(period);
 }
 
 // ============================================================================
@@ -334,24 +334,23 @@ export function formatMonthLabel(period: string): string {
  * derivePeriodFromDate() // current period
  */
 export function derivePeriodFromDate(value?: string | null): string {
-  if (!value) {
-    return getCurrentPeriod();
-  }
+	if (!value) {
+		return getCurrentPeriod();
+	}
 
-  // Parse date string as local date to avoid timezone issues
-  // IMPORTANT: new Date("2025-11-25") treats the date as UTC midnight,
-  // which in Brazil (UTC-3) becomes 2025-11-26 03:00 local time!
-  const [year, month, day] = value.split("-");
-  const date = new Date(
-    Number.parseInt(year ?? "0", 10),
-    Number.parseInt(month ?? "1", 10) - 1,
-    Number.parseInt(day ?? "1", 10)
-  );
+	// Parse date string as local date to avoid timezone issues
+	// IMPORTANT: new Date("2025-11-25") treats the date as UTC midnight,
+	// which in Brazil (UTC-3) becomes 2025-11-26 03:00 local time!
+	const [year, month, day] = value.split("-");
+	const date = new Date(
+		Number.parseInt(year ?? "0", 10),
+		Number.parseInt(month ?? "1", 10) - 1,
+		Number.parseInt(day ?? "1", 10),
+	);
 
-  if (Number.isNaN(date.getTime())) {
-    return getCurrentPeriod();
-  }
+	if (Number.isNaN(date.getTime())) {
+		return getCurrentPeriod();
+	}
 
-  return formatPeriod(date.getFullYear(), date.getMonth() + 1);
+	return formatPeriod(date.getFullYear(), date.getMonth() + 1);
 }
-

@@ -8,10 +8,10 @@
  * @returns Trimmed string or null if empty
  */
 export function normalizeOptionalString(
-  value: string | null | undefined
+	value: string | null | undefined,
 ): string | null {
-  const trimmed = value?.trim() ?? "";
-  return trimmed.length > 0 ? trimmed : null;
+	const trimmed = value?.trim() ?? "";
+	return trimmed.length > 0 ? trimmed : null;
 }
 
 /**
@@ -20,7 +20,7 @@ export function normalizeOptionalString(
  * @returns Filename without path
  */
 export function normalizeFilePath(path: string | null | undefined): string {
-  return path?.split("/").filter(Boolean).pop() ?? "";
+	return path?.split("/").filter(Boolean).pop() ?? "";
 }
 
 /**
@@ -29,7 +29,7 @@ export function normalizeFilePath(path: string | null | undefined): string {
  * @returns String with normalized whitespace
  */
 export function normalizeWhitespace(value: string): string {
-  return value.replace(/\s+/g, " ").trim();
+	return value.replace(/\s+/g, " ").trim();
 }
 
 /**
@@ -38,6 +38,6 @@ export function normalizeWhitespace(value: string): string {
  * @returns Trimmed icon string or null
  */
 export function normalizeIconInput(icon?: string | null): string | null {
-  const trimmed = icon?.trim() ?? "";
-  return trimmed.length > 0 ? trimmed : null;
+	const trimmed = icon?.trim() ?? "";
+	return trimmed.length > 0 ? trimmed : null;
 }

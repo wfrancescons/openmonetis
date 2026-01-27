@@ -10,9 +10,9 @@
  * to /login if the user is not authenticated.
  */
 
-import { auth } from "@/lib/auth/config";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth/config";
 
 /**
  * Gets the current authenticated user
@@ -20,13 +20,13 @@ import { redirect } from "next/navigation";
  * @throws Redirects to /login if user is not authenticated
  */
 export async function getUser() {
-  const session = await auth.api.getSession({ headers: await headers() });
+	const session = await auth.api.getSession({ headers: await headers() });
 
-  if (!session?.user) {
-    redirect("/login");
-  }
+	if (!session?.user) {
+		redirect("/login");
+	}
 
-  return session.user;
+	return session.user;
 }
 
 /**
@@ -35,13 +35,13 @@ export async function getUser() {
  * @throws Redirects to /login if user is not authenticated
  */
 export async function getUserId() {
-  const session = await auth.api.getSession({ headers: await headers() });
+	const session = await auth.api.getSession({ headers: await headers() });
 
-  if (!session?.user) {
-    redirect("/login");
-  }
+	if (!session?.user) {
+		redirect("/login");
+	}
 
-  return session.user.id;
+	return session.user.id;
 }
 
 /**
@@ -50,13 +50,13 @@ export async function getUserId() {
  * @throws Redirects to /login if user is not authenticated
  */
 export async function getUserSession() {
-  const session = await auth.api.getSession({ headers: await headers() });
+	const session = await auth.api.getSession({ headers: await headers() });
 
-  if (!session?.user) {
-    redirect("/login");
-  }
+	if (!session?.user) {
+		redirect("/login");
+	}
 
-  return session;
+	return session;
 }
 
 /**
@@ -65,5 +65,5 @@ export async function getUserSession() {
  * @note This function does not redirect if user is not authenticated
  */
 export async function getOptionalUserSession() {
-  return auth.api.getSession({ headers: await headers() });
+	return auth.api.getSession({ headers: await headers() });
 }

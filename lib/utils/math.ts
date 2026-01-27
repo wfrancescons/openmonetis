@@ -9,20 +9,20 @@
  * @returns Percentage change or null if previous is 0 and current is also 0
  */
 export function calculatePercentageChange(
-  current: number,
-  previous: number
+	current: number,
+	previous: number,
 ): number | null {
-  const EPSILON = 0.01; // Considera valores menores que 1 centavo como zero
+	const EPSILON = 0.01; // Considera valores menores que 1 centavo como zero
 
-  if (Math.abs(previous) < EPSILON) {
-    if (Math.abs(current) < EPSILON) return null;
-    return current > 0 ? 100 : -100;
-  }
+	if (Math.abs(previous) < EPSILON) {
+		if (Math.abs(current) < EPSILON) return null;
+		return current > 0 ? 100 : -100;
+	}
 
-  const change = ((current - previous) / Math.abs(previous)) * 100;
+	const change = ((current - previous) / Math.abs(previous)) * 100;
 
-  // Protege contra valores absurdos (retorna null se > 1 milhão %)
-  return Number.isFinite(change) && Math.abs(change) < 1000000 ? change : null;
+	// Protege contra valores absurdos (retorna null se > 1 milhão %)
+	return Number.isFinite(change) && Math.abs(change) < 1000000 ? change : null;
 }
 
 /**
@@ -32,11 +32,11 @@ export function calculatePercentageChange(
  * @returns Percentage (0-100)
  */
 export function calculatePercentage(part: number, total: number): number {
-  if (total === 0) {
-    return 0;
-  }
+	if (total === 0) {
+		return 0;
+	}
 
-  return (part / total) * 100;
+	return (part / total) * 100;
 }
 
 /**
@@ -46,6 +46,6 @@ export function calculatePercentage(part: number, total: number): number {
  * @returns Rounded number
  */
 export function roundToDecimals(value: number, decimals: number = 2): number {
-  const multiplier = 10 ** decimals;
-  return Math.round(value * multiplier) / multiplier;
+	const multiplier = 10 ** decimals;
+	return Math.round(value * multiplier) / multiplier;
 }

@@ -13,28 +13,28 @@
 // ============================================================================
 
 const WEEKDAY_NAMES = [
-  "Domingo",
-  "Segunda",
-  "Terça",
-  "Quarta",
-  "Quinta",
-  "Sexta",
-  "Sábado",
+	"Domingo",
+	"Segunda",
+	"Terça",
+	"Quarta",
+	"Quinta",
+	"Sexta",
+	"Sábado",
 ] as const;
 
 const MONTH_NAMES = [
-  "janeiro",
-  "fevereiro",
-  "março",
-  "abril",
-  "maio",
-  "junho",
-  "julho",
-  "agosto",
-  "setembro",
-  "outubro",
-  "novembro",
-  "dezembro",
+	"janeiro",
+	"fevereiro",
+	"março",
+	"abril",
+	"maio",
+	"junho",
+	"julho",
+	"agosto",
+	"setembro",
+	"outubro",
+	"novembro",
+	"dezembro",
 ] as const;
 
 // ============================================================================
@@ -53,12 +53,12 @@ const MONTH_NAMES = [
  * @returns Date object in local timezone
  */
 export function parseLocalDateString(dateString: string): Date {
-  const [year, month, day] = dateString.split("-");
-  return new Date(
-    Number.parseInt(year ?? "0", 10),
-    Number.parseInt(month ?? "1", 10) - 1,
-    Number.parseInt(day ?? "1", 10)
-  );
+	const [year, month, day] = dateString.split("-");
+	return new Date(
+		Number.parseInt(year ?? "0", 10),
+		Number.parseInt(month ?? "1", 10) - 1,
+		Number.parseInt(day ?? "1", 10),
+	);
 }
 
 /**
@@ -66,12 +66,12 @@ export function parseLocalDateString(dateString: string): Date {
  * @returns Date object set to today at midnight UTC
  */
 export function getTodayUTC(): Date {
-  const now = new Date();
-  const year = now.getUTCFullYear();
-  const month = now.getUTCMonth();
-  const day = now.getUTCDate();
+	const now = new Date();
+	const year = now.getUTCFullYear();
+	const month = now.getUTCMonth();
+	const day = now.getUTCDate();
 
-  return new Date(Date.UTC(year, month, day));
+	return new Date(Date.UTC(year, month, day));
 }
 
 /**
@@ -79,12 +79,12 @@ export function getTodayUTC(): Date {
  * @returns Date object set to today at midnight local time
  */
 export function getTodayLocal(): Date {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const day = now.getDate();
+	const now = new Date();
+	const year = now.getFullYear();
+	const month = now.getMonth();
+	const day = now.getDate();
 
-  return new Date(year, month, day);
+	return new Date(year, month, day);
 }
 
 /**
@@ -92,11 +92,11 @@ export function getTodayLocal(): Date {
  * @returns Period string
  */
 export function getTodayPeriodUTC(): string {
-  const now = new Date();
-  const year = now.getUTCFullYear();
-  const month = now.getUTCMonth();
+	const now = new Date();
+	const year = now.getUTCFullYear();
+	const month = now.getUTCMonth();
 
-  return `${year}-${String(month + 1).padStart(2, "0")}`;
+	return `${year}-${String(month + 1).padStart(2, "0")}`;
 }
 
 /**
@@ -105,11 +105,11 @@ export function getTodayPeriodUTC(): string {
  * @returns Formatted date string
  */
 export function formatDateForDb(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, "0");
+	const day = String(date.getDate()).padStart(2, "0");
 
-  return `${year}-${month}-${day}`;
+	return `${year}-${month}-${day}`;
 }
 
 /**
@@ -117,12 +117,12 @@ export function formatDateForDb(date: Date): string {
  * @returns Formatted date string
  */
 export function getTodayDateString(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
+	const now = new Date();
+	const year = now.getFullYear();
+	const month = String(now.getMonth() + 1).padStart(2, "0");
+	const day = String(now.getDate()).padStart(2, "0");
 
-  return `${year}-${month}-${day}`;
+	return `${year}-${month}-${day}`;
 }
 
 /**
@@ -130,7 +130,7 @@ export function getTodayDateString(): string {
  * @returns Date object for today
  */
 export function getTodayDate(): Date {
-  return parseLocalDateString(getTodayDateString());
+	return parseLocalDateString(getTodayDateString());
 }
 
 /**
@@ -138,15 +138,15 @@ export function getTodayDate(): Date {
  * @returns Object with date and period
  */
 export function getTodayInfo(): { date: Date; period: string } {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const day = now.getDate();
+	const now = new Date();
+	const year = now.getFullYear();
+	const month = now.getMonth();
+	const day = now.getDate();
 
-  return {
-    date: new Date(year, month, day),
-    period: `${year}-${String(month + 1).padStart(2, "0")}`,
-  };
+	return {
+		date: new Date(year, month, day),
+		period: `${year}-${String(month + 1).padStart(2, "0")}`,
+	};
 }
 
 /**
@@ -156,20 +156,20 @@ export function getTodayInfo(): { date: Date; period: string } {
  * @returns New date with months added
  */
 export function addMonthsToDate(value: Date, offset: number): Date {
-  const result = new Date(value);
-  const originalDay = result.getDate();
+	const result = new Date(value);
+	const originalDay = result.getDate();
 
-  result.setDate(1);
-  result.setMonth(result.getMonth() + offset);
+	result.setDate(1);
+	result.setMonth(result.getMonth() + offset);
 
-  const lastDay = new Date(
-    result.getFullYear(),
-    result.getMonth() + 1,
-    0
-  ).getDate();
+	const lastDay = new Date(
+		result.getFullYear(),
+		result.getMonth() + 1,
+		0,
+	).getDate();
 
-  result.setDate(Math.min(originalDay, lastDay));
-  return result;
+	result.setDate(Math.min(originalDay, lastDay));
+	return result;
 }
 
 // ============================================================================
@@ -182,16 +182,16 @@ export function addMonthsToDate(value: Date, offset: number): Date {
  * formatDate("2024-11-14") // "qui 14 nov"
  */
 export function formatDate(value: string): string {
-  const parsed = parseLocalDateString(value);
+	const parsed = parseLocalDateString(value);
 
-  return new Intl.DateTimeFormat("pt-BR", {
-    weekday: "short",
-    day: "2-digit",
-    month: "short",
-  })
-    .format(parsed)
-    .replace(".", "")
-    .replace(" de", "");
+	return new Intl.DateTimeFormat("pt-BR", {
+		weekday: "short",
+		day: "2-digit",
+		month: "short",
+	})
+		.format(parsed)
+		.replace(".", "")
+		.replace(" de", "");
 }
 
 /**
@@ -200,12 +200,12 @@ export function formatDate(value: string): string {
  * friendlyDate(new Date()) // "Segunda, 14 de novembro de 2025"
  */
 export function friendlyDate(date: Date): string {
-  const weekday = WEEKDAY_NAMES[date.getDay()];
-  const day = date.getDate();
-  const month = MONTH_NAMES[date.getMonth()];
-  const year = date.getFullYear();
+	const weekday = WEEKDAY_NAMES[date.getDay()];
+	const day = date.getDate();
+	const month = MONTH_NAMES[date.getMonth()];
+	const year = date.getFullYear();
 
-  return `${weekday}, ${day} de ${month} de ${year}`;
+	return `${weekday}, ${day} de ${month} de ${year}`;
 }
 
 // ============================================================================
@@ -218,10 +218,10 @@ export function friendlyDate(date: Date): string {
  * @returns "Bom dia", "Boa tarde", or "Boa noite"
  */
 export function getGreeting(date: Date = new Date()): string {
-  const hour = date.getHours();
-  if (hour >= 5 && hour < 12) return "Bom dia";
-  if (hour >= 12 && hour < 18) return "Boa tarde";
-  return "Boa noite";
+	const hour = date.getHours();
+	if (hour >= 5 && hour < 12) return "Bom dia";
+	if (hour >= 12 && hour < 18) return "Boa tarde";
+	return "Boa noite";
 }
 
 // ============================================================================
@@ -234,16 +234,16 @@ export function getGreeting(date: Date = new Date()): string {
  * @returns Object with date information
  */
 export function getDateInfo(date: Date = new Date()) {
-  return {
-    date,
-    year: date.getFullYear(),
-    month: date.getMonth() + 1,
-    monthName: MONTH_NAMES[date.getMonth()],
-    day: date.getDate(),
-    weekday: WEEKDAY_NAMES[date.getDay()],
-    friendlyDisplay: friendlyDate(date),
-    greeting: getGreeting(date),
-  };
+	return {
+		date,
+		year: date.getFullYear(),
+		month: date.getMonth() + 1,
+		monthName: MONTH_NAMES[date.getMonth()],
+		day: date.getDate(),
+		weekday: WEEKDAY_NAMES[date.getDay()],
+		friendlyDisplay: friendlyDate(date),
+		greeting: getGreeting(date),
+	};
 }
 
 // Re-export MONTH_NAMES for convenience

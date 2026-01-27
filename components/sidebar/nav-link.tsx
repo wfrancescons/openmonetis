@@ -1,218 +1,221 @@
 import {
-  RiArchiveLine,
-  RiArrowLeftRightLine,
-  RiBankCard2Line,
-  RiBankLine,
-  RiCalendarEventLine,
-  RiDashboardLine,
-  RiFileChartLine,
-  RiFundsLine,
-  RiGroupLine,
-  RiInboxLine,
-  RiNoCreditCardLine,
-  RiPriceTag3Line,
-  RiSettingsLine,
-  RiSparklingLine,
-  RiTodoLine,
-  RiEyeOffLine,
-  type RemixiconComponentType,
+	type RemixiconComponentType,
+	RiArchiveLine,
+	RiArrowLeftRightLine,
+	RiBankCard2Line,
+	RiBankLine,
+	RiCalendarEventLine,
+	RiDashboardLine,
+	RiEyeOffLine,
+	RiFileChartLine,
+	RiFundsLine,
+	RiGroupLine,
+	RiInboxLine,
+	RiNoCreditCardLine,
+	RiPriceTag3Line,
+	RiSettingsLine,
+	RiSparklingLine,
+	RiTodoLine,
 } from "@remixicon/react";
 
 export type SidebarSubItem = {
-  title: string;
-  url: string;
-  avatarUrl?: string | null;
-  isShared?: boolean;
-  key?: string;
-  icon?: RemixiconComponentType;
-  badge?: number;
+	title: string;
+	url: string;
+	avatarUrl?: string | null;
+	isShared?: boolean;
+	key?: string;
+	icon?: RemixiconComponentType;
+	badge?: number;
 };
 
 export type SidebarItem = {
-  title: string;
-  url: string;
-  icon: RemixiconComponentType;
-  isActive?: boolean;
-  items?: SidebarSubItem[];
+	title: string;
+	url: string;
+	icon: RemixiconComponentType;
+	isActive?: boolean;
+	items?: SidebarSubItem[];
 };
 
 export type SidebarSection = {
-  title: string;
-  items: SidebarItem[];
+	title: string;
+	items: SidebarItem[];
 };
 
 export type SidebarNavData = {
-  navMain: SidebarSection[];
-  navSecondary: {
-    title: string;
-    url: string;
-    icon: RemixiconComponentType;
-  }[];
+	navMain: SidebarSection[];
+	navSecondary: {
+		title: string;
+		url: string;
+		icon: RemixiconComponentType;
+	}[];
 };
 
 export interface PagadorLike {
-  id: string;
-  name: string | null;
-  avatarUrl: string | null;
-  canEdit?: boolean;
+	id: string;
+	name: string | null;
+	avatarUrl: string | null;
+	canEdit?: boolean;
 }
 
 export interface SidebarNavOptions {
-  pagadores: PagadorLike[];
-  preLancamentosCount?: number;
+	pagadores: PagadorLike[];
+	preLancamentosCount?: number;
 }
 
-export function createSidebarNavData(options: SidebarNavOptions): SidebarNavData {
-  const { pagadores, preLancamentosCount = 0 } = options;
-  const pagadorItems = pagadores
-    .map((pagador) => ({
-      title: pagador.name?.trim().length
-        ? pagador.name.trim()
-        : "Pagador sem nome",
-      url: `/pagadores/${pagador.id}`,
-      key: pagador.canEdit ? pagador.id : `${pagador.id}-shared`,
-      isShared: !pagador.canEdit,
-      avatarUrl: pagador.avatarUrl,
-    }))
-    .sort((a, b) =>
-      a.title.localeCompare(b.title, "pt-BR", { sensitivity: "base" })
-    );
+export function createSidebarNavData(
+	options: SidebarNavOptions,
+): SidebarNavData {
+	const { pagadores, preLancamentosCount = 0 } = options;
+	const pagadorItems = pagadores
+		.map((pagador) => ({
+			title: pagador.name?.trim().length
+				? pagador.name.trim()
+				: "Pagador sem nome",
+			url: `/pagadores/${pagador.id}`,
+			key: pagador.canEdit ? pagador.id : `${pagador.id}-shared`,
+			isShared: !pagador.canEdit,
+			avatarUrl: pagador.avatarUrl,
+		}))
+		.sort((a, b) =>
+			a.title.localeCompare(b.title, "pt-BR", { sensitivity: "base" }),
+		);
 
-  const pagadorItemsWithHistory: SidebarSubItem[] = pagadorItems;
+	const pagadorItemsWithHistory: SidebarSubItem[] = pagadorItems;
 
-  return {
-    navMain: [
-      {
-        title: "Visão Geral",
-        items: [
-          {
-            title: "Dashboard",
-            url: "/dashboard",
-            icon: RiDashboardLine,
-          },
-        ],
-      },
-      {
-        title: "Gestão Financeira",
-        items: [
-          {
-            title: "Lançamentos",
-            url: "/lancamentos",
-            icon: RiArrowLeftRightLine,
-            items: [
-              {
-                title: "Pré-Lançamentos",
-                url: "/pre-lancamentos",
-                key: "pre-lancamentos",
-                icon: RiInboxLine,
-                badge: preLancamentosCount > 0 ? preLancamentosCount : undefined,
-              },
-            ],
-          },
-          {
-            title: "Calendário",
-            url: "/calendario",
-            icon: RiCalendarEventLine,
-          },
-          {
-            title: "Cartões",
-            url: "/cartoes",
-            icon: RiBankCard2Line,
-            items: [
-              {
-                title: "Inativos",
-                url: "/cartoes/inativos",
-                key: "cartoes-inativos",
-                icon: RiNoCreditCardLine,
-              },
-            ],
-          },
-          {
-            title: "Contas",
-            url: "/contas",
-            icon: RiBankLine,
-            items: [
-              {
-                title: "Inativas",
-                url: "/contas/inativos",
-                key: "contas-inativos",
-                icon: RiEyeOffLine,
-              },
-            ],
-          },
-          {
-            title: "Orçamentos",
-            url: "/orcamentos",
-            icon: RiFundsLine,
-          },
-        ],
-      },
-      {
-        title: "Organização",
-        items: [
-          {
-            title: "Pagadores",
-            url: "/pagadores",
-            icon: RiGroupLine,
-            items: pagadorItemsWithHistory,
-          },
-          {
-            title: "Categorias",
-            url: "/categorias",
-            icon: RiPriceTag3Line,
-          },
-        ],
-      },
-      {
-        title: "Análise e Anotações",
-        items: [
-          {
-            title: "Anotações",
-            url: "/anotacoes",
-            icon: RiTodoLine,
-            items: [
-              {
-                title: "Arquivadas",
-                url: "/anotacoes/arquivadas",
-                key: "anotacoes-arquivadas",
-                icon: RiArchiveLine,
-              },
-            ],
-          },
-          {
-            title: "Insights",
-            url: "/insights",
-            icon: RiSparklingLine,
-          },
-        ],
-      },
-      {
-        title: "Relatórios",
-        items: [
-          {
-            title: "Categorias",
-            url: "/relatorios/categorias",
-            icon: RiFileChartLine,
-          },
-          {
-            title: "Cartões",
-            url: "/relatorios/cartoes",
-            icon: RiBankCard2Line,
-          },
-        ],
-      },
-    ],
-    navSecondary: [
-      // {
-      //   title: "Changelog",
-      //   url: "/changelog",
-      //   icon: RiGitCommitLine,
-      // },
-      {
-        title: "Ajustes",
-        url: "/ajustes",
-        icon: RiSettingsLine,
-      },
-    ],
-  };
+	return {
+		navMain: [
+			{
+				title: "Visão Geral",
+				items: [
+					{
+						title: "Dashboard",
+						url: "/dashboard",
+						icon: RiDashboardLine,
+					},
+				],
+			},
+			{
+				title: "Gestão Financeira",
+				items: [
+					{
+						title: "Lançamentos",
+						url: "/lancamentos",
+						icon: RiArrowLeftRightLine,
+						items: [
+							{
+								title: "Pré-Lançamentos",
+								url: "/pre-lancamentos",
+								key: "pre-lancamentos",
+								icon: RiInboxLine,
+								badge:
+									preLancamentosCount > 0 ? preLancamentosCount : undefined,
+							},
+						],
+					},
+					{
+						title: "Calendário",
+						url: "/calendario",
+						icon: RiCalendarEventLine,
+					},
+					{
+						title: "Cartões",
+						url: "/cartoes",
+						icon: RiBankCard2Line,
+						items: [
+							{
+								title: "Inativos",
+								url: "/cartoes/inativos",
+								key: "cartoes-inativos",
+								icon: RiNoCreditCardLine,
+							},
+						],
+					},
+					{
+						title: "Contas",
+						url: "/contas",
+						icon: RiBankLine,
+						items: [
+							{
+								title: "Inativas",
+								url: "/contas/inativos",
+								key: "contas-inativos",
+								icon: RiEyeOffLine,
+							},
+						],
+					},
+					{
+						title: "Orçamentos",
+						url: "/orcamentos",
+						icon: RiFundsLine,
+					},
+				],
+			},
+			{
+				title: "Organização",
+				items: [
+					{
+						title: "Pagadores",
+						url: "/pagadores",
+						icon: RiGroupLine,
+						items: pagadorItemsWithHistory,
+					},
+					{
+						title: "Categorias",
+						url: "/categorias",
+						icon: RiPriceTag3Line,
+					},
+				],
+			},
+			{
+				title: "Análise e Anotações",
+				items: [
+					{
+						title: "Anotações",
+						url: "/anotacoes",
+						icon: RiTodoLine,
+						items: [
+							{
+								title: "Arquivadas",
+								url: "/anotacoes/arquivadas",
+								key: "anotacoes-arquivadas",
+								icon: RiArchiveLine,
+							},
+						],
+					},
+					{
+						title: "Insights",
+						url: "/insights",
+						icon: RiSparklingLine,
+					},
+				],
+			},
+			{
+				title: "Relatórios",
+				items: [
+					{
+						title: "Categorias",
+						url: "/relatorios/categorias",
+						icon: RiFileChartLine,
+					},
+					{
+						title: "Cartões",
+						url: "/relatorios/cartoes",
+						icon: RiBankCard2Line,
+					},
+				],
+			},
+		],
+		navSecondary: [
+			// {
+			//   title: "Changelog",
+			//   url: "/changelog",
+			//   icon: RiGitCommitLine,
+			// },
+			{
+				title: "Ajustes",
+				url: "/ajustes",
+				icon: RiSettingsLine,
+			},
+		],
+	};
 }

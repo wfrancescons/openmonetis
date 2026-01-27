@@ -4,14 +4,14 @@ import { fetchCategoryHistory } from "@/lib/dashboard/categories/category-histor
 import { getCurrentPeriod } from "@/lib/utils/period";
 
 export default async function HistoricoCategoriasPage() {
-  const user = await getUser();
-  const currentPeriod = getCurrentPeriod();
+	const user = await getUser();
+	const currentPeriod = getCurrentPeriod();
 
-  const data = await fetchCategoryHistory(user.id, currentPeriod);
+	const data = await fetchCategoryHistory(user.id, currentPeriod);
 
-  return (
-    <main>
-      <CategoryHistoryWidget data={data} />
-    </main>
-  );
+	return (
+		<main>
+			<CategoryHistoryWidget data={data} />
+		</main>
+	);
 }

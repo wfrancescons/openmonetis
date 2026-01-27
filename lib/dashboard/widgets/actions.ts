@@ -1,87 +1,87 @@
 "use server";
 
-import { getUser } from "@/lib/auth/server";
-import { db, schema } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { getUser } from "@/lib/auth/server";
+import { db, schema } from "@/lib/db";
 
 export type WidgetPreferences = {
-  order: string[];
-  hidden: string[];
+	order: string[];
+	hidden: string[];
 };
 
 export async function updateWidgetPreferences(
-  preferences: WidgetPreferences,
+	preferences: WidgetPreferences,
 ): Promise<{ success: boolean; error?: string }> {
-  try {
-    const user = await getUser();
+	try {
+		const user = await getUser();
 
-    // Check if preferences exist
-    const existing = await db
-      .select({ id: schema.userPreferences.id })
-      .from(schema.userPreferences)
-      .where(eq(schema.userPreferences.userId, user.id))
-      .limit(1);
+		// Check if preferences exist
+		const existing = await db
+			.select({ id: schema.userPreferences.id })
+			.from(schema.userPreferences)
+			.where(eq(schema.userPreferences.userId, user.id))
+			.limit(1);
 
-    if (existing.length > 0) {
-      await db
-        .update(schema.userPreferences)
-        .set({
-          dashboardWidgets: preferences,
-          updatedAt: new Date(),
-        })
-        .where(eq(schema.userPreferences.userId, user.id));
-    } else {
-      await db.insert(schema.userPreferences).values({
-        userId: user.id,
-        dashboardWidgets: preferences,
-      });
-    }
+		if (existing.length > 0) {
+			await db
+				.update(schema.userPreferences)
+				.set({
+					dashboardWidgets: preferences,
+					updatedAt: new Date(),
+				})
+				.where(eq(schema.userPreferences.userId, user.id));
+		} else {
+			await db.insert(schema.userPreferences).values({
+				userId: user.id,
+				dashboardWidgets: preferences,
+			});
+		}
 
-    revalidatePath("/dashboard");
-    return { success: true };
-  } catch (error) {
-    console.error("Error updating widget preferences:", error);
-    return { success: false, error: "Erro ao salvar preferências" };
-  }
+		revalidatePath("/dashboard");
+		return { success: true };
+	} catch (error) {
+		console.error("Error updating widget preferences:", error);
+		return { success: false, error: "Erro ao salvar preferências" };
+	}
 }
 
 export async function resetWidgetPreferences(): Promise<{
-  success: boolean;
-  error?: string;
+	success: boolean;
+	error?: string;
 }> {
-  try {
-    const user = await getUser();
+	try {
+		const user = await getUser();
 
-    await db
-      .update(schema.userPreferences)
-      .set({
-        dashboardWidgets: null,
-        updatedAt: new Date(),
-      })
-      .where(eq(schema.userPreferences.userId, user.id));
+		await db
+			.update(schema.userPreferences)
+			.set({
+				dashboardWidgets: null,
+				updatedAt: new Date(),
+			})
+			.where(eq(schema.userPreferences.userId, user.id));
 
-    revalidatePath("/dashboard");
-    return { success: true };
-  } catch (error) {
-    console.error("Error resetting widget preferences:", error);
-    return { success: false, error: "Erro ao resetar preferências" };
-  }
+		revalidatePath("/dashboard");
+		return { success: true };
+	} catch (error) {
+		console.error("Error resetting widget preferences:", error);
+		return { success: false, error: "Erro ao resetar preferências" };
+	}
 }
 
 export async function getWidgetPreferences(): Promise<WidgetPreferences | null> {
-  try {
-    const user = await getUser();
+	try {
+		const user = await getUser();
 
-    const result = await db
-      .select({ dashboardWidgets: schema.userPreferences.dashboardWidgets })
-      .from(schema.userPreferences)
-      .where(eq(schema.userPreferences.userId, user.id))
-      .limit(1);
+		const result = await db
+			.select({ dashboardWidgets: schema.userPreferences.dashboardWidgets })
+			.from(schema.userPreferences)
+			.where(eq(schema.userPreferences.userId, user.id))
+			.limit(1);
 
-    return result[0]?.dashboardWidgets ?? null;
-  } catch (error) {
-    console.error("Error getting widget preferences:", error);
-    return null;
-  }
+		return result[0]?.dashboardWidgets ?? null;
+	} catch (error) {
+		console.error("Error getting widget preferences:", error);
+		return null;
+	}
 }

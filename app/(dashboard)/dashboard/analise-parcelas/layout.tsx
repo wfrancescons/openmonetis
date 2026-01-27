@@ -1,23 +1,23 @@
-import PageDescription from "@/components/page-description";
 import { RiSecurePaymentLine } from "@remixicon/react";
+import PageDescription from "@/components/page-description";
 
 export const metadata = {
-  title: "Análise de Parcelas | Opensheets",
+	title: "Análise de Parcelas | Opensheets",
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <section className="space-y-6 px-6">
-      <PageDescription
-        icon={<RiSecurePaymentLine />}
-        title="Análise de Parcelas"
-        subtitle="Quanto você gastaria pagando suas despesas parceladas à vista?"
-      />
-      {children}
-    </section>
-  );
+	return (
+		<section className="space-y-6 px-6">
+			<PageDescription
+				icon={<RiSecurePaymentLine />}
+				title="Análise de Parcelas"
+				subtitle="Quanto você gastaria pagando suas despesas parceladas à vista?"
+			/>
+			{children}
+		</section>
+	);
 }

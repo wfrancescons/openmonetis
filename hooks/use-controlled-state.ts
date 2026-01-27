@@ -18,34 +18,34 @@ import { useCallback, useEffect, useState } from "react";
  * ```
  */
 export function useControlledState<T>(
-  controlledValue: T | undefined,
-  defaultValue: T,
-  onChange?: (value: T) => void
+	controlledValue: T | undefined,
+	defaultValue: T,
+	onChange?: (value: T) => void,
 ): [T, (value: T) => void] {
-  const [internalValue, setInternalValue] = useState<T>(defaultValue);
+	const [internalValue, setInternalValue] = useState<T>(defaultValue);
 
-  // Sync internal value when controlled value changes
-  useEffect(() => {
-    if (controlledValue !== undefined) {
-      setInternalValue(controlledValue);
-    }
-  }, [controlledValue]);
+	// Sync internal value when controlled value changes
+	useEffect(() => {
+		if (controlledValue !== undefined) {
+			setInternalValue(controlledValue);
+		}
+	}, [controlledValue]);
 
-  // Use controlled value if provided, otherwise use internal value
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
+	// Use controlled value if provided, otherwise use internal value
+	const value = controlledValue !== undefined ? controlledValue : internalValue;
 
-  const setValue = useCallback(
-    (newValue: T) => {
-      // Update internal state if uncontrolled
-      if (controlledValue === undefined) {
-        setInternalValue(newValue);
-      }
+	const setValue = useCallback(
+		(newValue: T) => {
+			// Update internal state if uncontrolled
+			if (controlledValue === undefined) {
+				setInternalValue(newValue);
+			}
 
-      // Always call onChange if provided
-      onChange?.(newValue);
-    },
-    [controlledValue, onChange]
-  );
+			// Always call onChange if provided
+			onChange?.(newValue);
+		},
+		[controlledValue, onChange],
+	);
 
-  return [value, setValue];
+	return [value, setValue];
 }

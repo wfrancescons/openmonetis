@@ -2,8 +2,8 @@
  * Common utilities and helpers for dashboard queries
  */
 
-import { safeToNumber } from "@/lib/utils/number";
 import { calculatePercentageChange } from "@/lib/utils/math";
+import { safeToNumber } from "@/lib/utils/number";
 
 export { safeToNumber, calculatePercentageChange };
 

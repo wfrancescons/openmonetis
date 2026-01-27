@@ -1,23 +1,23 @@
-import PageDescription from "@/components/page-description";
 import { RiPriceTag3Line } from "@remixicon/react";
+import PageDescription from "@/components/page-description";
 
 export const metadata = {
-  title: "Categorias | Opensheets",
+	title: "Categorias | Opensheets",
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <section className="space-y-6 px-6">
-      <PageDescription
-        icon={<RiPriceTag3Line />}
-        title="Categorias"
-        subtitle="Gerencie suas categorias de despesas e receitas acompanhando o histórico de desempenho dos últimos 9 meses, permitindo ajustes financeiros precisos conforme necessário."
-      />
-      {children}
-    </section>
-  );
+	return (
+		<section className="space-y-6 px-6">
+			<PageDescription
+				icon={<RiPriceTag3Line />}
+				title="Categorias"
+				subtitle="Gerencie suas categorias de despesas e receitas acompanhando o histórico de desempenho dos últimos 9 meses, permitindo ajustes financeiros precisos conforme necessário."
+			/>
+			{children}
+		</section>
+	);
 }

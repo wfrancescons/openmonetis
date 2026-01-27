@@ -3,25 +3,25 @@ import { getUserId } from "@/lib/auth/server";
 import { fetchInboxDialogData, fetchInboxItems } from "./data";
 
 export default async function Page() {
-  const userId = await getUserId();
+	const userId = await getUserId();
 
-  const [items, dialogData] = await Promise.all([
-    fetchInboxItems(userId, "pending"),
-    fetchInboxDialogData(userId),
-  ]);
+	const [items, dialogData] = await Promise.all([
+		fetchInboxItems(userId, "pending"),
+		fetchInboxDialogData(userId),
+	]);
 
-  return (
-    <main className="flex flex-col items-start gap-6">
-      <InboxPage
-        items={items}
-        pagadorOptions={dialogData.pagadorOptions}
-        splitPagadorOptions={dialogData.splitPagadorOptions}
-        defaultPagadorId={dialogData.defaultPagadorId}
-        contaOptions={dialogData.contaOptions}
-        cartaoOptions={dialogData.cartaoOptions}
-        categoriaOptions={dialogData.categoriaOptions}
-        estabelecimentos={dialogData.estabelecimentos}
-      />
-    </main>
-  );
+	return (
+		<main className="flex flex-col items-start gap-6">
+			<InboxPage
+				items={items}
+				pagadorOptions={dialogData.pagadorOptions}
+				splitPagadorOptions={dialogData.splitPagadorOptions}
+				defaultPagadorId={dialogData.defaultPagadorId}
+				contaOptions={dialogData.contaOptions}
+				cartaoOptions={dialogData.cartaoOptions}
+				categoriaOptions={dialogData.categoriaOptions}
+				estabelecimentos={dialogData.estabelecimentos}
+			/>
+		</main>
+	);
 }

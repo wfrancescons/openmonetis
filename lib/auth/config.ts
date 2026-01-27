@@ -5,13 +5,13 @@
  * Suporta email/password e Google OAuth.
  */
 
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import type { GoogleProfile } from "better-auth/social-providers";
 import { seedDefaultCategoriesForUser } from "@/lib/categorias/defaults";
 import { db, schema } from "@/lib/db";
 import { ensureDefaultPagadorForUser } from "@/lib/pagadores/defaults";
 import { normalizeNameFromEmail } from "@/lib/pagadores/utils";
-import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import type { GoogleProfile } from "better-auth/social-providers";
 
 // ============================================================================
 // GOOGLE OAUTH CONFIGURATION
@@ -28,20 +28,20 @@ const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
  * 4. "Usuário" (fallback final)
  */
 function getNameFromGoogleProfile(profile: GoogleProfile): string {
-  const fullName = profile.name?.trim();
-  if (fullName) return fullName;
+	const fullName = profile.name?.trim();
+	if (fullName) return fullName;
 
-  const fromGivenFamily = [profile.given_name, profile.family_name]
-    .filter(Boolean)
-    .join(" ")
-    .trim();
-  if (fromGivenFamily) return fromGivenFamily;
+	const fromGivenFamily = [profile.given_name, profile.family_name]
+		.filter(Boolean)
+		.join(" ")
+		.trim();
+	if (fromGivenFamily) return fromGivenFamily;
 
-  const fromEmail = profile.email
-    ? normalizeNameFromEmail(profile.email)
-    : undefined;
+	const fromEmail = profile.email
+		? normalizeNameFromEmail(profile.email)
+		: undefined;
 
-  return fromEmail ?? "Usuário";
+	return fromEmail ?? "Usuário";
 }
 
 // ============================================================================
@@ -49,99 +49,99 @@ function getNameFromGoogleProfile(profile: GoogleProfile): string {
 // ============================================================================
 
 export const auth = betterAuth({
-  // Base URL configuration
-  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+	// Base URL configuration
+	baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
 
-  // Trust host configuration for production environments
-  trustedOrigins: process.env.BETTER_AUTH_URL
-    ? [process.env.BETTER_AUTH_URL]
-    : [],
+	// Trust host configuration for production environments
+	trustedOrigins: process.env.BETTER_AUTH_URL
+		? [process.env.BETTER_AUTH_URL]
+		: [],
 
-  // Email/Password authentication
-  emailAndPassword: {
-    enabled: true,
-    autoSignIn: true,
-  },
+	// Email/Password authentication
+	emailAndPassword: {
+		enabled: true,
+		autoSignIn: true,
+	},
 
-  // Database adapter (Drizzle + PostgreSQL)
-  database: drizzleAdapter(db, {
-    provider: "pg",
-    schema,
-    camelCase: true,
-  }),
+	// Database adapter (Drizzle + PostgreSQL)
+	database: drizzleAdapter(db, {
+		provider: "pg",
+		schema,
+		camelCase: true,
+	}),
 
-  // Session configuration - Safari compatibility
-  session: {
-    cookieCache: {
-      enabled: true,
-      maxAge: 60 * 5, // 5 minutes
-    },
-  },
+	// Session configuration - Safari compatibility
+	session: {
+		cookieCache: {
+			enabled: true,
+			maxAge: 60 * 5, // 5 minutes
+		},
+	},
 
-  // Advanced configuration for Safari compatibility
-  advanced: {
-    cookieOptions: {
-      sameSite: "lax", // Safari compatible
-      secure: process.env.NODE_ENV === "production", // HTTPS in production only
-      httpOnly: true,
-    },
-    crossSubDomainCookies: {
-      enabled: false, // Disable for better Safari compatibility
-    },
-  },
+	// Advanced configuration for Safari compatibility
+	advanced: {
+		cookieOptions: {
+			sameSite: "lax", // Safari compatible
+			secure: process.env.NODE_ENV === "production", // HTTPS in production only
+			httpOnly: true,
+		},
+		crossSubDomainCookies: {
+			enabled: false, // Disable for better Safari compatibility
+		},
+	},
 
-  // Google OAuth (se configurado)
-  socialProviders:
-    googleClientId && googleClientSecret
-      ? {
-          google: {
-            clientId: googleClientId,
-            clientSecret: googleClientSecret,
-            mapProfileToUser: (profile) => ({
-              name: getNameFromGoogleProfile(profile),
-              email: profile.email,
-              image: profile.picture,
-              emailVerified: profile.email_verified,
-            }),
-          },
-        }
-      : undefined,
+	// Google OAuth (se configurado)
+	socialProviders:
+		googleClientId && googleClientSecret
+			? {
+					google: {
+						clientId: googleClientId,
+						clientSecret: googleClientSecret,
+						mapProfileToUser: (profile) => ({
+							name: getNameFromGoogleProfile(profile),
+							email: profile.email,
+							image: profile.picture,
+							emailVerified: profile.email_verified,
+						}),
+					},
+				}
+			: undefined,
 
-  // Database hooks - Executados após eventos do DB
-  databaseHooks: {
-    user: {
-      create: {
-        /**
-         * Após criar novo usuário, inicializa:
-         * 1. Categorias padrão (Receitas/Despesas)
-         * 2. Pagador padrão (vinculado ao usuário)
-         */
-        after: async (user) => {
-          // Se falhar aqui, o usuário já foi criado - considere usar queue para retry
-          try {
-            await seedDefaultCategoriesForUser(user.id);
-            await ensureDefaultPagadorForUser({
-              id: user.id,
-              name: user.name ?? undefined,
-              email: user.email ?? undefined,
-              image: user.image ?? undefined,
-            });
-          } catch (error) {
-            console.error(
-              "[Auth] Falha ao criar dados padrão do usuário:",
-              error
-            );
-            // TODO: Considere enfileirar para retry ou notificar admin
-          }
-        },
-      },
-    },
-  },
+	// Database hooks - Executados após eventos do DB
+	databaseHooks: {
+		user: {
+			create: {
+				/**
+				 * Após criar novo usuário, inicializa:
+				 * 1. Categorias padrão (Receitas/Despesas)
+				 * 2. Pagador padrão (vinculado ao usuário)
+				 */
+				after: async (user) => {
+					// Se falhar aqui, o usuário já foi criado - considere usar queue para retry
+					try {
+						await seedDefaultCategoriesForUser(user.id);
+						await ensureDefaultPagadorForUser({
+							id: user.id,
+							name: user.name ?? undefined,
+							email: user.email ?? undefined,
+							image: user.image ?? undefined,
+						});
+					} catch (error) {
+						console.error(
+							"[Auth] Falha ao criar dados padrão do usuário:",
+							error,
+						);
+						// TODO: Considere enfileirar para retry ou notificar admin
+					}
+				},
+			},
+		},
+	},
 });
 
 // Aviso em desenvolvimento se Google OAuth não estiver configurado
 if (!googleClientId && process.env.NODE_ENV === "development") {
-  console.warn(
-    "[Auth] Google OAuth não configurado. Defina GOOGLE_CLIENT_ID e GOOGLE_CLIENT_SECRET."
-  );
+	console.warn(
+		"[Auth] Google OAuth não configurado. Defina GOOGLE_CLIENT_ID e GOOGLE_CLIENT_SECRET.",
+	);
 }

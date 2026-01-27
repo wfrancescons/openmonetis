@@ -4,59 +4,50 @@ import { SectionCards } from "@/components/dashboard/section-cards";
 import MonthNavigation from "@/components/month-picker/month-navigation";
 import { getUser } from "@/lib/auth/server";
 import { fetchDashboardData } from "@/lib/dashboard/fetch-dashboard-data";
-import { db, schema } from "@/lib/db";
 import { parsePeriodParam } from "@/lib/utils/period";
-import { eq } from "drizzle-orm";
+import { fetchUserDashboardPreferences } from "./data";
 
 type PageSearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 type PageProps = {
-  searchParams?: PageSearchParams;
+	searchParams?: PageSearchParams;
 };
 
 const getSingleParam = (
-  params: Record<string, string | string[] | undefined> | undefined,
-  key: string,
+	params: Record<string, string | string[] | undefined> | undefined,
+	key: string,
 ) => {
-  const value = params?.[key];
-  if (!value) return null;
-  return Array.isArray(value) ? (value[0] ?? null) : value;
+	const value = params?.[key];
+	if (!value) return null;
+	return Array.isArray(value) ? (value[0] ?? null) : value;
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  const user = await getUser();
-  const resolvedSearchParams = searchParams ? await searchParams : undefined;
-  const periodoParam = getSingleParam(resolvedSearchParams, "periodo");
-  const { period: selectedPeriod } = parsePeriodParam(periodoParam);
+	const user = await getUser();
+	const resolvedSearchParams = searchParams ? await searchParams : undefined;
+	const periodoParam = getSingleParam(resolvedSearchParams, "periodo");
+	const { period: selectedPeriod } = parsePeriodParam(periodoParam);
 
-  const [data, preferencesResult] = await Promise.all([
-    fetchDashboardData(user.id, selectedPeriod),
-    db
-      .select({
-        disableMagnetlines: schema.userPreferences.disableMagnetlines,
-        dashboardWidgets: schema.userPreferences.dashboardWidgets,
-      })
-      .from(schema.userPreferences)
-      .where(eq(schema.userPreferences.userId, user.id))
-      .limit(1),
-  ]);
+	const [data, preferences] = await Promise.all([
+		fetchDashboardData(user.id, selectedPeriod),
+		fetchUserDashboardPreferences(user.id),
+	]);
 
-  const disableMagnetlines = preferencesResult[0]?.disableMagnetlines ?? false;
-  const dashboardWidgets = preferencesResult[0]?.dashboardWidgets ?? null;
+	const { disableMagnetlines, dashboardWidgets } = preferences;
 
-  return (
-    <main className="flex flex-col gap-4 px-6">
-      <DashboardWelcome
-        name={user.name}
-        disableMagnetlines={disableMagnetlines}
-      />
-      <MonthNavigation />
-      <SectionCards metrics={data.metrics} />
-      <DashboardGridEditable
-        data={data}
-        period={selectedPeriod}
-        initialPreferences={dashboardWidgets}
-      />
-    </main>
-  );
+	return (
+		<main className="flex flex-col gap-4 px-6">
+			<DashboardWelcome
+				name={user.name}
+				disableMagnetlines={disableMagnetlines}
+			/>
+			<MonthNavigation />
+			<SectionCards metrics={data.metrics} />
+			<DashboardGridEditable
+				data={data}
+				period={selectedPeriod}
+				initialPreferences={dashboardWidgets}
+			/>
+		</main>
+	);
 }
