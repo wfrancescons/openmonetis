@@ -1,11 +1,11 @@
 type DotIconProps = {
-	bg_dot: string;
+	color: string;
 };
 
-export default function DotIcon({ bg_dot }: DotIconProps) {
+export default function DotIcon({ color }: DotIconProps) {
 	return (
 		<span>
-			<span className={`${bg_dot} flex size-2 rounded-full`}></span>
+			<span className={`${color} flex size-2 rounded-full`}></span>
 		</span>
 	);
 }

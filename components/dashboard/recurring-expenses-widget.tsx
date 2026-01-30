@@ -39,7 +39,7 @@ export function RecurringExpensesWidget({
 							key={expense.id}
 							className="flex items-center gap-3 border-b border-dashed pb-2 last:border-b-0 last:pb-0"
 						>
-							<EstabelecimentoLogo name={expense.name} size={38} />
+							<EstabelecimentoLogo name={expense.name} size={37} />
 
 							<div className="min-w-0 flex-1">
 								<div className="flex items-center justify-between">

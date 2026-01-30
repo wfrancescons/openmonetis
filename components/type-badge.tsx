@@ -56,7 +56,7 @@ export function TypeBadge({ type, className }: TypeBadgeProps) {
 				className,
 			)}
 		>
-			<DotIcon bg_dot={dotColor} />
+			<DotIcon color={dotColor} />
 			{label}
 		</Badge>
 	);

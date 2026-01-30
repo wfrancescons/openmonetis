@@ -59,7 +59,7 @@
   --sidebar-ring: oklch(69.18% 0.18855 38.353);
 
   /* Layout */
-  --radius: 1rem;
+  --radius: 0.8rem;
 
   /* Shadows - warm tinted for cohesion */
   --shadow-2xs: 0 1px 2px 0px oklch(35% 0.02 45 / 0.04);

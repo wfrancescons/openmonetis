@@ -286,7 +286,7 @@ export function InvoiceSummaryCard({
 						value={
 							cardStatus ? (
 								<div className="flex items-center gap-1.5">
-									<DotIcon bg_dot={getCardStatusDotColor(cardStatus)} />
+									<DotIcon color={getCardStatusDotColor(cardStatus)} />
 									<span className="truncate">{cardStatus}</span>
 								</div>
 							) : (

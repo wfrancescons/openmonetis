@@ -56,7 +56,7 @@ export function TransactionTypeSelectContent({ label }: { label: string }) {
 
 	return (
 		<span className="flex items-center gap-2">
-			<DotIcon bg_dot={colorMap[label]} />
+			<DotIcon color={colorMap[label]} />
 			<span>{label}</span>
 		</span>
 	);

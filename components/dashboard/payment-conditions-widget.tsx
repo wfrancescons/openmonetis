@@ -15,7 +15,7 @@ type PaymentConditionsWidgetProps = {
 };
 
 const CONDITION_ICON_CLASSES =
-	"flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground";
+	"flex size-9.5 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground";
 
 const CONDITION_ICONS: Record<string, ReactNode> = {
 	"À vista": <RiCheckLine className="size-5" aria-hidden />,

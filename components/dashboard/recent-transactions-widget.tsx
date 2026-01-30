@@ -41,7 +41,7 @@ export function RecentTransactionsWidget({
 								className="flex items-center justify-between gap-3 border-b border-dashed py-2 last:border-b-0 last:pb-0"
 							>
 								<div className="flex min-w-0 flex-1 items-center gap-3">
-									<EstabelecimentoLogo name={transaction.name} size={38} />
+									<EstabelecimentoLogo name={transaction.name} size={37} />
 
 									<div className="min-w-0">
 										<p className="truncate text-sm font-medium text-foreground">
