@@ -108,7 +108,7 @@ export function NoteDialog({
 
 	const onlySpaces =
 		normalize(formState.title).length === 0 ||
-		(isNote && normalize(formState.description).length === 0) ||
+		(isNote && formState.description.trim().length === 0) ||
 		(!isNote && (!formState.tasks || formState.tasks.length === 0));
 
 	const invalidLen = titleCount > MAX_TITLE || descCount > MAX_DESC;
@@ -116,7 +116,7 @@ export function NoteDialog({
 	const unchanged =
 		mode === "update" &&
 		normalize(formState.title) === normalize(note?.title ?? "") &&
-		normalize(formState.description) === normalize(note?.description ?? "") &&
+		formState.description.trim() === (note?.description ?? "").trim() &&
 		JSON.stringify(formState.tasks) === JSON.stringify(note?.tasks);
 
 	const disableSubmit = isPending || onlySpaces || unchanged || invalidLen;
@@ -182,7 +182,7 @@ export function NoteDialog({
 
 			const payload = {
 				title: normalize(formState.title),
-				description: normalize(formState.description),
+				description: formState.description.trim(),
 				type: formState.type,
 				tasks: formState.tasks,
 			};

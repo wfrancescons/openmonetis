@@ -82,9 +82,9 @@ export function NoteCard({
 	].filter((action) => typeof action.onClick === "function");
 
 	return (
-		<Card className="h-[300px] w-[440px] gap-0">
-			<CardContent className="flex flex-1 flex-col gap-4">
-				<div className="flex items-start justify-between gap-3">
+		<Card className="flex h-[300px] w-[440px] flex-col gap-0">
+			<CardContent className="flex min-h-0 flex-1 flex-col gap-4">
+				<div className="flex shrink-0 items-start justify-between gap-3">
 					<div className="flex flex-col gap-2">
 						<h3 className="text-lg font-semibold leading-tight text-foreground wrap-break-word">
 							{displayTitle}
@@ -98,7 +98,7 @@ export function NoteCard({
 				</div>
 
 				{isTask ? (
-					<div className="flex-1 overflow-auto space-y-2 mt-2">
+					<div className="min-h-0 flex-1 space-y-2 overflow-hidden">
 						{tasks.slice(0, 5).map((task) => (
 							<div key={task.id} className="flex items-start gap-2 text-sm">
 								<div
@@ -129,14 +129,14 @@ export function NoteCard({
 						)}
 					</div>
 				) : (
-					<p className="flex-1 overflow-auto whitespace-pre-line text-sm text-muted-foreground wrap-break-word leading-relaxed mt-2">
+					<p className="min-h-0 flex-1 overflow-hidden whitespace-pre-line text-sm text-muted-foreground wrap-break-word leading-relaxed">
 						{note.description}
 					</p>
 				)}
 			</CardContent>
 
 			{actions.length > 0 ? (
-				<CardFooter className="flex flex-wrap gap-3 px-6 pt-3 text-sm">
+				<CardFooter className="flex shrink-0 flex-wrap gap-3 px-6 pt-3 text-sm">
 					{actions.map(({ label, icon, onClick, variant }) => (
 						<button
 							key={label}
