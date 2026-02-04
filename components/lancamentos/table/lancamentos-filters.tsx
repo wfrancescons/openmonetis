@@ -6,14 +6,7 @@ import {
 	RiFilter3Line,
 } from "@remixicon/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import {
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-	useTransition,
-} from "react";
+import { type ReactNode, useEffect, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -147,29 +140,24 @@ export function LancamentosFilters({
 	const searchParams = useSearchParams();
 	const [isPending, startTransition] = useTransition();
 
-	const getParamValue = useCallback(
-		(key: string) => searchParams.get(key) ?? FILTER_EMPTY_VALUE,
-		[searchParams],
-	);
+	const getParamValue = (key: string) =>
+		searchParams.get(key) ?? FILTER_EMPTY_VALUE;
 
-	const handleFilterChange = useCallback(
-		(key: string, value: string | null) => {
-			const nextParams = new URLSearchParams(searchParams.toString());
+	const handleFilterChange = (key: string, value: string | null) => {
+		const nextParams = new URLSearchParams(searchParams.toString());
 
-			if (value && value !== FILTER_EMPTY_VALUE) {
-				nextParams.set(key, value);
-			} else {
-				nextParams.delete(key);
-			}
+		if (value && value !== FILTER_EMPTY_VALUE) {
+			nextParams.set(key, value);
+		} else {
+			nextParams.delete(key);
+		}
 
-			startTransition(() => {
-				router.replace(`${pathname}?${nextParams.toString()}`, {
-					scroll: false,
-				});
+		startTransition(() => {
+			router.replace(`${pathname}?${nextParams.toString()}`, {
+				scroll: false,
 			});
-		},
-		[pathname, router, searchParams],
-	);
+		});
+	};
 
 	const [searchValue, setSearchValue] = useState(searchParams.get("q") ?? "");
 	const currentSearchParam = searchParams.get("q") ?? "";
@@ -191,7 +179,7 @@ export function LancamentosFilters({
 		return () => clearTimeout(timeout);
 	}, [searchValue, currentSearchParam, handleFilterChange]);
 
-	const handleReset = useCallback(() => {
+	const handleReset = () => {
 		const periodValue = searchParams.get("periodo");
 		const nextParams = new URLSearchParams();
 		if (periodValue) {
@@ -205,41 +193,29 @@ export function LancamentosFilters({
 				: pathname;
 			router.replace(target, { scroll: false });
 		});
-	}, [pathname, router, searchParams]);
+	};
 
-	const pagadorSelectOptions = useMemo(
-		() =>
-			pagadorOptions.map((option) => ({
-				value: option.slug,
-				label: option.label,
-				avatarUrl: option.avatarUrl,
-			})),
-		[pagadorOptions],
-	);
+	const pagadorSelectOptions = pagadorOptions.map((option) => ({
+		value: option.slug,
+		label: option.label,
+		avatarUrl: option.avatarUrl,
+	}));
 
-	const contaOptions = useMemo(
-		() =>
-			contaCartaoOptions
-				.filter((option) => option.kind === "conta")
-				.map((option) => ({
-					value: option.slug,
-					label: option.label,
-					logo: option.logo,
-				})),
-		[contaCartaoOptions],
-	);
+	const contaOptions = contaCartaoOptions
+		.filter((option) => option.kind === "conta")
+		.map((option) => ({
+			value: option.slug,
+			label: option.label,
+			logo: option.logo,
+		}));
 
-	const cartaoOptions = useMemo(
-		() =>
-			contaCartaoOptions
-				.filter((option) => option.kind === "cartao")
-				.map((option) => ({
-					value: option.slug,
-					label: option.label,
-					logo: option.logo,
-				})),
-		[contaCartaoOptions],
-	);
+	const cartaoOptions = contaCartaoOptions
+		.filter((option) => option.kind === "cartao")
+		.map((option) => ({
+			value: option.slug,
+			label: option.label,
+			logo: option.logo,
+		}));
 
 	const categoriaValue = getParamValue("categoria");
 	const selectedCategoria =
@@ -262,21 +238,18 @@ export function LancamentosFilters({
 	const [categoriaOpen, setCategoriaOpen] = useState(false);
 	const [drawerOpen, setDrawerOpen] = useState(false);
 
-	const hasActiveFilters = useMemo(() => {
-		return (
-			searchParams.get("transacao") ||
-			searchParams.get("condicao") ||
-			searchParams.get("pagamento") ||
-			searchParams.get("pagador") ||
-			searchParams.get("categoria") ||
-			searchParams.get("contaCartao")
-		);
-	}, [searchParams]);
+	const hasActiveFilters =
+		searchParams.get("transacao") ||
+		searchParams.get("condicao") ||
+		searchParams.get("pagamento") ||
+		searchParams.get("pagador") ||
+		searchParams.get("categoria") ||
+		searchParams.get("contaCartao");
 
-	const handleResetFilters = useCallback(() => {
+	const handleResetFilters = () => {
 		handleReset();
 		setDrawerOpen(false);
-	}, [handleReset]);
+	};
 
 	return (
 		<div className={cn("flex flex-wrap items-center gap-2", className)}>

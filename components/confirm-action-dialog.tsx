@@ -1,7 +1,7 @@
 "use client";
 
 import type { VariantProps } from "class-variance-authority";
-import { useCallback, useMemo, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -49,22 +49,16 @@ export function ConfirmActionDialog({
 	const [isPending, startTransition] = useTransition();
 	const dialogOpen = open ?? internalOpen;
 
-	const setDialogOpen = useCallback(
-		(value: boolean) => {
-			if (open === undefined) {
-				setInternalOpen(value);
-			}
-			onOpenChange?.(value);
-		},
-		[onOpenChange, open],
-	);
+	const setDialogOpen = (value: boolean) => {
+		if (open === undefined) {
+			setInternalOpen(value);
+		}
+		onOpenChange?.(value);
+	};
 
-	const resolvedPendingLabel = useMemo(
-		() => pendingLabel ?? confirmLabel,
-		[pendingLabel, confirmLabel],
-	);
+	const resolvedPendingLabel = pendingLabel ?? confirmLabel;
 
-	const handleConfirm = useCallback(() => {
+	const handleConfirm = () => {
 		if (!onConfirm) {
 			setDialogOpen(false);
 			return;
@@ -78,7 +72,7 @@ export function ConfirmActionDialog({
 				// Mantém o diálogo aberto para que o chamador trate o erro.
 			}
 		});
-	}, [onConfirm, setDialogOpen]);
+	};
 
 	return (
 		<AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>

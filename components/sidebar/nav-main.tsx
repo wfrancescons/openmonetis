@@ -63,50 +63,45 @@ export function NavMain({ sections }: { sections: NavSection[] }) {
 	const searchParams = useSearchParams();
 	const periodParam = searchParams.get(MONTH_PERIOD_PARAM);
 
-	const isLinkActive = React.useCallback(
-		(url: string) => {
-			const normalizedPathname =
-				pathname.endsWith("/") && pathname !== "/"
-					? pathname.slice(0, -1)
-					: pathname;
-			const normalizedUrl =
-				url.endsWith("/") && url !== "/" ? url.slice(0, -1) : url;
+	const normalizedPathname =
+		pathname.endsWith("/") && pathname !== "/"
+			? pathname.slice(0, -1)
+			: pathname;
 
-			// Verifica se é exatamente igual ou se o pathname começa com a URL
-			return (
-				normalizedPathname === normalizedUrl ||
-				normalizedPathname.startsWith(`${normalizedUrl}/`)
-			);
-		},
-		[pathname],
-	);
+	const isLinkActive = (url: string) => {
+		const normalizedUrl =
+			url.endsWith("/") && url !== "/" ? url.slice(0, -1) : url;
 
-	const buildHrefWithPeriod = React.useCallback(
-		(url: string) => {
-			if (!periodParam) {
-				return url;
-			}
+		// Verifica se é exatamente igual ou se o pathname começa com a URL
+		return (
+			normalizedPathname === normalizedUrl ||
+			normalizedPathname.startsWith(`${normalizedUrl}/`)
+		);
+	};
 
-			const [rawPathname, existingSearch = ""] = url.split("?");
-			const normalizedPathname =
-				rawPathname.endsWith("/") && rawPathname !== "/"
-					? rawPathname.slice(0, -1)
-					: rawPathname;
+	const buildHrefWithPeriod = (url: string) => {
+		if (!periodParam) {
+			return url;
+		}
 
-			if (!PERIOD_AWARE_PATHS.has(normalizedPathname)) {
-				return url;
-			}
+		const [rawPathname, existingSearch = ""] = url.split("?");
+		const normalizedRawPathname =
+			rawPathname.endsWith("/") && rawPathname !== "/"
+				? rawPathname.slice(0, -1)
+				: rawPathname;
 
-			const params = new URLSearchParams(existingSearch);
-			params.set(MONTH_PERIOD_PARAM, periodParam);
+		if (!PERIOD_AWARE_PATHS.has(normalizedRawPathname)) {
+			return url;
+		}
 
-			const queryString = params.toString();
-			return queryString
-				? `${normalizedPathname}?${queryString}`
-				: normalizedPathname;
-		},
-		[periodParam],
-	);
+		const params = new URLSearchParams(existingSearch);
+		params.set(MONTH_PERIOD_PARAM, periodParam);
+
+		const queryString = params.toString();
+		return queryString
+			? `${normalizedRawPathname}?${queryString}`
+			: normalizedRawPathname;
+	};
 
 	const activeLinkClasses =
 		"data-[active=true]:bg-sidebar-accent data-[active=true]:text-dark! hover:text-primary!";

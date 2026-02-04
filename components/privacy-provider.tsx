@@ -1,7 +1,14 @@
 "use client";
 
 import type React from "react";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+	createContext,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+	useSyncExternalStore,
+} from "react";
 
 interface PrivacyContextType {
 	privacyMode: boolean;
@@ -13,25 +20,41 @@ const PrivacyContext = createContext<PrivacyContextType | undefined>(undefined);
 
 const STORAGE_KEY = "app:privacyMode";
 
+// Read from localStorage safely (returns false on server)
+function getStoredValue(): boolean {
+	if (typeof window === "undefined") return false;
+	return localStorage.getItem(STORAGE_KEY) === "true";
+}
+
+// Subscribe to storage changes
+function subscribeToStorage(callback: () => void) {
+	window.addEventListener("storage", callback);
+	return () => window.removeEventListener("storage", callback);
+}
+
 export function PrivacyProvider({ children }: { children: React.ReactNode }) {
-	const [privacyMode, setPrivacyMode] = useState(false);
-	const [hydrated, setHydrated] = useState(false);
+	// useSyncExternalStore handles hydration safely
+	const storedValue = useSyncExternalStore(
+		subscribeToStorage,
+		getStoredValue,
+		() => false, // Server snapshot
+	);
 
-	// Sincronizar com localStorage na montagem (evitar mismatch SSR/CSR)
-	useEffect(() => {
-		const stored = localStorage.getItem(STORAGE_KEY);
-		if (stored !== null) {
-			setPrivacyMode(stored === "true");
-		}
-		setHydrated(true);
-	}, []);
+	const [privacyMode, setPrivacyMode] = useState(storedValue);
+	const isFirstRender = useRef(true);
 
-	// Persistir mudanças no localStorage
+	// Sync with stored value on mount
 	useEffect(() => {
-		if (hydrated) {
-			localStorage.setItem(STORAGE_KEY, String(privacyMode));
+		if (isFirstRender.current) {
+			setPrivacyMode(storedValue);
+			isFirstRender.current = false;
 		}
-	}, [privacyMode, hydrated]);
+	}, [storedValue]);
+
+	// Persist to localStorage when privacyMode changes
+	useEffect(() => {
+		localStorage.setItem(STORAGE_KEY, String(privacyMode));
+	}, [privacyMode]);
 
 	const toggle = () => {
 		setPrivacyMode((prev) => !prev);

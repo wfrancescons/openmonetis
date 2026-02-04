@@ -4,7 +4,7 @@ import {
 	RiBarChartBoxLine,
 	RiCloseLine,
 } from "@remixicon/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -49,36 +49,37 @@ export function CategoryHistoryWidget({ data }: CategoryHistoryWidgetProps) {
 	const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 	const [isClient, setIsClient] = useState(false);
 	const [open, setOpen] = useState(false);
+	const isFirstRender = useRef(true);
 
-	// Load selected categories from sessionStorage on mount
+	// Load from sessionStorage on mount and save on changes
 	useEffect(() => {
 		setIsClient(true);
 
-		const stored = sessionStorage.getItem(STORAGE_KEY_SELECTED);
-		if (stored) {
-			try {
-				const parsed = JSON.parse(stored);
-				if (Array.isArray(parsed)) {
-					const validCategories = parsed.filter((id) =>
-						data.allCategories.some((cat) => cat.id === id),
-					);
-					setSelectedCategories(validCategories.slice(0, 5));
+		// Only load from storage on first render
+		if (isFirstRender.current) {
+			const stored = sessionStorage.getItem(STORAGE_KEY_SELECTED);
+			if (stored) {
+				try {
+					const parsed = JSON.parse(stored);
+					if (Array.isArray(parsed)) {
+						const validCategories = parsed.filter((id) =>
+							data.allCategories.some((cat) => cat.id === id),
+						);
+						setSelectedCategories(validCategories.slice(0, 5));
+					}
+				} catch (_e) {
+					// Invalid JSON, ignore
 				}
-			} catch (_e) {
-				// Invalid JSON, ignore
 			}
-		}
-	}, [data.allCategories]);
-
-	// Save to sessionStorage when selection changes
-	useEffect(() => {
-		if (isClient) {
+			isFirstRender.current = false;
+		} else {
+			// Save to storage on subsequent changes
 			sessionStorage.setItem(
 				STORAGE_KEY_SELECTED,
 				JSON.stringify(selectedCategories),
 			);
 		}
-	}, [selectedCategories, isClient]);
+	}, [selectedCategories, data.allCategories]);
 
 	// Filter data to show only selected categories with vibrant colors
 	const filteredCategories = useMemo(() => {

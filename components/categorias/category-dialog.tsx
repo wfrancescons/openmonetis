@@ -1,12 +1,6 @@
 "use client";
 
-import {
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-	useTransition,
-} from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
 	createCategoryAction,
@@ -76,14 +70,10 @@ export function CategoryDialog({
 		onOpenChange,
 	);
 
-	const initialState = useMemo(
-		() =>
-			buildInitialValues({
-				category,
-				defaultType,
-			}),
-		[category, defaultType],
-	);
+	const initialState = buildInitialValues({
+		category,
+		defaultType,
+	});
 
 	// Use form state hook for form management
 	const { formState, updateField, setFormState } =
@@ -95,7 +85,7 @@ export function CategoryDialog({
 			setFormState(initialState);
 			setErrorMessage(null);
 		}
-	}, [dialogOpen, initialState, setFormState]);
+	}, [dialogOpen, setFormState, category, defaultType]);
 
 	// Clear error when dialog closes
 	useEffect(() => {
@@ -104,46 +94,43 @@ export function CategoryDialog({
 		}
 	}, [dialogOpen]);
 
-	const handleSubmit = useCallback(
-		(event: React.FormEvent<HTMLFormElement>) => {
-			event.preventDefault();
-			setErrorMessage(null);
+	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		setErrorMessage(null);
 
-			if (mode === "update" && !category?.id) {
-				const message = "Categoria inválida.";
-				setErrorMessage(message);
-				toast.error(message);
+		if (mode === "update" && !category?.id) {
+			const message = "Categoria inválida.";
+			setErrorMessage(message);
+			toast.error(message);
+			return;
+		}
+
+		const payload = {
+			name: formState.name.trim(),
+			type: formState.type,
+			icon: formState.icon.trim(),
+		};
+
+		startTransition(async () => {
+			const result =
+				mode === "create"
+					? await createCategoryAction(payload)
+					: await updateCategoryAction({
+							id: category?.id ?? "",
+							...payload,
+						});
+
+			if (result.success) {
+				toast.success(result.message);
+				setDialogOpen(false);
+				setFormState(initialState);
 				return;
 			}
 
-			const payload = {
-				name: formState.name.trim(),
-				type: formState.type,
-				icon: formState.icon.trim(),
-			};
-
-			startTransition(async () => {
-				const result =
-					mode === "create"
-						? await createCategoryAction(payload)
-						: await updateCategoryAction({
-								id: category?.id ?? "",
-								...payload,
-							});
-
-				if (result.success) {
-					toast.success(result.message);
-					setDialogOpen(false);
-					setFormState(initialState);
-					return;
-				}
-
-				setErrorMessage(result.error);
-				toast.error(result.error);
-			});
-		},
-		[category?.id, formState, initialState, mode, setDialogOpen, setFormState],
-	);
+			setErrorMessage(result.error);
+			toast.error(result.error);
+		});
+	};
 
 	const title = mode === "create" ? "Nova categoria" : "Editar categoria";
 	const description =

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { transferBetweenAccountsAction } from "@/app/(dashboard)/contas/actions";
 import type { AccountData } from "@/app/(dashboard)/contas/data";
@@ -62,15 +62,13 @@ export function TransferDialog({
 	const [period, setPeriod] = useState(currentPeriod);
 
 	// Available destination accounts (exclude source account)
-	const availableAccounts = useMemo(
-		() => accounts.filter((account) => account.id !== fromAccountId),
-		[accounts, fromAccountId],
+	const availableAccounts = accounts.filter(
+		(account) => account.id !== fromAccountId,
 	);
 
 	// Source account info
-	const fromAccount = useMemo(
-		() => accounts.find((account) => account.id === fromAccountId),
-		[accounts, fromAccountId],
+	const fromAccount = accounts.find(
+		(account) => account.id === fromAccountId,
 	);
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

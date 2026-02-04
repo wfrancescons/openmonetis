@@ -3,7 +3,7 @@
 import { RiAddCircleLine, RiBankLine } from "@remixicon/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { deleteAccountAction } from "@/app/(dashboard)/contas/actions";
 import { ConfirmActionDialog } from "@/components/confirm-action-dialog";
@@ -47,45 +47,43 @@ export function AccountsPage({
 
 	const hasAccounts = accounts.length > 0;
 
-	const orderedAccounts = useMemo(() => {
-		return [...accounts].sort((a, b) => {
-			// Coloca inativas no final
-			const aIsInactive = a.status?.toLowerCase() === "inativa";
-			const bIsInactive = b.status?.toLowerCase() === "inativa";
+	const orderedAccounts = [...accounts].sort((a, b) => {
+		// Coloca inativas no final
+		const aIsInactive = a.status?.toLowerCase() === "inativa";
+		const bIsInactive = b.status?.toLowerCase() === "inativa";
 
-			if (aIsInactive && !bIsInactive) return 1;
-			if (!aIsInactive && bIsInactive) return -1;
+		if (aIsInactive && !bIsInactive) return 1;
+		if (!aIsInactive && bIsInactive) return -1;
 
-			// Mesma ordem alfabética dentro de cada grupo
-			return a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" });
-		});
-	}, [accounts]);
+		// Mesma ordem alfabética dentro de cada grupo
+		return a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" });
+	});
 
-	const handleEdit = useCallback((account: Account) => {
+	const handleEdit = (account: Account) => {
 		setSelectedAccount(account);
 		setEditOpen(true);
-	}, []);
+	};
 
-	const handleEditOpenChange = useCallback((open: boolean) => {
+	const handleEditOpenChange = (open: boolean) => {
 		setEditOpen(open);
 		if (!open) {
 			setSelectedAccount(null);
 		}
-	}, []);
+	};
 
-	const handleRemoveRequest = useCallback((account: Account) => {
+	const handleRemoveRequest = (account: Account) => {
 		setAccountToRemove(account);
 		setRemoveOpen(true);
-	}, []);
+	};
 
-	const handleRemoveOpenChange = useCallback((open: boolean) => {
+	const handleRemoveOpenChange = (open: boolean) => {
 		setRemoveOpen(open);
 		if (!open) {
 			setAccountToRemove(null);
 		}
-	}, []);
+	};
 
-	const handleRemoveConfirm = useCallback(async () => {
+	const handleRemoveConfirm = async () => {
 		if (!accountToRemove) {
 			return;
 		}
@@ -99,19 +97,19 @@ export function AccountsPage({
 
 		toast.error(result.error);
 		throw new Error(result.error);
-	}, [accountToRemove]);
+	};
 
-	const handleTransferRequest = useCallback((account: Account) => {
+	const handleTransferRequest = (account: Account) => {
 		setTransferFromAccount(account);
 		setTransferOpen(true);
-	}, []);
+	};
 
-	const handleTransferOpenChange = useCallback((open: boolean) => {
+	const handleTransferOpenChange = (open: boolean) => {
 		setTransferOpen(open);
 		if (!open) {
 			setTransferFromAccount(null);
 		}
-	}, []);
+	};
 
 	const removeTitle = accountToRemove
 		? `Remover conta "${accountToRemove.name}"?`

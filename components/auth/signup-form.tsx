@@ -1,7 +1,7 @@
 "use client";
 import { RiCheckLine, RiCloseLine, RiLoader4Line } from "@remixicon/react";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -90,10 +90,7 @@ export function SignupForm({ className, ...props }: DivProps) {
 	const [loadingEmail, setLoadingEmail] = useState(false);
 	const [loadingGoogle, setLoadingGoogle] = useState(false);
 
-	const passwordValidation = useMemo(
-		() => validatePassword(password),
-		[password],
-	);
+	const passwordValidation = validatePassword(password);
 
 	async function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();

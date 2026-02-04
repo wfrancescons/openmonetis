@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 
 import { MONTH_NAMES } from "@/lib/utils/period";
 
@@ -46,29 +46,23 @@ export function useMonthPeriod() {
 		};
 	}, [periodFromParams, defaultMonth, defaultYear, optionsMeses]);
 
-	const buildHref = useCallback(
-		(month: string, year: string | number) => {
-			const normalizedMonth = normalizeMonth(month);
-			const normalizedYear = String(year).trim();
+	const buildHref = (month: string, year: string | number) => {
+		const normalizedMonth = normalizeMonth(month);
+		const normalizedYear = String(year).trim();
 
-			const params = new URLSearchParams(searchParams.toString());
-			params.set(PERIOD_PARAM, `${normalizedMonth}-${normalizedYear}`);
+		const params = new URLSearchParams(searchParams.toString());
+		params.set(PERIOD_PARAM, `${normalizedMonth}-${normalizedYear}`);
 
-			return `${pathname}?${params.toString()}`;
-		},
-		[pathname, searchParams],
-	);
+		return `${pathname}?${params.toString()}`;
+	};
 
-	const replacePeriod = useCallback(
-		(target: string) => {
-			if (!target) {
-				return;
-			}
+	const replacePeriod = (target: string) => {
+		if (!target) {
+			return;
+		}
 
-			router.replace(target, { scroll: false });
-		},
-		[router],
-	);
+		router.replace(target, { scroll: false });
+	};
 
 	return {
 		monthNames: optionsMeses,

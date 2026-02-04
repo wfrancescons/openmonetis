@@ -1,12 +1,6 @@
 "use client";
 
-import {
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-	useTransition,
-} from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
 	createBudgetAction,
@@ -79,14 +73,10 @@ export function BudgetDialog({
 		onOpenChange,
 	);
 
-	const initialState = useMemo(
-		() =>
-			buildInitialValues({
-				budget,
-				defaultPeriod,
-			}),
-		[budget, defaultPeriod],
-	);
+	const initialState = buildInitialValues({
+		budget,
+		defaultPeriod,
+	});
 
 	// Use form state hook for form management
 	const { formState, updateField, setFormState } =
@@ -98,7 +88,7 @@ export function BudgetDialog({
 			setFormState(initialState);
 			setErrorMessage(null);
 		}
-	}, [dialogOpen, initialState, setFormState]);
+	}, [dialogOpen, setFormState, budget, defaultPeriod]);
 
 	// Clear error when dialog closes
 	useEffect(() => {
@@ -107,67 +97,64 @@ export function BudgetDialog({
 		}
 	}, [dialogOpen]);
 
-	const handleSubmit = useCallback(
-		(event: React.FormEvent<HTMLFormElement>) => {
-			event.preventDefault();
-			setErrorMessage(null);
+	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		setErrorMessage(null);
 
-			if (mode === "update" && !budget?.id) {
-				const message = "Orçamento inválido.";
-				setErrorMessage(message);
-				toast.error(message);
+		if (mode === "update" && !budget?.id) {
+			const message = "Orçamento inválido.";
+			setErrorMessage(message);
+			toast.error(message);
+			return;
+		}
+
+		if (formState.categoriaId.length === 0) {
+			const message = "Selecione uma categoria.";
+			setErrorMessage(message);
+			toast.error(message);
+			return;
+		}
+
+		if (formState.period.length === 0) {
+			const message = "Informe o período.";
+			setErrorMessage(message);
+			toast.error(message);
+			return;
+		}
+
+		if (formState.amount.length === 0) {
+			const message = "Informe o valor limite.";
+			setErrorMessage(message);
+			toast.error(message);
+			return;
+		}
+
+		const payload = {
+			categoriaId: formState.categoriaId,
+			period: formState.period,
+			amount: formState.amount,
+		};
+
+		startTransition(async () => {
+			const result =
+				mode === "create"
+					? await createBudgetAction(payload)
+					: await updateBudgetAction({
+							id: budget?.id ?? "",
+							...payload,
+						});
+
+			if (result.success) {
+				toast.success(result.message);
+				setDialogOpen(false);
+				setFormState(initialState);
 				return;
 			}
 
-			if (formState.categoriaId.length === 0) {
-				const message = "Selecione uma categoria.";
-				setErrorMessage(message);
-				toast.error(message);
-				return;
-			}
-
-			if (formState.period.length === 0) {
-				const message = "Informe o período.";
-				setErrorMessage(message);
-				toast.error(message);
-				return;
-			}
-
-			if (formState.amount.length === 0) {
-				const message = "Informe o valor limite.";
-				setErrorMessage(message);
-				toast.error(message);
-				return;
-			}
-
-			const payload = {
-				categoriaId: formState.categoriaId,
-				period: formState.period,
-				amount: formState.amount,
-			};
-
-			startTransition(async () => {
-				const result =
-					mode === "create"
-						? await createBudgetAction(payload)
-						: await updateBudgetAction({
-								id: budget?.id ?? "",
-								...payload,
-							});
-
-				if (result.success) {
-					toast.success(result.message);
-					setDialogOpen(false);
-					setFormState(initialState);
-					return;
-				}
-
-				setErrorMessage(result.error);
-				toast.error(result.error);
-			});
-		},
-		[budget?.id, formState, initialState, mode, setDialogOpen, setFormState],
-	);
+			setErrorMessage(result.error);
+			toast.error(result.error);
+		});
+	};
 
 	const title = mode === "create" ? "Novo orçamento" : "Editar orçamento";
 	const description =

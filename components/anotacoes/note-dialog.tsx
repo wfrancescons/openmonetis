@@ -3,7 +3,6 @@
 import { RiAddLine, RiDeleteBinLine } from "@remixicon/react";
 import {
 	type ReactNode,
-	useCallback,
 	useEffect,
 	useRef,
 	useState,
@@ -121,24 +120,18 @@ export function NoteDialog({
 
 	const disableSubmit = isPending || onlySpaces || unchanged || invalidLen;
 
-	const handleOpenChange = useCallback(
-		(v: boolean) => {
-			setDialogOpen(v);
-			if (!v) setErrorMessage(null);
-		},
-		[setDialogOpen],
-	);
+	const handleOpenChange = (v: boolean) => {
+		setDialogOpen(v);
+		if (!v) setErrorMessage(null);
+	};
 
-	const handleKeyDown = useCallback(
-		(e: React.KeyboardEvent) => {
-			if ((e.ctrlKey || e.metaKey) && e.key === "Enter")
-				(e.currentTarget as HTMLFormElement).requestSubmit();
-			if (e.key === "Escape") handleOpenChange(false);
-		},
-		[handleOpenChange],
-	);
+	const handleKeyDown = (e: React.KeyboardEvent) => {
+		if ((e.ctrlKey || e.metaKey) && e.key === "Enter")
+			(e.currentTarget as HTMLFormElement).requestSubmit();
+		if (e.key === "Escape") handleOpenChange(false);
+	};
 
-	const handleAddTask = useCallback(() => {
+	const handleAddTask = () => {
 		const text = normalize(newTaskText);
 		if (!text) return;
 
@@ -151,97 +144,77 @@ export function NoteDialog({
 		updateField("tasks", [...(formState.tasks || []), newTask]);
 		setNewTaskText("");
 		requestAnimationFrame(() => newTaskRef.current?.focus());
-	}, [newTaskText, formState.tasks, updateField]);
+	};
 
-	const handleRemoveTask = useCallback(
-		(taskId: string) => {
-			updateField(
-				"tasks",
-				(formState.tasks || []).filter((t) => t.id !== taskId),
-			);
-		},
-		[formState.tasks, updateField],
-	);
+	const handleRemoveTask = (taskId: string) => {
+		updateField(
+			"tasks",
+			(formState.tasks || []).filter((t) => t.id !== taskId),
+		);
+	};
 
-	const handleToggleTask = useCallback(
-		(taskId: string) => {
-			updateField(
-				"tasks",
-				(formState.tasks || []).map((t) =>
-					t.id === taskId ? { ...t, completed: !t.completed } : t,
-				),
-			);
-		},
-		[formState.tasks, updateField],
-	);
+	const handleToggleTask = (taskId: string) => {
+		updateField(
+			"tasks",
+			(formState.tasks || []).map((t) =>
+				t.id === taskId ? { ...t, completed: !t.completed } : t,
+			),
+		);
+	};
 
-	const handleSubmit = useCallback(
-		(e: React.FormEvent<HTMLFormElement>) => {
-			e.preventDefault();
-			setErrorMessage(null);
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		setErrorMessage(null);
 
-			const payload = {
-				title: normalize(formState.title),
-				description: formState.description.trim(),
-				type: formState.type,
-				tasks: formState.tasks,
-			};
+		const payload = {
+			title: normalize(formState.title),
+			description: formState.description.trim(),
+			type: formState.type,
+			tasks: formState.tasks,
+		};
 
-			if (onlySpaces || invalidLen) {
-				setErrorMessage("Preencha os campos respeitando os limites.");
-				titleRef.current?.focus();
-				return;
-			}
+		if (onlySpaces || invalidLen) {
+			setErrorMessage("Preencha os campos respeitando os limites.");
+			titleRef.current?.focus();
+			return;
+		}
 
-			if (mode === "update" && !note?.id) {
-				const msg = "Não foi possível identificar a anotação a ser editada.";
-				setErrorMessage(msg);
-				toast.error(msg);
-				return;
-			}
+		if (mode === "update" && !note?.id) {
+			const msg = "Não foi possível identificar a anotação a ser editada.";
+			setErrorMessage(msg);
+			toast.error(msg);
+			return;
+		}
 
-			if (unchanged) {
-				toast.info("Nada para atualizar.");
-				return;
-			}
+		if (unchanged) {
+			toast.info("Nada para atualizar.");
+			return;
+		}
 
-			startTransition(async () => {
-				let result;
-				if (mode === "create") {
-					result = await createNoteAction(payload);
-				} else {
-					if (!note?.id) {
-						const msg = "ID da anotação não encontrado.";
-						setErrorMessage(msg);
-						toast.error(msg);
-						return;
-					}
-					result = await updateNoteAction({ id: note.id, ...payload });
-				}
-
-				if (result.success) {
-					toast.success(result.message);
-					setDialogOpen(false);
+		startTransition(async () => {
+			let result;
+			if (mode === "create") {
+				result = await createNoteAction(payload);
+			} else {
+				if (!note?.id) {
+					const msg = "ID da anotação não encontrado.";
+					setErrorMessage(msg);
+					toast.error(msg);
 					return;
 				}
-				setErrorMessage(result.error);
-				toast.error(result.error);
-				titleRef.current?.focus();
-			});
-		},
-		[
-			formState.title,
-			formState.description,
-			formState.type,
-			formState.tasks,
-			mode,
-			note,
-			setDialogOpen,
-			onlySpaces,
-			unchanged,
-			invalidLen,
-		],
-	);
+				result = await updateNoteAction({ id: note.id, ...payload });
+			}
+
+			if (result.success) {
+				toast.success(result.message);
+				setDialogOpen(false);
+				return;
+			}
+			setErrorMessage(result.error);
+			toast.error(result.error);
+			titleRef.current?.focus();
+		});
+	};
 
 	return (
 		<Dialog open={dialogOpen} onOpenChange={handleOpenChange}>

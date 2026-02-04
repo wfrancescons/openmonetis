@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Button } from "../ui/button";
 
 interface ReturnButtonProps {
@@ -8,7 +7,7 @@ interface ReturnButtonProps {
 	onClick: () => void;
 }
 
-const ReturnButton = React.memo(({ disabled, onClick }: ReturnButtonProps) => {
+export default function ReturnButton({ disabled, onClick }: ReturnButtonProps) {
 	return (
 		<Button
 			className="w-32 h-6 rounded-sm lowercase"
@@ -20,8 +19,4 @@ const ReturnButton = React.memo(({ disabled, onClick }: ReturnButtonProps) => {
 			Ir para Mês Atual
 		</Button>
 	);
-});
-
-ReturnButton.displayName = "ReturnButton";
-
-export default ReturnButton;
+}

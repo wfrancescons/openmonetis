@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 /**
  * Hook for managing form state with type-safe field updates
@@ -22,26 +22,23 @@ export function useFormState<T extends Record<string, any>>(initialValues: T) {
 	/**
 	 * Updates a single field in the form state
 	 */
-	const updateField = useCallback(
-		<K extends keyof T>(field: K, value: T[K]) => {
-			setFormState((prev) => ({ ...prev, [field]: value }));
-		},
-		[],
-	);
+	const updateField = <K extends keyof T>(field: K, value: T[K]) => {
+		setFormState((prev) => ({ ...prev, [field]: value }));
+	};
 
 	/**
 	 * Resets form to initial values
 	 */
-	const resetForm = useCallback(() => {
+	const resetForm = () => {
 		setFormState(initialValues);
-	}, [initialValues]);
+	};
 
 	/**
 	 * Updates multiple fields at once
 	 */
-	const updateFields = useCallback((updates: Partial<T>) => {
+	const updateFields = (updates: Partial<T>) => {
 		setFormState((prev) => ({ ...prev, ...updates }));
-	}, []);
+	};
 
 	return {
 		formState,
