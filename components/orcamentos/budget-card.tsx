@@ -76,13 +76,13 @@ export function BudgetCard({
 						<MoneyValues amount={limit} className="text-foreground" />
 					</div>
 
-					<div className="mt-2">
+					<div>
 						{exceeded ? (
 							<div className="text-xs text-red-500">
 								Excedeu em <MoneyValues amount={difference} />
 							</div>
 						) : (
-							<div className="text-sm text-green-600">
+							<div className="text-xs text-green-600">
 								Restam <MoneyValues amount={Math.max(limit - spent, 0)} />{" "}
 								disponíveis.
 							</div>

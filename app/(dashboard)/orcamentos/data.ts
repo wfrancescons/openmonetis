@@ -1,11 +1,14 @@
-import { and, asc, eq, inArray, sum } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull, or, sql, sum } from "drizzle-orm";
 import {
 	categorias,
 	lancamentos,
 	type Orcamento,
 	orcamentos,
+	pagadores,
 } from "@/db/schema";
+import { ACCOUNT_AUTO_INVOICE_NOTE_PREFIX } from "@/lib/accounts/constants";
 import { db } from "@/lib/db";
+import { PAGADOR_ROLE_ADMIN } from "@/lib/pagadores/constants";
 
 const toNumber = (value: string | number | null | undefined) => {
 	if (typeof value === "number") return value;
@@ -76,12 +79,18 @@ export async function fetchBudgetsForUser(
 				totalAmount: sum(lancamentos.amount).as("totalAmount"),
 			})
 			.from(lancamentos)
+			.innerJoin(pagadores, eq(lancamentos.pagadorId, pagadores.id))
 			.where(
 				and(
 					eq(lancamentos.userId, userId),
 					eq(lancamentos.period, selectedPeriod),
 					eq(lancamentos.transactionType, "Despesa"),
+					eq(pagadores.role, PAGADOR_ROLE_ADMIN),
 					inArray(lancamentos.categoriaId, categoryIds),
+					or(
+						isNull(lancamentos.note),
+						sql`${lancamentos.note} NOT LIKE ${`${ACCOUNT_AUTO_INVOICE_NOTE_PREFIX}%`}`,
+					),
 				),
 			)
 			.groupBy(lancamentos.categoriaId);
