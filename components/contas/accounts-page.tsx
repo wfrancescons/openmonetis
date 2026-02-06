@@ -10,6 +10,7 @@ import { ConfirmActionDialog } from "@/components/confirm-action-dialog";
 import { AccountCard } from "@/components/contas/account-card";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getCurrentPeriod } from "@/lib/utils/period";
 import { Card } from "../ui/card";
 import { AccountDialog } from "./account-dialog";
@@ -18,8 +19,8 @@ import type { Account } from "./types";
 
 interface AccountsPageProps {
 	accounts: Account[];
+	archivedAccounts: Account[];
 	logoOptions: string[];
-	isInativos?: boolean;
 }
 
 const resolveLogoSrc = (logo: string | null) => {
@@ -33,10 +34,11 @@ const resolveLogoSrc = (logo: string | null) => {
 
 export function AccountsPage({
 	accounts,
+	archivedAccounts,
 	logoOptions,
-	isInativos = false,
 }: AccountsPageProps) {
 	const router = useRouter();
+	const [activeTab, setActiveTab] = useState("ativos");
 	const [editOpen, setEditOpen] = useState(false);
 	const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
 	const [removeOpen, setRemoveOpen] = useState(false);
@@ -45,19 +47,13 @@ export function AccountsPage({
 	const [transferFromAccount, setTransferFromAccount] =
 		useState<Account | null>(null);
 
-	const hasAccounts = accounts.length > 0;
+	const sortAccounts = (list: Account[]) =>
+		[...list].sort((a, b) =>
+			a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" }),
+		);
 
-	const orderedAccounts = [...accounts].sort((a, b) => {
-		// Coloca inativas no final
-		const aIsInactive = a.status?.toLowerCase() === "inativa";
-		const bIsInactive = b.status?.toLowerCase() === "inativa";
-
-		if (aIsInactive && !bIsInactive) return 1;
-		if (!aIsInactive && bIsInactive) return -1;
-
-		// Mesma ordem alfabética dentro de cada grupo
-		return a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" });
-	});
+	const orderedAccounts = sortAccounts(accounts);
+	const orderedArchivedAccounts = sortAccounts(archivedAccounts);
 
 	const handleEdit = (account: Account) => {
 		setSelectedAccount(account);
@@ -115,6 +111,67 @@ export function AccountsPage({
 		? `Remover conta "${accountToRemove.name}"?`
 		: "Remover conta?";
 
+	const renderAccountList = (list: Account[], isArchived: boolean) => {
+		if (list.length === 0) {
+			return (
+				<Card className="flex min-h-[50vh] w-full items-center justify-center py-12">
+					<EmptyState
+						media={<RiBankLine className="size-6 text-primary" />}
+						title={
+							isArchived
+								? "Nenhuma conta arquivada"
+								: "Nenhuma conta cadastrada"
+						}
+						description={
+							isArchived
+								? "As contas arquivadas aparecerão aqui."
+								: "Cadastre sua primeira conta para começar a organizar os lançamentos."
+						}
+					/>
+				</Card>
+			);
+		}
+
+		return (
+			<div className="flex flex-wrap gap-4">
+				{list.map((account) => {
+					const logoSrc = resolveLogoSrc(account.logo);
+
+					return (
+						<AccountCard
+							key={account.id}
+							accountName={account.name}
+							accountType={`${account.accountType}`}
+							balance={account.balance ?? account.initialBalance ?? 0}
+							status={account.status}
+							excludeFromBalance={account.excludeFromBalance}
+							excludeInitialBalanceFromIncome={
+								account.excludeInitialBalanceFromIncome
+							}
+							icon={
+								logoSrc ? (
+									<Image
+										src={logoSrc}
+										alt={`Logo da conta ${account.name}`}
+										width={42}
+										height={42}
+										className="rounded-lg"
+									/>
+								) : undefined
+							}
+							onEdit={() => handleEdit(account)}
+							onRemove={() => handleRemoveRequest(account)}
+							onTransfer={() => handleTransferRequest(account)}
+							onViewStatement={() =>
+								router.push(`/contas/${account.id}/extrato`)
+							}
+						/>
+					);
+				})}
+			</div>
+		);
+	};
+
 	return (
 		<>
 			<div className="flex w-full flex-col gap-6">
@@ -131,60 +188,20 @@ export function AccountsPage({
 					/>
 				</div>
 
-				{hasAccounts ? (
-					<div className="flex flex-wrap gap-4">
-						{orderedAccounts.map((account) => {
-							const logoSrc = resolveLogoSrc(account.logo);
+				<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+					<TabsList>
+						<TabsTrigger value="ativos">Ativas</TabsTrigger>
+						<TabsTrigger value="arquivados">Arquivadas</TabsTrigger>
+					</TabsList>
 
-							return (
-								<AccountCard
-									key={account.id}
-									accountName={account.name}
-									accountType={`${account.accountType}`}
-									balance={account.balance ?? account.initialBalance ?? 0}
-									status={account.status}
-									excludeFromBalance={account.excludeFromBalance}
-									excludeInitialBalanceFromIncome={
-										account.excludeInitialBalanceFromIncome
-									}
-									icon={
-										logoSrc ? (
-											<Image
-												src={logoSrc}
-												alt={`Logo da conta ${account.name}`}
-												width={42}
-												height={42}
-												className="rounded-lg"
-											/>
-										) : undefined
-									}
-									onEdit={() => handleEdit(account)}
-									onRemove={() => handleRemoveRequest(account)}
-									onTransfer={() => handleTransferRequest(account)}
-									onViewStatement={() =>
-										router.push(`/contas/${account.id}/extrato`)
-									}
-								/>
-							);
-						})}
-					</div>
-				) : (
-					<Card className="flex min-h-[50vh] w-full items-center justify-center py-12">
-						<EmptyState
-							media={<RiBankLine className="size-6 text-primary" />}
-							title={
-								isInativos
-									? "Nenhuma conta inativa"
-									: "Nenhuma conta cadastrada"
-							}
-							description={
-								isInativos
-									? "Não há contas inativas no momento."
-									: "Cadastre sua primeira conta para começar a organizar os lançamentos."
-							}
-						/>
-					</Card>
-				)}
+					<TabsContent value="ativos" className="mt-4">
+						{renderAccountList(orderedAccounts, false)}
+					</TabsContent>
+
+					<TabsContent value="arquivados" className="mt-4">
+						{renderAccountList(orderedArchivedAccounts, true)}
+					</TabsContent>
+				</Tabs>
 			</div>
 
 			<AccountDialog

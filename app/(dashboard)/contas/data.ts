@@ -169,3 +169,20 @@ export async function fetchInativosForUser(
 
 	return { accounts, logoOptions };
 }
+
+export async function fetchAllAccountsForUser(userId: string): Promise<{
+	activeAccounts: AccountData[];
+	archivedAccounts: AccountData[];
+	logoOptions: LogoOption[];
+}> {
+	const [activeData, archivedData] = await Promise.all([
+		fetchAccountsForUser(userId),
+		fetchInativosForUser(userId),
+	]);
+
+	return {
+		activeAccounts: activeData.accounts,
+		archivedAccounts: archivedData.accounts,
+		logoOptions: activeData.logoOptions,
+	};
+}

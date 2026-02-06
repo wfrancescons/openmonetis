@@ -5,6 +5,15 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.3.1] - 2026-02-06
+
+### Alterado
+
+- Unificadas páginas de itens ativos e arquivados em Cartões, Contas e Anotações com sistema de tabs (padrão Categorias)
+- Removidas rotas separadas `/cartoes/inativos`, `/contas/inativos` e `/anotacoes/arquivadas`
+- Removidos sub-links de inativos/arquivados da sidebar
+- Padronizada nomenclatura para "Arquivados"/"Arquivadas" em todas as entidades
+
 ## [1.3.0] - 2026-02-06
 
 ### Adicionado

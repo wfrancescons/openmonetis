@@ -1,17 +1,14 @@
 import {
 	type RemixiconComponentType,
-	RiArchiveLine,
 	RiArrowLeftRightLine,
 	RiBankCard2Line,
 	RiBankLine,
 	RiCalendarEventLine,
 	RiDashboardLine,
-	RiEyeOffLine,
 	RiFileChartLine,
 	RiFundsLine,
 	RiGroupLine,
 	RiInboxLine,
-	RiNoCreditCardLine,
 	RiPriceTag3Line,
 	RiSettings2Line,
 	RiSparklingLine,
@@ -116,27 +113,11 @@ export function createSidebarNavData(
 						title: "Cartões",
 						url: "/cartoes",
 						icon: RiBankCard2Line,
-						items: [
-							{
-								title: "Inativos",
-								url: "/cartoes/inativos",
-								key: "cartoes-inativos",
-								icon: RiNoCreditCardLine,
-							},
-						],
 					},
 					{
 						title: "Contas",
 						url: "/contas",
 						icon: RiBankLine,
-						items: [
-							{
-								title: "Inativas",
-								url: "/contas/inativos",
-								key: "contas-inativos",
-								icon: RiEyeOffLine,
-							},
-						],
 					},
 					{
 						title: "Orçamentos",
@@ -163,14 +144,6 @@ export function createSidebarNavData(
 						title: "Anotações",
 						url: "/anotacoes",
 						icon: RiTodoLine,
-						items: [
-							{
-								title: "Arquivadas",
-								url: "/anotacoes/arquivadas",
-								key: "anotacoes-arquivadas",
-								icon: RiArchiveLine,
-							},
-						],
 					},
 				],
 			},

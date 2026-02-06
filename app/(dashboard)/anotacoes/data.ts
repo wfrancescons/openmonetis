@@ -52,6 +52,17 @@ export async function fetchNotesForUser(userId: string): Promise<NoteData[]> {
 	});
 }
 
+export async function fetchAllNotesForUser(
+	userId: string,
+): Promise<{ activeNotes: NoteData[]; archivedNotes: NoteData[] }> {
+	const [activeNotes, archivedNotes] = await Promise.all([
+		fetchNotesForUser(userId),
+		fetchArquivadasForUser(userId),
+	]);
+
+	return { activeNotes, archivedNotes };
+}
+
 export async function fetchArquivadasForUser(
 	userId: string,
 ): Promise<NoteData[]> {

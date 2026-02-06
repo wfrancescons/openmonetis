@@ -211,3 +211,22 @@ export async function fetchInativosForUser(userId: string): Promise<{
 
 	return { cards, accounts, logoOptions };
 }
+
+export async function fetchAllCardsForUser(userId: string): Promise<{
+	activeCards: CardData[];
+	archivedCards: CardData[];
+	accounts: AccountSimple[];
+	logoOptions: LogoOption[];
+}> {
+	const [activeData, archivedData] = await Promise.all([
+		fetchCardsForUser(userId),
+		fetchInativosForUser(userId),
+	]);
+
+	return {
+		activeCards: activeData.cards,
+		archivedCards: archivedData.cards,
+		accounts: activeData.accounts,
+		logoOptions: activeData.logoOptions,
+	};
+}

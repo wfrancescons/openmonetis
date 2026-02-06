@@ -9,6 +9,7 @@ import { ConfirmActionDialog } from "@/components/confirm-action-dialog";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CardDialog } from "./card-dialog";
 import { CardItem } from "./card-item";
 
@@ -19,39 +20,36 @@ type AccountOption = {
 
 interface CardsPageProps {
 	cards: Card[];
+	archivedCards: Card[];
 	accounts: AccountOption[];
 	logoOptions: string[];
-	isInativos?: boolean;
 }
 
 export function CardsPage({
 	cards,
+	archivedCards,
 	accounts,
 	logoOptions,
-	isInativos = false,
 }: CardsPageProps) {
 	const router = useRouter();
+	const [activeTab, setActiveTab] = useState("ativos");
 	const [editOpen, setEditOpen] = useState(false);
 	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 	const [removeOpen, setRemoveOpen] = useState(false);
 	const [cardToRemove, setCardToRemove] = useState<Card | null>(null);
 
-	const hasCards = cards.length > 0;
+	const sortCards = useCallback(
+		(list: Card[]) =>
+			[...list].sort((a, b) =>
+				a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" }),
+			),
+		[],
+	);
 
-	const orderedCards = useMemo(
-		() =>
-			[...cards].sort((a, b) => {
-				// Coloca inativos no final
-				const aIsInactive = a.status?.toLowerCase() === "inativo";
-				const bIsInactive = b.status?.toLowerCase() === "inativo";
-
-				if (aIsInactive && !bIsInactive) return 1;
-				if (!aIsInactive && bIsInactive) return -1;
-
-				// Mesma ordem alfabética dentro de cada grupo
-				return a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" });
-			}),
-		[cards],
+	const orderedCards = useMemo(() => sortCards(cards), [cards, sortCards]);
+	const orderedArchivedCards = useMemo(
+		() => sortCards(archivedCards),
+		[archivedCards, sortCards],
 	);
 
 	const handleEdit = useCallback((card: Card) => {
@@ -105,64 +103,83 @@ export function CardsPage({
 		? `Remover cartão "${cardToRemove.name}"?`
 		: "Remover cartão?";
 
+	const renderCardList = (list: Card[], isArchived: boolean) => {
+		if (list.length === 0) {
+			return (
+				<Card className="flex w-full items-center justify-center py-12">
+					<EmptyState
+						media={<RiBankCard2Line className="size-6 text-primary" />}
+						title={
+							isArchived
+								? "Nenhum cartão arquivado"
+								: "Nenhum cartão cadastrado"
+						}
+						description={
+							isArchived
+								? "Os cartões arquivados aparecerão aqui."
+								: "Adicione seu primeiro cartão para acompanhar limites e faturas com mais controle."
+						}
+					/>
+				</Card>
+			);
+		}
+
+		return (
+			<div className="flex flex-wrap gap-4">
+				{list.map((card) => (
+					<CardItem
+						key={card.id}
+						name={card.name}
+						brand={card.brand}
+						status={card.status}
+						closingDay={card.closingDay}
+						dueDay={card.dueDay}
+						limit={card.limit}
+						limitInUse={card.limitInUse ?? null}
+						limitAvailable={card.limitAvailable ?? card.limit ?? null}
+						contaName={card.contaName}
+						logo={card.logo}
+						note={card.note}
+						onEdit={() => handleEdit(card)}
+						onInvoice={() => handleInvoice(card)}
+						onRemove={() => handleRemoveRequest(card)}
+					/>
+				))}
+			</div>
+		);
+	};
+
 	return (
 		<>
 			<div className="flex w-full flex-col gap-6">
-				{!isInativos && (
-					<div className="flex justify-start">
-						<CardDialog
-							mode="create"
-							accounts={accounts}
-							logoOptions={logoOptions}
-							trigger={
-								<Button>
-									<RiAddCircleLine className="size-4" />
-									Novo cartão
-								</Button>
-							}
-						/>
-					</div>
-				)}
+				<div className="flex justify-start">
+					<CardDialog
+						mode="create"
+						accounts={accounts}
+						logoOptions={logoOptions}
+						trigger={
+							<Button>
+								<RiAddCircleLine className="size-4" />
+								Novo cartão
+							</Button>
+						}
+					/>
+				</div>
 
-				{hasCards ? (
-					<div className="flex flex-wrap gap-4">
-						{orderedCards.map((card) => (
-							<CardItem
-								key={card.id}
-								name={card.name}
-								brand={card.brand}
-								status={card.status}
-								closingDay={card.closingDay}
-								dueDay={card.dueDay}
-								limit={card.limit}
-								limitInUse={card.limitInUse ?? null}
-								limitAvailable={card.limitAvailable ?? card.limit ?? null}
-								contaName={card.contaName}
-								logo={card.logo}
-								note={card.note}
-								onEdit={() => handleEdit(card)}
-								onInvoice={() => handleInvoice(card)}
-								onRemove={() => handleRemoveRequest(card)}
-							/>
-						))}
-					</div>
-				) : (
-					<Card className="flex w-full items-center justify-center py-12">
-						<EmptyState
-							media={<RiBankCard2Line className="size-6 text-primary" />}
-							title={
-								isInativos
-									? "Nenhum cartão inativo"
-									: "Nenhum cartão cadastrado"
-							}
-							description={
-								isInativos
-									? "Os cartões inativos aparecerão aqui."
-									: "Adicione seu primeiro cartão para acompanhar limites e faturas com mais controle."
-							}
-						/>
-					</Card>
-				)}
+				<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+					<TabsList>
+						<TabsTrigger value="ativos">Ativos</TabsTrigger>
+						<TabsTrigger value="arquivados">Arquivados</TabsTrigger>
+					</TabsList>
+
+					<TabsContent value="ativos" className="mt-4">
+						{renderCardList(orderedCards, false)}
+					</TabsContent>
+
+					<TabsContent value="arquivados" className="mt-4">
+						{renderCardList(orderedArchivedCards, true)}
+					</TabsContent>
+				</Tabs>
 			</div>
 
 			<CardDialog
