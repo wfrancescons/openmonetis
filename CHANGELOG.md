@@ -11,6 +11,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 - Calculadora arrastável via drag handle no header do dialog
 - Callback `onSelectValue` na calculadora para inserir valor diretamente no campo de lançamento
+- Aba "Changelog" em Ajustes com histórico de versões parseado do CHANGELOG.md
 
 ### Alterado
 
