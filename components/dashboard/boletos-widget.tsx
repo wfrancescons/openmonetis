@@ -182,8 +182,7 @@ export function BoletosWidget({ boletos }: BoletosWidgetProps) {
 												<span
 													className={cn(
 														"rounded-full py-0.5",
-														boleto.isSettled &&
-															"text-green-600 dark:text-green-400",
+														boleto.isSettled && "text-success",
 													)}
 												>
 													{statusLabel}
@@ -203,7 +202,7 @@ export function BoletosWidget({ boletos }: BoletosWidgetProps) {
 											onClick={() => handleOpenModal(boleto.id)}
 										>
 											{boleto.isSettled ? (
-												<span className="flex items-center gap-1 text-green-600 dark:text-green-400">
+												<span className="flex items-center gap-1 text-success">
 													<RiCheckboxCircleFill className="size-3" /> Pago
 												</span>
 											) : (
@@ -248,7 +247,7 @@ export function BoletosWidget({ boletos }: BoletosWidgetProps) {
 				>
 					{modalState === "success" ? (
 						<div className="flex flex-col items-center gap-4 py-6 text-center">
-							<div className="flex size-16 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500">
+							<div className="flex size-16 items-center justify-center rounded-full bg-success/10 text-success">
 								<RiCheckboxCircleLine className="size-8" />
 							</div>
 							<div className="space-y-2">

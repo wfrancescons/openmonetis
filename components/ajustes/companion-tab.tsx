@@ -75,7 +75,7 @@ export function CompanionTab({ tokens }: CompanionTabProps) {
 				<div>
 					<div className="flex items-center gap-2 mb-1">
 						<h2 className="text-lg font-bold">OpenSheets Companion</h2>
-						<span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
+						<span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success dark:bg-success/10">
 							<RiAndroidLine className="h-3 w-3" />
 							Android
 						</span>

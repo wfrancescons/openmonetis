@@ -365,7 +365,7 @@ export function AnticipateInstallmentsDialog({
 								{Number(formState.discount) > 0 && (
 									<div className="flex items-center justify-between">
 										<dt className="text-muted-foreground">Desconto</dt>
-										<dd className="font-medium tabular-nums text-green-600">
+										<dd className="font-medium tabular-nums text-success">
 											-{" "}
 											<MoneyValues
 												amount={Number(formState.discount)}

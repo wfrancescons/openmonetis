@@ -383,7 +383,7 @@ export function NoteDialog({
 												className="flex items-center gap-3 px-3 py-2 flex-row mt-1"
 											>
 												<Checkbox
-													className="data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
+													className="data-[state=checked]:bg-success data-[state=checked]:border-success"
 													checked={task.completed}
 													onCheckedChange={() => handleToggleTask(task.id)}
 													disabled={isPending}

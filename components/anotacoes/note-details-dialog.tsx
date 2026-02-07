@@ -79,7 +79,7 @@ export function NoteDetailsDialog({
 								<div
 									className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border ${
 										task.completed
-											? "bg-green-600 border-green-600"
+											? "bg-success border-success"
 											: "border-input"
 									}`}
 								>

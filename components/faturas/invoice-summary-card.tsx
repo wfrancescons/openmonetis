@@ -93,7 +93,7 @@ const getCardStatusDotColor = (status: string | null) => {
 	if (!status) return "bg-gray-400";
 	const normalizedStatus = status.toLowerCase();
 	if (normalizedStatus === "ativo" || normalizedStatus === "active") {
-		return "bg-green-500";
+		return "bg-success";
 	}
 	return "bg-gray-400";
 };

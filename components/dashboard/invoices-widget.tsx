@@ -358,7 +358,7 @@ export function InvoicesWidget({ invoices }: InvoicesWidgetProps) {
 											<div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
 												{!isPaid ? <span>{dueInfo.label}</span> : null}
 												{isPaid && paymentInfo ? (
-													<span className="text-green-600 dark:text-green-400">
+													<span className="text-success">
 														{paymentInfo.label}
 													</span>
 												) : null}
@@ -378,7 +378,7 @@ export function InvoicesWidget({ invoices }: InvoicesWidgetProps) {
 												className="p-0 h-auto disabled:opacity-100"
 											>
 												{isPaid ? (
-													<span className="text-green-600 dark:text-green-400 flex items-center gap-1">
+													<span className="text-success flex items-center gap-1">
 														<RiCheckboxCircleFill className="size-3" /> Pago
 													</span>
 												) : (
@@ -421,7 +421,7 @@ export function InvoicesWidget({ invoices }: InvoicesWidgetProps) {
 				>
 					{modalState === "success" ? (
 						<div className="flex flex-col items-center gap-4 py-6 text-center">
-							<div className="flex size-16 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500">
+							<div className="flex size-16 items-center justify-center rounded-full bg-success/10 text-success">
 								<RiCheckboxCircleLine className="size-8" />
 							</div>
 							<div className="space-y-2">
@@ -489,7 +489,7 @@ export function InvoicesWidget({ invoices }: InvoicesWidgetProps) {
 											) : null}
 											{selectedInvoice.paymentStatus ===
 												INVOICE_PAYMENT_STATUS.PAID && selectedPaymentInfo ? (
-												<p className="text-xs text-emerald-600">
+												<p className="text-xs text-success">
 													{selectedPaymentInfo.label}
 												</p>
 											) : null}

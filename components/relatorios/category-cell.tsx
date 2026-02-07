@@ -1,6 +1,6 @@
 "use client";
 
-import { RiArrowDownLine, RiArrowUpLine } from "@remixicon/react";
+import { RiArrowDownSFill, RiArrowUpSFill } from "@remixicon/react";
 import {
 	Tooltip,
 	TooltipContent,
@@ -41,12 +41,12 @@ export function CategoryCell({
 						<div
 							className={cn(
 								"flex items-center gap-0.5 text-xs",
-								isIncrease && "text-red-600 dark:text-red-400",
-								isDecrease && "text-green-600 dark:text-green-400",
+								isIncrease && "text-destructive",
+								isDecrease && "text-success",
 							)}
 						>
-							{isIncrease && <RiArrowUpLine className="h-3 w-3" />}
-							{isDecrease && <RiArrowDownLine className="h-3 w-3" />}
+							{isIncrease && <RiArrowUpSFill className="h-3 w-3" />}
+							{isDecrease && <RiArrowDownSFill className="h-3 w-3" />}
 							<span>{formatPercentageChange(percentageChange)}</span>
 						</div>
 					)}
@@ -63,8 +63,8 @@ export function CategoryCell({
 							<div
 								className={cn(
 									"font-medium",
-									isIncrease && "text-red-500",
-									isDecrease && "text-green-500",
+									isIncrease && "text-destructive",
+									isDecrease && "text-success",
 								)}
 							>
 								Diferença:{" "}

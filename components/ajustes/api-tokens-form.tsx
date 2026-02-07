@@ -226,14 +226,14 @@ export function ApiTokensForm({ tokens }: ApiTokensFormProps) {
 												onClick={handleCopy}
 											>
 												{copied ? (
-													<RiCheckLine className="h-4 w-4 text-green-500" />
+													<RiCheckLine className="h-4 w-4 text-success" />
 												) : (
 													<RiFileCopyLine className="h-4 w-4" />
 												)}
 											</Button>
 										</div>
 									</div>
-									<div className="rounded-md bg-amber-50 dark:bg-amber-950/30 p-3 text-sm text-amber-800 dark:text-amber-200">
+									<div className="rounded-md bg-warning/10 p-3 text-sm text-warning">
 										<p className="font-medium">Importante:</p>
 										<ul className="list-disc list-inside mt-1 space-y-1">
 											<li>Guarde este token em local seguro</li>

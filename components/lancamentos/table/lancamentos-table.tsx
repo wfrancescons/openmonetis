@@ -324,10 +324,8 @@ const buildColumns = ({
 						showPositiveSign={isReceita}
 						className={cn(
 							"whitespace-nowrap",
-							isReceita
-								? "text-green-600 dark:text-green-400"
-								: "text-foreground",
-							isTransfer && "text-blue-700 dark:text-blue-500",
+							isReceita ? "text-success" : "text-foreground",
+							isTransfer && "text-info",
 						)}
 					/>
 				);
@@ -545,7 +543,7 @@ const buildColumns = ({
 								{loading ? (
 									<Spinner className="size-4" />
 								) : (
-									<Icon className={cn("size-4", settled && "text-green-600")} />
+									<Icon className={cn("size-4", settled && "text-success")} />
 								)}
 								<span className="sr-only">
 									{settled ? "Desfazer pagamento" : "Marcar como pago"}
@@ -631,7 +629,7 @@ const buildColumns = ({
 
 										{row.original.isAnticipated && (
 											<DropdownMenuItem disabled>
-												<RiCheckLine className="size-4 text-green-500" />
+												<RiCheckLine className="size-4 text-success" />
 												Parcela Antecipada
 											</DropdownMenuItem>
 										)}
@@ -799,7 +797,7 @@ export function LancamentosTable({
 										variant="outline"
 										className="w-full sm:w-auto"
 									>
-										<RiAddCircleLine className="size-4 text-green-500" />
+										<RiAddCircleLine className="size-4 text-success" />
 										Nova Receita
 									</Button>
 									<Button
@@ -807,7 +805,7 @@ export function LancamentosTable({
 										variant="outline"
 										className="w-full sm:w-auto"
 									>
-										<RiAddCircleLine className="size-4 text-red-500" />
+										<RiAddCircleLine className="size-4 text-destructive" />
 										Nova Despesa
 									</Button>
 								</>

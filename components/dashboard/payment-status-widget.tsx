@@ -47,13 +47,13 @@ function CategorySection({
 			{/* Status de confirmados e pendentes */}
 			<div className="flex items-center justify-between gap-4 text-sm">
 				<div className="flex items-center gap-1.5 ">
-					<RiCheckboxCircleLine className="size-3 text-emerald-600" />
+					<RiCheckboxCircleLine className="size-3 text-success" />
 					<MoneyValues amount={confirmed} />
 					<span className="text-xs text-muted-foreground">confirmados</span>
 				</div>
 
 				<div className="flex items-center gap-1.5 ">
-					<RiHourglass2Line className="size-3 text-orange-500" />
+					<RiHourglass2Line className="size-3 text-warning" />
 					<MoneyValues amount={pending} />
 					<span className="text-xs text-muted-foreground">pendentes</span>
 				</div>

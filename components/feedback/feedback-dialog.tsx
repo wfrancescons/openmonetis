@@ -35,7 +35,7 @@ const feedbackCategories = [
 		title: "Reportar Bug",
 		icon: RiBugLine,
 		description: "Encontrou algo que não está funcionando?",
-		color: "text-red-500 dark:text-red-400",
+		color: "text-destructive",
 		url: GITHUB_ISSUES_URL,
 	},
 	{
@@ -43,7 +43,7 @@ const feedbackCategories = [
 		title: "Sugerir Feature",
 		icon: RiLightbulbLine,
 		description: "Tem uma ideia para melhorar o app?",
-		color: "text-yellow-500 dark:text-yellow-400",
+		color: "text-warning",
 		url: `${GITHUB_DISCUSSIONS_BASE}?category=ideias`,
 	},
 	{
@@ -51,7 +51,7 @@ const feedbackCategories = [
 		title: "Dúvidas/Suporte",
 		icon: RiQuestionLine,
 		description: "Precisa de ajuda com alguma coisa?",
-		color: "text-blue-500 dark:text-blue-400",
+		color: "text-info",
 		url: `${GITHUB_DISCUSSIONS_BASE}?category=q-a`,
 	},
 	{

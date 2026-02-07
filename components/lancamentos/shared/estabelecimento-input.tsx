@@ -67,7 +67,7 @@ export function EstabelecimentoInput({
 	}, [estabelecimentos, searchValue]);
 
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
+		<Popover open={open} onOpenChange={setOpen} modal>
 			<PopoverTrigger asChild>
 				<div className="relative">
 					<Input
@@ -112,7 +112,7 @@ export function EstabelecimentoInput({
 											className={cn(
 												"size-4 shrink-0",
 												value === item
-													? "opacity-100  text-green-500"
+													? "opacity-100  text-success"
 													: "opacity-5",
 											)}
 										/>

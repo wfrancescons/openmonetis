@@ -35,7 +35,7 @@ const EventCard = ({
 	isPagamentoFatura?: boolean;
 }) => {
 	const style = isPagamentoFatura
-		? { dot: "bg-green-600" }
+		? { dot: "bg-success" }
 		: EVENT_TYPE_STYLES[type];
 	return (
 		<Card className="flex flex-row gap-2 p-3 mb-1">
@@ -61,7 +61,7 @@ const renderLancamento = (
 				<div className="flex flex-col gap-1">
 					<span
 						className={`text-sm font-semibold leading-tight ${
-							isPagamentoFatura && "text-green-600 dark:text-green-400"
+							isPagamentoFatura && "text-success"
 						}`}
 					>
 						{event.lancamento.name}
@@ -76,9 +76,7 @@ const renderLancamento = (
 				<span
 					className={cn(
 						"text-sm font-semibold whitespace-nowrap",
-						isReceita
-							? "text-green-600 dark:text-green-400"
-							: "text-foreground",
+						isReceita ? "text-success" : "text-foreground",
 					)}
 				>
 					<MoneyValues

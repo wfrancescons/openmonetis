@@ -87,8 +87,8 @@ export function CategoryTable({
 										<DotIcon
 											color={
 												category.type === "receita"
-													? "bg-green-600"
-													: "bg-red-600"
+													? "bg-success"
+													: "bg-destructive"
 											}
 										/>
 

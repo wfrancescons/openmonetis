@@ -149,13 +149,13 @@ export function UpdateEmailForm({
 						aria-invalid={!isEmailDifferent}
 						className={
 							!isEmailDifferent
-								? "border-red-500 focus-visible:ring-red-500"
+								? "border-destructive focus-visible:ring-destructive"
 								: ""
 						}
 					/>
 					{!isEmailDifferent && newEmail && (
 						<p
-							className="text-xs text-red-600 dark:text-red-400 flex items-center gap-1"
+							className="text-xs text-destructive flex items-center gap-1"
 							role="alert"
 						>
 							<RiCloseLine className="h-3.5 w-3.5" />O novo e-mail deve ser
@@ -188,9 +188,9 @@ export function UpdateEmailForm({
 							aria-invalid={emailsMatch === false}
 							className={
 								emailsMatch === false
-									? "border-red-500 focus-visible:ring-red-500 pr-10"
+									? "border-destructive focus-visible:ring-destructive pr-10"
 									: emailsMatch === true
-										? "border-green-500 focus-visible:ring-green-500 pr-10"
+										? "border-success focus-visible:ring-success pr-10"
 										: ""
 							}
 						/>
@@ -199,12 +199,12 @@ export function UpdateEmailForm({
 							<div className="absolute right-3 top-1/2 -translate-y-1/2">
 								{emailsMatch ? (
 									<RiCheckLine
-										className="h-5 w-5 text-green-500"
+										className="h-5 w-5 text-success"
 										aria-label="Os e-mails coincidem"
 									/>
 								) : (
 									<RiCloseLine
-										className="h-5 w-5 text-red-500"
+										className="h-5 w-5 text-destructive"
 										aria-label="Os e-mails não coincidem"
 									/>
 								)}
@@ -215,7 +215,7 @@ export function UpdateEmailForm({
 					{emailsMatch === false && (
 						<p
 							id="confirm-email-help"
-							className="text-xs text-red-600 dark:text-red-400 flex items-center gap-1"
+							className="text-xs text-destructive flex items-center gap-1"
 							role="alert"
 						>
 							<RiCloseLine className="h-3.5 w-3.5" />
@@ -225,7 +225,7 @@ export function UpdateEmailForm({
 					{emailsMatch === true && (
 						<p
 							id="confirm-email-help"
-							className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1"
+							className="text-xs text-success flex items-center gap-1"
 						>
 							<RiCheckLine className="h-3.5 w-3.5" />
 							Os e-mails coincidem

@@ -1,7 +1,6 @@
 "use server";
 
 import { and, asc, desc, eq, inArray, isNull, or } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import {
 	antecipacoesParcelas,
@@ -9,7 +8,7 @@ import {
 	lancamentos,
 	pagadores,
 } from "@/db/schema";
-import { handleActionError } from "@/lib/actions/helpers";
+import { handleActionError, revalidateForEntity } from "@/lib/actions/helpers";
 import type { ActionResult } from "@/lib/actions/types";
 import { getUser } from "@/lib/auth/server";
 import { db } from "@/lib/db";
@@ -263,8 +262,7 @@ export async function createInstallmentAnticipationAction(
 				.where(inArray(lancamentos.id, data.installmentIds));
 		});
 
-		revalidatePath("/lancamentos");
-		revalidatePath("/dashboard");
+		revalidateForEntity("lancamentos");
 
 		return {
 			success: true,
@@ -427,8 +425,7 @@ export async function cancelInstallmentAnticipationAction(
 				.where(eq(antecipacoesParcelas.id, data.anticipationId));
 		});
 
-		revalidatePath("/lancamentos");
-		revalidatePath("/dashboard");
+		revalidateForEntity("lancamentos");
 
 		return {
 			success: true,

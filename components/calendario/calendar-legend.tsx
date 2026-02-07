@@ -12,7 +12,7 @@ const LEGEND_ITEMS: Array<{
 	{ type: "lancamento", label: "Lançamentos" },
 	{ type: "boleto", label: "Boleto com vencimento" },
 	{ type: "cartao", label: "Vencimento de cartão" },
-	{ label: "Pagamento fatura", dotColor: "bg-green-600" },
+	{ label: "Pagamento fatura", dotColor: "bg-success" },
 ];
 
 export function CalendarLegend() {

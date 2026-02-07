@@ -58,9 +58,9 @@ export function CardsOverview({ data }: CardsOverviewProps) {
 		}).format(value);
 
 	const getUsageColor = (percent: number) => {
-		if (percent < 50) return "bg-green-500";
-		if (percent < 80) return "bg-yellow-500";
-		return "bg-red-500";
+		if (percent < 50) return "bg-success";
+		if (percent < 80) return "bg-warning";
+		return "bg-destructive";
 	};
 
 	const buildUrl = (cardId: string) => {

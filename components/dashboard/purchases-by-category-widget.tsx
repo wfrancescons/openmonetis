@@ -1,6 +1,6 @@
 "use client";
 
-import { RiArrowDownLine, RiStore3Line } from "@remixicon/react";
+import { RiArrowDownSFill, RiStore3Line } from "@remixicon/react";
 import { useEffect, useMemo, useState } from "react";
 import { EstabelecimentoLogo } from "@/components/lancamentos/shared/estabelecimento-logo";
 import MoneyValues from "@/components/money-values";
@@ -146,7 +146,7 @@ export function PurchasesByCategoryWidget({
 
 			{currentTransactions.length === 0 ? (
 				<WidgetEmptyState
-					icon={<RiArrowDownLine className="size-6 text-muted-foreground" />}
+					icon={<RiArrowDownSFill className="size-6 text-muted-foreground" />}
 					title="Nenhuma compra encontrada"
 					description={
 						selectedCategory

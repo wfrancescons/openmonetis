@@ -193,7 +193,7 @@ export function PagadorInfoCard({
 							</span>
 						</>
 					) : (
-						<span className="text-xs font-medium text-amber-600">
+						<span className="text-xs font-medium text-warning">
 							Acesso somente leitura
 						</span>
 					)}
@@ -247,7 +247,7 @@ export function PagadorInfoCard({
 					<InfoItem
 						label="Aviso"
 						value={
-							<span className="text-[13px] text-amber-700">
+							<span className="text-[13px] text-warning">
 								Cadastre um e-mail para permitir o envio automático.
 							</span>
 						}
@@ -397,7 +397,7 @@ export function PagadorInfoCard({
 										<div className="grid gap-2 sm:grid-cols-2">
 											<div>
 												<p className="text-xs text-muted-foreground">Pagos</p>
-												<p className="text-sm font-semibold text-green-600">
+												<p className="text-sm font-semibold text-success">
 													{formatCurrency(summary.boletoStats.paidAmount)}{" "}
 													<span className="text-xs font-normal">
 														({summary.boletoStats.paidCount})
@@ -408,7 +408,7 @@ export function PagadorInfoCard({
 												<p className="text-xs text-muted-foreground">
 													Pendentes
 												</p>
-												<p className="text-sm font-semibold text-amber-600">
+												<p className="text-sm font-semibold text-warning">
 													{formatCurrency(summary.boletoStats.pendingAmount)}{" "}
 													<span className="text-xs font-normal">
 														({summary.boletoStats.pendingCount})

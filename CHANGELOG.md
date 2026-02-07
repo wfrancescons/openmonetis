@@ -5,6 +5,36 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.4.0] - 2026-02-07
+
+### Corrigido
+
+- Widgets de boleto/fatura não atualizavam após pagamento: actions de fatura (`updateInvoicePaymentStatusAction`, `updatePaymentDateAction`) e antecipação de parcelas não invalidavam o cache do dashboard
+- Substituídos `revalidatePath()` manuais por `revalidateForEntity()` nas actions de fatura e antecipação
+- Expandido `revalidateConfig.cartoes` para incluir `/contas` e `/lancamentos` (afetados por pagamento de fatura)
+- Scroll não funcionava em listas Popover+Command (estabelecimento, categorias, filtros): adicionado `modal` ao Popover nos 4 componentes afetados
+
+### Adicionado
+
+- Link "detalhes" no card de orçamento para navegar diretamente à página da categoria
+- Indicadores de tendência coloridos nos cards de métricas do dashboard (receitas, despesas, balanço, previsto) com cores semânticas sutis
+- Tokens semânticos de estado no design system: `--success`, `--warning`, `--info` (com foregrounds) para light e dark mode
+- Cores de chart estendidas de 6 para 10 (`--chart-7` a `--chart-10`: teal, violet, cyan, lime)
+- Variantes `success` e `info` no componente Badge
+
+### Alterado
+
+- Migrados ~60+ componentes de cores hardcoded do Tailwind (`green-500`, `red-600`, `amber-500`, `blue-500`, etc.) para tokens semânticos (`success`, `destructive`, `warning`, `info`)
+- Unificados 3 arrays duplicados de cores de categorias (em `category-report-chart.tsx`, `category-history.ts`, `category-history-widget.tsx`) para importação única de `category-colors.ts`
+- Month picker migrado de tokens customizados (`--month-picker`) para tokens padrão (`--card`)
+- Dark mode normalizado: hues consistentes (~70 warm family) em vez de valores dispersos
+- Token `--accent` ajustado para ser visualmente distinto de `--background`
+- Token `--card` corrigido para branco limpo (`oklch(100% 0 0)`)
+
+### Removido
+
+- Tokens não utilizados: `--dark`, `--dark-foreground`, `--month-picker`, `--month-picker-foreground`
+
 ## [1.3.1] - 2026-02-06
 
 ### Adicionado

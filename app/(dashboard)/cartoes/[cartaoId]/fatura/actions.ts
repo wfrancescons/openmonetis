@@ -1,7 +1,6 @@
 "use server";
 
 import { and, eq, sql } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import {
 	cartoes,
@@ -11,6 +10,7 @@ import {
 	pagadores,
 } from "@/db/schema";
 import { buildInvoicePaymentNote } from "@/lib/accounts/constants";
+import { revalidateForEntity } from "@/lib/actions/helpers";
 import { getUser } from "@/lib/auth/server";
 import { db } from "@/lib/db";
 import {
@@ -206,9 +206,7 @@ export async function updateInvoicePaymentStatusAction(
 			}
 		});
 
-		revalidatePath(`/cartoes/${data.cartaoId}/fatura`);
-		revalidatePath("/cartoes");
-		revalidatePath("/contas");
+		revalidateForEntity("cartoes");
 
 		return { success: true, message: successMessageByStatus[data.status] };
 	} catch (error) {
@@ -275,9 +273,7 @@ export async function updatePaymentDateAction(
 				.where(eq(lancamentos.id, existingPayment.id));
 		});
 
-		revalidatePath(`/cartoes/${data.cartaoId}/fatura`);
-		revalidatePath("/cartoes");
-		revalidatePath("/contas");
+		revalidateForEntity("cartoes");
 
 		return { success: true, message: "Data de pagamento atualizada." };
 	} catch (error) {

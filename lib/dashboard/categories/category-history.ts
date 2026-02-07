@@ -6,6 +6,7 @@ import { ACCOUNT_AUTO_INVOICE_NOTE_PREFIX } from "@/lib/accounts/constants";
 import { toNumber } from "@/lib/dashboard/common";
 import { db } from "@/lib/db";
 import { PAGADOR_ROLE_ADMIN } from "@/lib/pagadores/constants";
+import { CATEGORY_COLORS } from "@/lib/utils/category-colors";
 
 export type CategoryOption = {
 	id: string;
@@ -32,13 +33,7 @@ export type CategoryHistoryData = {
 	allCategories: CategoryOption[];
 };
 
-const CHART_COLORS = [
-	"#ef4444", // red-500
-	"#3b82f6", // blue-500
-	"#10b981", // emerald-500
-	"#f59e0b", // amber-500
-	"#8b5cf6", // violet-500
-];
+const CHART_COLORS = CATEGORY_COLORS;
 
 export async function fetchAllCategories(
 	userId: string,

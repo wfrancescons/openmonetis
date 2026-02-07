@@ -55,9 +55,7 @@ function PasswordRequirement({ met, label }: { met: boolean; label: string }) {
 		<div
 			className={cn(
 				"flex items-center gap-1.5 text-xs transition-colors",
-				met
-					? "text-emerald-600 dark:text-emerald-400"
-					: "text-muted-foreground",
+				met ? "text-success" : "text-muted-foreground",
 			)}
 		>
 			{met ? (
@@ -133,14 +131,14 @@ export function UpdatePasswordForm({ authProvider }: UpdatePasswordFormProps) {
 	// Se o usuário usa Google OAuth, mostrar aviso
 	if (isGoogleAuth) {
 		return (
-			<div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950/20">
+			<div className="rounded-lg border border-warning/30 bg-warning/10 p-4 dark:border-warning/20 dark:bg-warning/10">
 				<div className="flex gap-3">
-					<RiAlertLine className="h-5 w-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
+					<RiAlertLine className="h-5 w-5 text-warning shrink-0 mt-0.5" />
 					<div>
-						<h3 className="font-medium text-amber-900 dark:text-amber-400">
+						<h3 className="font-medium text-warning">
 							Alteração de senha não disponível
 						</h3>
-						<p className="mt-1 text-sm text-amber-800 dark:text-amber-500">
+						<p className="mt-1 text-sm text-warning">
 							Você fez login usando sua conta do Google. A senha é gerenciada
 							diretamente pelo Google e não pode ser alterada aqui. Para
 							modificar sua senha, acesse as configurações de segurança da sua
@@ -285,9 +283,9 @@ export function UpdatePasswordForm({ authProvider }: UpdatePasswordFormProps) {
 							aria-invalid={passwordsMatch === false}
 							className={
 								passwordsMatch === false
-									? "border-red-500 focus-visible:ring-red-500"
+									? "border-destructive focus-visible:ring-destructive"
 									: passwordsMatch === true
-										? "border-green-500 focus-visible:ring-green-500"
+										? "border-success focus-visible:ring-success"
 										: ""
 							}
 						/>
@@ -312,12 +310,12 @@ export function UpdatePasswordForm({ authProvider }: UpdatePasswordFormProps) {
 							<div className="absolute right-3 top-1/2 -translate-y-1/2">
 								{passwordsMatch ? (
 									<RiCheckLine
-										className="h-5 w-5 text-green-500"
+										className="h-5 w-5 text-success"
 										aria-label="As senhas coincidem"
 									/>
 								) : (
 									<RiCloseLine
-										className="h-5 w-5 text-red-500"
+										className="h-5 w-5 text-destructive"
 										aria-label="As senhas não coincidem"
 									/>
 								)}
@@ -328,7 +326,7 @@ export function UpdatePasswordForm({ authProvider }: UpdatePasswordFormProps) {
 					{passwordsMatch === false && (
 						<p
 							id="confirm-password-help"
-							className="text-xs text-red-600 dark:text-red-400 flex items-center gap-1"
+							className="text-xs text-destructive flex items-center gap-1"
 							role="alert"
 						>
 							<RiCloseLine className="h-3.5 w-3.5" />
@@ -338,7 +336,7 @@ export function UpdatePasswordForm({ authProvider }: UpdatePasswordFormProps) {
 					{passwordsMatch === true && (
 						<p
 							id="confirm-password-help"
-							className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1"
+							className="text-xs text-success flex items-center gap-1"
 						>
 							<RiCheckLine className="h-3.5 w-3.5" />
 							As senhas coincidem

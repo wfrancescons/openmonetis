@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/popover";
 import { WidgetEmptyState } from "@/components/widget-empty-state";
 import type { CategoryHistoryData } from "@/lib/dashboard/categories/category-history";
+import { CATEGORY_COLORS } from "@/lib/utils/category-colors";
 import { getIconComponent } from "@/lib/utils/icons";
 
 type CategoryHistoryWidgetProps = {
@@ -36,14 +37,7 @@ type CategoryHistoryWidgetProps = {
 
 const STORAGE_KEY_SELECTED = "dashboard-category-history-selected";
 
-// Vibrant colors for categories
-const CHART_COLORS = [
-	"#ef4444", // red-500
-	"#3b82f6", // blue-500
-	"#10b981", // emerald-500
-	"#f59e0b", // amber-500
-	"#8b5cf6", // violet-500
-];
+const CHART_COLORS = CATEGORY_COLORS;
 
 export function CategoryHistoryWidget({ data }: CategoryHistoryWidgetProps) {
 	const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -260,7 +254,7 @@ export function CategoryHistoryWidget({ data }: CategoryHistoryWidgetProps) {
 					)}
 
 					{selectedCategories.length < 5 && availableCategories.length > 0 && (
-						<Popover open={open} onOpenChange={setOpen}>
+						<Popover open={open} onOpenChange={setOpen} modal>
 							<PopoverTrigger asChild>
 								<Button
 									variant="outline"
@@ -295,9 +289,9 @@ export function CategoryHistoryWidget({ data }: CategoryHistoryWidgetProps) {
 															className="gap-2"
 														>
 															{IconComponent ? (
-																<IconComponent className="size-4 text-red-600" />
+																<IconComponent className="size-4 text-destructive" />
 															) : (
-																<div className="size-3 rounded-sm bg-red-600" />
+																<div className="size-3 rounded-sm bg-destructive" />
 															)}
 															<span>{category.name}</span>
 														</CommandItem>
@@ -320,9 +314,9 @@ export function CategoryHistoryWidget({ data }: CategoryHistoryWidgetProps) {
 															className="gap-2"
 														>
 															{IconComponent ? (
-																<IconComponent className="size-4 text-green-600" />
+																<IconComponent className="size-4 text-success" />
 															) : (
-																<div className="size-3 rounded-sm bg-green-600" />
+																<div className="size-3 rounded-sm bg-success" />
 															)}
 															<span>{category.name}</span>
 														</CommandItem>

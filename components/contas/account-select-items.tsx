@@ -8,11 +8,7 @@ export function StatusSelectContent({ label }: { label: string }) {
 	return (
 		<span className="flex items-center gap-2">
 			<DotIcon
-				color={
-					isActive
-						? "bg-emerald-600 dark:bg-emerald-300"
-						: "bg-slate-400 dark:bg-slate-500"
-				}
+				color={isActive ? "bg-success" : "bg-slate-400 dark:bg-slate-500"}
 			/>
 			<span>{label}</span>
 		</span>

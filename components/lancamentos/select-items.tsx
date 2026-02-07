@@ -49,9 +49,9 @@ export function CategoriaSelectContent({
 
 export function TransactionTypeSelectContent({ label }: { label: string }) {
 	const colorMap: Record<string, string> = {
-		Receita: "bg-emerald-600 dark:bg-emerald-400",
-		Despesa: "bg-red-600 dark:bg-red-400",
-		Transferência: "bg-blue-600 dark:bg-blue-400",
+		Receita: "bg-success",
+		Despesa: "bg-destructive",
+		Transferência: "bg-info",
 	};
 
 	return (

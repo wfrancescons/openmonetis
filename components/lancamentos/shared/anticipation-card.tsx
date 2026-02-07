@@ -92,7 +92,7 @@ export function AnticipationCard({
 					{Number(anticipation.discount) > 0 && (
 						<div>
 							<dt className="text-muted-foreground">Desconto</dt>
-							<dd className="mt-1 font-medium tabular-nums text-green-600">
+							<dd className="mt-1 font-medium tabular-nums text-success">
 								- <MoneyValues amount={Number(anticipation.discount)} />
 							</dd>
 						</div>

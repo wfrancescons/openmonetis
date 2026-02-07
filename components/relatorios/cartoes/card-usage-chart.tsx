@@ -134,7 +134,7 @@ export function CardUsageChart({ data, limit, card }: CardUsageChartProps) {
 								label={{
 									value: "Limite",
 									position: "right",
-									className: "text-xs fill-red-500",
+									className: "text-xs fill-destructive",
 								}}
 							/>
 						)}

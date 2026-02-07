@@ -86,7 +86,7 @@ function StatusRow({ label, amount, count, percent, tone }: StatusRowProps) {
 				amount={amount}
 				className={cn(
 					"text-xl font-semibold",
-					tone === "success" ? "text-emerald-600" : "text-amber-600",
+					tone === "success" ? "text-success" : "text-warning",
 				)}
 			/>
 			<div className="flex items-center justify-between text-xs text-muted-foreground">
@@ -95,7 +95,7 @@ function StatusRow({ label, amount, count, percent, tone }: StatusRowProps) {
 					<div
 						className={cn(
 							"h-full rounded-full",
-							tone === "success" ? "bg-emerald-500" : "bg-amber-500",
+							tone === "success" ? "bg-success" : "bg-warning",
 						)}
 						style={{ width: `${clampedPercent}%` }}
 					/>

@@ -1,6 +1,11 @@
 "use client";
 
-import { RiDeleteBin5Line, RiPencilLine } from "@remixicon/react";
+import {
+	RiDeleteBin5Line,
+	RiFileList2Line,
+	RiPencilLine,
+} from "@remixicon/react";
+import Link from "next/link";
 import { CategoryIconBadge } from "@/components/categorias/category-icon-badge";
 import MoneyValues from "@/components/money-values";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -78,11 +83,11 @@ export function BudgetCard({
 
 					<div>
 						{exceeded ? (
-							<div className="text-xs text-red-500">
+							<div className="text-xs text-destructive">
 								Excedeu em <MoneyValues amount={difference} />
 							</div>
 						) : (
-							<div className="text-xs text-green-600">
+							<div className="text-xs text-success">
 								Restam <MoneyValues amount={Math.max(limit - spent, 0)} />{" "}
 								disponíveis.
 							</div>
@@ -98,6 +103,14 @@ export function BudgetCard({
 				>
 					<RiPencilLine className="size-4" aria-hidden /> editar
 				</button>
+				{budget.category && (
+					<Link
+						href={`/categorias/${budget.category.id}`}
+						className="flex items-center gap-1 text-primary font-medium transition-opacity hover:opacity-80"
+					>
+						<RiFileList2Line className="size-4" aria-hidden /> detalhes
+					</Link>
+				)}
 				<button
 					type="button"
 					onClick={() => onRemove(budget)}

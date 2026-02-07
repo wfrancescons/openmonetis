@@ -43,11 +43,11 @@ export function CardInvoiceStatus({ data }: CardInvoiceStatusProps) {
 	const getStatusColor = (status: string | null) => {
 		switch (status) {
 			case "pago":
-				return "bg-green-500";
+				return "bg-success";
 			case "pendente":
-				return "bg-yellow-500";
+				return "bg-warning";
 			case "atrasado":
-				return "bg-red-500";
+				return "bg-destructive";
 			default:
 				return "bg-muted";
 		}

@@ -18,13 +18,13 @@ export const EVENT_TYPE_STYLES: Record<
 > = {
 	lancamento: {
 		wrapper:
-			"bg-orange-100 text-orange-600 dark:bg-orange-900/10 dark:text-orange-50 border-l-4 border-orange-500",
-		dot: "bg-orange-600",
+			"bg-warning/10 text-warning dark:bg-warning/5 dark:text-warning border-l-4 border-warning",
+		dot: "bg-warning",
 	},
 	boleto: {
 		wrapper:
-			"bg-blue-100 text-blue-600 dark:bg-blue-900/10 dark:text-blue-50 border-l-4 border-blue-500",
-		dot: "bg-blue-600",
+			"bg-info/10 text-info dark:bg-info/5 dark:text-info border-l-4 border-info",
+		dot: "bg-info",
 	},
 	cartao: {
 		wrapper:
@@ -87,8 +87,8 @@ const getEventStyle = (event: CalendarEvent) => {
 	if (isPagamentoFatura(event)) {
 		return {
 			wrapper:
-				"bg-green-100 text-green-600 dark:bg-green-900/10 dark:text-green-50 border-l-4 border-green-500",
-			dot: "bg-green-600",
+				"bg-success/10 text-success dark:bg-success/5 dark:text-success border-l-4 border-success",
+			dot: "bg-success",
 		};
 	}
 	return eventStyles[event.type];

@@ -1,11 +1,12 @@
 import {
 	RiArrowDownLine,
+	RiArrowDownSFill,
 	RiArrowUpLine,
-	RiCurrencyLine,
+	RiArrowUpSFill,
+	RiCashLine,
 	RiIncreaseDecreaseLine,
 	RiSubtractLine,
 } from "@remixicon/react";
-import { Badge } from "@/components/ui/badge";
 import {
 	Card,
 	CardAction,
@@ -25,15 +26,30 @@ type Trend = "up" | "down" | "flat";
 const TREND_THRESHOLD = 0.005;
 
 const CARDS = [
-	{ label: "Receitas", key: "receitas", icon: RiArrowUpLine },
-	{ label: "Despesas", key: "despesas", icon: RiArrowDownLine },
-	{ label: "Balanço", key: "balanco", icon: RiIncreaseDecreaseLine },
-	{ label: "Previsto", key: "previsto", icon: RiCurrencyLine },
+	{
+		label: "Receitas",
+		key: "receitas",
+		icon: RiArrowUpLine,
+		invertTrend: false,
+	},
+	{
+		label: "Despesas",
+		key: "despesas",
+		icon: RiArrowDownLine,
+		invertTrend: true,
+	},
+	{
+		label: "Balanço",
+		key: "balanco",
+		icon: RiIncreaseDecreaseLine,
+		invertTrend: false,
+	},
+	{ label: "Previsto", key: "previsto", icon: RiCashLine, invertTrend: false },
 ] as const;
 
 const TREND_ICONS = {
-	up: RiArrowUpLine,
-	down: RiArrowDownLine,
+	up: RiArrowUpSFill,
+	down: RiArrowDownSFill,
 	flat: RiSubtractLine,
 } as const;
 
@@ -58,13 +74,22 @@ const getPercentChange = (current: number, previous: number): string => {
 		: "—";
 };
 
+const getTrendColor = (trend: Trend, invertTrend: boolean): string => {
+	if (trend === "flat") return "";
+	const isPositive = invertTrend ? trend === "down" : trend === "up";
+	return isPositive
+		? "text-success border-success"
+		: "text-destructive border-destructive";
+};
+
 export function SectionCards({ metrics }: SectionCardsProps) {
 	return (
 		<div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-3 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-			{CARDS.map(({ label, key, icon: Icon }) => {
+			{CARDS.map(({ label, key, icon: Icon, invertTrend }) => {
 				const metric = metrics[key];
 				const trend = getTrend(metric.current, metric.previous);
 				const TrendIcon = TREND_ICONS[trend];
+				const trendColor = getTrendColor(trend, invertTrend);
 
 				return (
 					<Card key={label} className="@container/card gap-2">
@@ -75,10 +100,10 @@ export function SectionCards({ metrics }: SectionCardsProps) {
 							</CardTitle>
 							<MoneyValues className="text-2xl" amount={metric.current} />
 							<CardAction>
-								<Badge variant="outline">
-									<TrendIcon />
+								<div className={`flex items-center text-xs ${trendColor}`}>
+									<TrendIcon size={16} />
 									{getPercentChange(metric.current, metric.previous)}
-								</Badge>
+								</div>
 							</CardAction>
 						</CardHeader>
 						<CardFooter className="flex-col items-start gap-2 text-sm">

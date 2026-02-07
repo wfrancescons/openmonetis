@@ -113,7 +113,7 @@ export function AccountStatementCard({
 						<DetailItem
 							label="Entradas"
 							value={
-								<span className="font-medium text-emerald-600">
+								<span className="font-medium text-success">
 									{formatCurrency(totalIncomes)}
 								</span>
 							}
@@ -137,7 +137,7 @@ export function AccountStatementCard({
 									className={cn(
 										"font-semibold text-xl",
 										totalIncomes - totalExpenses >= 0
-											? "text-emerald-600"
+											? "text-success"
 											: "text-destructive",
 									)}
 								/>

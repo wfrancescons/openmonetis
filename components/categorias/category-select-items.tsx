@@ -7,13 +7,7 @@ export function TypeSelectContent({ label }: { label: string }) {
 
 	return (
 		<span className="flex items-center gap-2">
-			<DotIcon
-				color={
-					isReceita
-						? "bg-emerald-600 dark:bg-emerald-300"
-						: "bg-rose-600 dark:bg-rose-300"
-				}
-			/>
+			<DotIcon color={isReceita ? "bg-success" : "bg-destructive"} />
 			<span>{label}</span>
 		</span>
 	);

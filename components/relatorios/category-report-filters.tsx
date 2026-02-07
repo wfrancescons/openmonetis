@@ -165,7 +165,7 @@ export function CategoryReportFilters({
 			<div className="flex flex-wrap items-center justify-between gap-2">
 				<div className="flex flex-wrap items-center gap-2">
 					{/* Category Multi-Select */}
-					<Popover open={open} onOpenChange={setOpen}>
+					<Popover open={open} onOpenChange={setOpen} modal>
 						<PopoverTrigger asChild>
 							<Button
 								variant="outline"

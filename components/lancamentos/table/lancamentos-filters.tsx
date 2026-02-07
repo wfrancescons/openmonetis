@@ -388,7 +388,11 @@ export function LancamentosFilters({
 
 							<div className="space-y-2">
 								<label className="text-sm font-medium">Categoria</label>
-								<Popover open={categoriaOpen} onOpenChange={setCategoriaOpen}>
+								<Popover
+									open={categoriaOpen}
+									onOpenChange={setCategoriaOpen}
+									modal
+								>
 									<PopoverTrigger asChild>
 										<Button
 											variant="outline"

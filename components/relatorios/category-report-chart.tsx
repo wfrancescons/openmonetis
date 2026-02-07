@@ -15,23 +15,13 @@ import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { currencyFormatter } from "@/lib/lancamentos/formatting-helpers";
 import type { CategoryChartData } from "@/lib/relatorios/fetch-category-chart-data";
+import { CATEGORY_COLORS } from "@/lib/utils/category-colors";
 
 interface CategoryReportChartProps {
 	data: CategoryChartData;
 }
 
-const CHART_COLORS = [
-	"#ef4444", // red-500
-	"#3b82f6", // blue-500
-	"#10b981", // emerald-500
-	"#f59e0b", // amber-500
-	"#8b5cf6", // violet-500
-	"#ec4899", // pink-500
-	"#14b8a6", // teal-500
-	"#f97316", // orange-500
-	"#06b6d4", // cyan-500
-	"#84cc16", // lime-500
-];
+const CHART_COLORS = CATEGORY_COLORS;
 
 const MAX_CATEGORIES_IN_CHART = 15;
 

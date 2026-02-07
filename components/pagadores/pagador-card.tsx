@@ -77,7 +77,7 @@ export function PagadorCard({ pagador, onEdit, onRemove }: PagadorCardProps) {
 					</Badge>
 
 					{isReadOnly ? (
-						<Badge variant="outline" className="text-xs text-amber-600">
+						<Badge variant="outline" className="text-xs text-warning">
 							Somente leitura
 						</Badge>
 					) : null}

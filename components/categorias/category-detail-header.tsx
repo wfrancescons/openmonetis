@@ -1,4 +1,4 @@
-import { RiArrowDownLine, RiArrowUpLine } from "@remixicon/react";
+import { RiArrowDownSFill, RiArrowUpSFill } from "@remixicon/react";
 import type { CategoryType } from "@/lib/categorias/constants";
 import { currencyFormatter } from "@/lib/lancamentos/formatting-helpers";
 import { cn } from "@/lib/utils/ui";
@@ -40,22 +40,22 @@ export function CategoryDetailHeader({
 	const variationColor =
 		category.type === "receita"
 			? isIncrease
-				? "text-emerald-600"
+				? "text-success"
 				: isDecrease
-					? "text-rose-600"
+					? "text-destructive"
 					: "text-muted-foreground"
 			: isIncrease
-				? "text-rose-600"
+				? "text-destructive"
 				: isDecrease
-					? "text-emerald-600"
+					? "text-success"
 					: "text-muted-foreground";
 
 	const variationIcon =
 		isIncrease || isDecrease ? (
 			isIncrease ? (
-				<RiArrowUpLine className="size-4" aria-hidden />
+				<RiArrowUpSFill className="size-4" aria-hidden />
 			) : (
-				<RiArrowDownLine className="size-4" aria-hidden />
+				<RiArrowDownSFill className="size-4" aria-hidden />
 			)
 		) : null;
 

@@ -176,7 +176,7 @@ export function InstallmentGroupCard({
 										"flex items-center gap-3 rounded-md border p-2 transition-colors",
 										isSelected && !isPaid && "border-primary/50 bg-primary/5",
 										isPaid &&
-											"border-green-400 bg-green-50 dark:border-green-900 dark:bg-green-950/30",
+											"border-success/40 bg-success/5 dark:border-success/20 dark:bg-success/5",
 									)}
 								>
 									<Checkbox
@@ -194,7 +194,7 @@ export function InstallmentGroupCard({
 												className={cn(
 													"text-xs font-medium",
 													isPaid &&
-														"text-green-700 dark:text-green-400 line-through decoration-green-600/50",
+														"text-success line-through decoration-success/50",
 												)}
 											>
 												Parcela {installment.currentInstallment}/
@@ -202,7 +202,7 @@ export function InstallmentGroupCard({
 												{isPaid && (
 													<Badge
 														variant="outline"
-														className="ml-1 text-xs border-none border-green-700 text-green-700 dark:text-green-400"
+														className="ml-1 text-xs border-none text-success"
 													>
 														<RiCheckboxCircleFill /> Pago
 													</Badge>
@@ -211,9 +211,7 @@ export function InstallmentGroupCard({
 											<p
 												className={cn(
 													"text-xs mt-1",
-													isPaid
-														? "text-green-700 dark:text-green-500"
-														: "text-muted-foreground",
+													isPaid ? "text-success" : "text-muted-foreground",
 												)}
 											>
 												Vencimento: {dueDate}
@@ -224,7 +222,7 @@ export function InstallmentGroupCard({
 											amount={installment.amount}
 											className={cn(
 												"shrink-0 text-sm",
-												isPaid && "text-green-700 dark:text-green-400",
+												isPaid && "text-success",
 											)}
 										/>
 									</div>

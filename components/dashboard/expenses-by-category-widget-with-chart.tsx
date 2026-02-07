@@ -1,8 +1,8 @@
 "use client";
 
 import {
-	RiArrowDownLine,
-	RiArrowUpLine,
+	RiArrowDownSFill,
+	RiArrowUpSFill,
 	RiExternalLinkLine,
 	RiListUnordered,
 	RiPieChart2Line,
@@ -220,14 +220,14 @@ export function ExpensesByCategoryWidgetWithChart({
 											<span
 												className={`flex items-center gap-0.5 text-xs ${
 													hasIncrease
-														? "text-red-600 dark:text-red-500"
+														? "text-destructive"
 														: hasDecrease
-															? "text-green-600 dark:text-green-500"
+															? "text-success"
 															: "text-muted-foreground"
 												}`}
 											>
-												{hasIncrease && <RiArrowUpLine className="size-3" />}
-												{hasDecrease && <RiArrowDownLine className="size-3" />}
+												{hasIncrease && <RiArrowUpSFill className="size-3" />}
+												{hasDecrease && <RiArrowDownSFill className="size-3" />}
 												{formatPercentage(category.percentageChange)}
 											</span>
 										)}
@@ -238,16 +238,12 @@ export function ExpensesByCategoryWidgetWithChart({
 									<div className="ml-11 flex items-center gap-1.5 text-xs">
 										<RiWallet3Line
 											className={`size-3 ${
-												budgetExceeded
-													? "text-red-600"
-													: "text-blue-600 dark:text-blue-400"
+												budgetExceeded ? "text-destructive" : "text-info"
 											}`}
 										/>
 										<span
 											className={
-												budgetExceeded
-													? "text-red-600"
-													: "text-blue-600 dark:text-blue-400"
+												budgetExceeded ? "text-destructive" : "text-info"
 											}
 										>
 											{budgetExceeded ? (
