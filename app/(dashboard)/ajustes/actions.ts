@@ -55,10 +55,10 @@ const deleteAccountSchema = z.object({
 const VALID_FONTS = [
 	"ai-sans",
 	"anthropic-sans",
-"fira-code",
+	"fira-code",
 	"fira-sans",
 	"geist",
-"ibm-plex-mono",
+	"ibm-plex-mono",
 	"inter",
 	"jetbrains-mono",
 	"reddit-sans",

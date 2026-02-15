@@ -1,5 +1,5 @@
 import {
-Fira_Code,
+	Fira_Code,
 	Fira_Sans,
 	Geist,
 	IBM_Plex_Mono,
@@ -158,7 +158,7 @@ export const FONT_OPTIONS: FontOption[] = [
 		label: "Anthropic Sans",
 		variable: "var(--font-anthropic-sans)",
 	},
-{ key: "fira-code", label: "Fira Code", variable: "var(--font-fira-code)" },
+	{ key: "fira-code", label: "Fira Code", variable: "var(--font-fira-code)" },
 	{
 		key: "fira-sans",
 		label: "Fira Sans",
@@ -211,7 +211,7 @@ const allFonts = [
 	reddit_sans,
 	fira_sans,
 	ubuntu,
-jetbrains_mono,
+	jetbrains_mono,
 	fira_code,
 	ibm_plex_mono,
 ];

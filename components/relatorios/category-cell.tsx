@@ -34,10 +34,8 @@ export function CategoryCell({
 
 	// Despesa: aumento é ruim (vermelho), diminuição é bom (verde)
 	// Receita: aumento é bom (verde), diminuição é ruim (vermelho)
-	const isPositive =
-		categoryType === "receita" ? isIncrease : isDecrease;
-	const isNegative =
-		categoryType === "receita" ? isDecrease : isIncrease;
+	const isPositive = categoryType === "receita" ? isIncrease : isDecrease;
+	const isNegative = categoryType === "receita" ? isDecrease : isIncrease;
 
 	return (
 		<Tooltip>
