@@ -1,5 +1,3 @@
-"use client";
-
 import { cn } from "@/lib/utils/ui";
 
 interface EstabelecimentoLogoProps {
@@ -63,7 +61,7 @@ export function EstabelecimentoLogo({
 			style={{
 				width: size,
 				height: size,
-				fontSize: size * 0.4,
+				fontSize: (size ?? 32) * 0.4,
 			}}
 		>
 			{initials}

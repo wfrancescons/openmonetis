@@ -11,12 +11,15 @@ import { ConfirmActionDialog } from "@/components/confirm-action-dialog";
 import { EmptyState } from "@/components/empty-state";
 import { LancamentoDialog } from "@/components/lancamentos/dialogs/lancamento-dialog/lancamento-dialog";
 import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InboxCard } from "./inbox-card";
 import { InboxDetailsDialog } from "./inbox-details-dialog";
 import type { InboxItem, SelectOption } from "./types";
 
 interface InboxPageProps {
-	items: InboxItem[];
+	pendingItems: InboxItem[];
+	processedItems: InboxItem[];
+	discardedItems: InboxItem[];
 	pagadorOptions: SelectOption[];
 	splitPagadorOptions: SelectOption[];
 	defaultPagadorId: string | null;
@@ -24,10 +27,13 @@ interface InboxPageProps {
 	cartaoOptions: SelectOption[];
 	categoriaOptions: SelectOption[];
 	estabelecimentos: string[];
+	appLogoMap: Record<string, string>;
 }
 
 export function InboxPage({
-	items,
+	pendingItems,
+	processedItems,
+	discardedItems,
 	pagadorOptions,
 	splitPagadorOptions,
 	defaultPagadorId,
@@ -35,6 +41,7 @@ export function InboxPage({
 	cartaoOptions,
 	categoriaOptions,
 	estabelecimentos,
+	appLogoMap,
 }: InboxPageProps) {
 	const [processOpen, setProcessOpen] = useState(false);
 	const [itemToProcess, setItemToProcess] = useState<InboxItem | null>(null);
@@ -45,14 +52,24 @@ export function InboxPage({
 	const [discardOpen, setDiscardOpen] = useState(false);
 	const [itemToDiscard, setItemToDiscard] = useState<InboxItem | null>(null);
 
-	const sortedItems = useMemo(
-		() =>
-			[...items].sort(
-				(a, b) =>
-					new Date(b.notificationTimestamp).getTime() -
-					new Date(a.notificationTimestamp).getTime(),
-			),
-		[items],
+	const sortByTimestamp = (list: InboxItem[]) =>
+		[...list].sort(
+			(a, b) =>
+				new Date(b.notificationTimestamp).getTime() -
+				new Date(a.notificationTimestamp).getTime(),
+		);
+
+	const sortedPending = useMemo(
+		() => sortByTimestamp(pendingItems),
+		[pendingItems],
+	);
+	const sortedProcessed = useMemo(
+		() => sortByTimestamp(processedItems),
+		[processedItems],
+	);
+	const sortedDiscarded = useMemo(
+		() => sortByTimestamp(discardedItems),
+		[discardedItems],
 	);
 
 	const handleProcessOpenChange = useCallback((open: boolean) => {
@@ -133,37 +150,88 @@ export function InboxPage({
 	const defaultPurchaseDate =
 		getDateString(itemToProcess?.notificationTimestamp) ?? null;
 
-	const defaultName = itemToProcess?.parsedName ?? null;
+	const defaultName = itemToProcess?.parsedName
+		? itemToProcess.parsedName
+				.toLowerCase()
+				.replace(/\b\w/g, (char) => char.toUpperCase())
+		: null;
 
 	const defaultAmount = itemToProcess?.parsedAmount
 		? String(Math.abs(Number(itemToProcess.parsedAmount)))
 		: null;
 
+	// Match sourceAppName with a cartão to pre-fill card select
+	const matchedCartaoId = useMemo(() => {
+		const appName = itemToProcess?.sourceAppName?.toLowerCase();
+		if (!appName) return null;
+
+		for (const option of cartaoOptions) {
+			const label = option.label.toLowerCase();
+			if (label.includes(appName) || appName.includes(label)) {
+				return option.value;
+			}
+		}
+		return null;
+	}, [itemToProcess?.sourceAppName, cartaoOptions]);
+
+	const renderEmptyState = (message: string) => (
+		<Card className="flex min-h-[50vh] w-full items-center justify-center py-12">
+			<EmptyState
+				media={<RiInboxLine className="size-6 text-primary" />}
+				title={message}
+				description="As notificações capturadas pelo app OpenSheets Companion aparecerão aqui. Saiba mais em Ajustes > Companion."
+			/>
+		</Card>
+	);
+
+	const renderGrid = (list: InboxItem[], readonly?: boolean) =>
+		list.length === 0 ? (
+			renderEmptyState(
+				readonly
+					? "Nenhuma notificação nesta aba"
+					: "Nenhum pré-lançamento pendente",
+			)
+		) : (
+			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+				{list.map((item) => (
+					<InboxCard
+						key={item.id}
+						item={item}
+						readonly={readonly}
+						appLogoMap={appLogoMap}
+						onProcess={readonly ? undefined : handleProcessRequest}
+						onDiscard={readonly ? undefined : handleDiscardRequest}
+						onViewDetails={readonly ? undefined : handleDetailsRequest}
+					/>
+				))}
+			</div>
+		);
+
 	return (
 		<>
-			<div className="flex w-full flex-col gap-6">
-				{sortedItems.length === 0 ? (
-					<Card className="flex min-h-[50vh] w-full items-center justify-center py-12">
-						<EmptyState
-							media={<RiInboxLine className="size-6 text-primary" />}
-							title="Nenhum pré-lançamento"
-							description="As notificações capturadas pelo app OpenSheets Companion aparecerão aqui para você processar. Saiba mais sobre o app em Ajustes > Companion."
-						/>
-					</Card>
-				) : (
-					<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-						{sortedItems.map((item) => (
-							<InboxCard
-								key={item.id}
-								item={item}
-								onProcess={handleProcessRequest}
-								onDiscard={handleDiscardRequest}
-								onViewDetails={handleDetailsRequest}
-							/>
-						))}
-					</div>
-				)}
-			</div>
+			<Tabs defaultValue="pending" className="w-full">
+				<TabsList>
+					<TabsTrigger value="pending">
+						Pendentes ({pendingItems.length})
+					</TabsTrigger>
+					<TabsTrigger value="processed">
+						Processados ({processedItems.length})
+					</TabsTrigger>
+					<TabsTrigger value="discarded">
+						Descartados ({discardedItems.length})
+					</TabsTrigger>
+				</TabsList>
+
+				<TabsContent value="pending" className="mt-4">
+					{renderGrid(sortedPending)}
+				</TabsContent>
+				<TabsContent value="processed" className="mt-4">
+					{renderGrid(sortedProcessed, true)}
+				</TabsContent>
+				<TabsContent value="discarded" className="mt-4">
+					{renderGrid(sortedDiscarded, true)}
+				</TabsContent>
+			</Tabs>
 
 			<LancamentoDialog
 				mode="create"
@@ -179,6 +247,8 @@ export function InboxPage({
 				defaultPurchaseDate={defaultPurchaseDate}
 				defaultName={defaultName}
 				defaultAmount={defaultAmount}
+				defaultCartaoId={matchedCartaoId}
+				defaultPaymentMethod={matchedCartaoId ? "Cartão de crédito" : null}
 				forceShowTransactionType
 				onSuccess={handleLancamentoSuccess}
 			/>

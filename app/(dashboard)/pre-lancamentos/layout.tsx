@@ -15,7 +15,7 @@ export default function RootLayout({
 			<PageDescription
 				icon={<RiInboxLine />}
 				title="Pré-Lançamentos"
-				subtitle="Notificações capturadas aguardando processamento"
+				subtitle="Notificações capturadas pelo Companion"
 			/>
 			{children}
 		</section>

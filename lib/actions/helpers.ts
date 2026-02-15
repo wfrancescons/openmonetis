@@ -57,7 +57,7 @@ export function revalidateForEntity(
 
 	// Invalidate dashboard cache for financial mutations
 	if (DASHBOARD_ENTITIES.has(entity)) {
-		revalidateTag("dashboard");
+		revalidateTag("dashboard", "max");
 	}
 }
 

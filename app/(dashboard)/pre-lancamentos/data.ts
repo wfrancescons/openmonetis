@@ -88,6 +88,31 @@ export async function fetchCartoesForSelect(
 	return items;
 }
 
+export async function fetchAppLogoMap(
+	userId: string,
+): Promise<Record<string, string>> {
+	const [userCartoes, userContas] = await Promise.all([
+		db
+			.select({ name: cartoes.name, logo: cartoes.logo })
+			.from(cartoes)
+			.where(eq(cartoes.userId, userId)),
+		db
+			.select({ name: contas.name, logo: contas.logo })
+			.from(contas)
+			.where(eq(contas.userId, userId)),
+	]);
+
+	const logoMap: Record<string, string> = {};
+
+	for (const item of [...userCartoes, ...userContas]) {
+		if (item.logo) {
+			logoMap[item.name.toLowerCase()] = item.logo;
+		}
+	}
+
+	return logoMap;
+}
+
 export async function fetchPendingInboxCount(userId: string): Promise<number> {
 	const items = await db
 		.select({ id: preLancamentos.id })

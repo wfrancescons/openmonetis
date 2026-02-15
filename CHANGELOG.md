@@ -5,6 +5,27 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.4.1] - 2026-02-15
+
+### Adicionado
+
+- Abas "Pendentes", "Processados" e "Descartados" na página de pré-lançamentos (antes exibia apenas pendentes)
+- Logo do cartão/conta exibido automaticamente nos cards de pré-lançamento via matching por nome do app
+- Pre-fill automático do cartão de crédito ao processar pré-lançamento (match pelo nome do app)
+- Badge de status e data nos cards de itens já processados/descartados (modo readonly)
+
+### Corrigido
+
+- `revalidateTag("dashboard", "max")` para invalidar todas as entradas de cache da tag (antes invalidava apenas a mais recente)
+- Cor `--warning` ajustada para melhor contraste (mais alaranjada)
+- `EstabelecimentoLogo` não precisava de `"use client"` — removido
+- Fallback no cálculo de `fontSize` em `EstabelecimentoLogo`
+
+### Alterado
+
+- Nome do estabelecimento formatado em Title Case ao processar pré-lançamento
+- Subtítulo da página de pré-lançamentos atualizado
+
 ## [1.4.0] - 2026-02-07
 
 ### Corrigido

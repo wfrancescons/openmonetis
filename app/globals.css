@@ -34,7 +34,7 @@
   /* Semantic states */
   --success: oklch(55% 0.17 150);
   --success-foreground: oklch(98% 0.01 150);
-  --warning: oklch(75.976% 0.16034 71.493);
+  --warning: oklch(69.913% 0.1798 49.649);
   --warning-foreground: oklch(20% 0.04 85);
   --info: oklch(55% 0.17 250);
   --info-foreground: oklch(98% 0.01 250);
@@ -123,7 +123,7 @@
   /* Semantic states */
   --success: oklch(65% 0.19 150);
   --success-foreground: oklch(15% 0.02 150);
-  --warning: oklch(75.976% 0.16034 71.493);
+  --warning: oklch(69.913% 0.1798 49.649);
   --warning-foreground: oklch(15% 0.04 85);
   --info: oklch(65% 0.17 250);
   --info-foreground: oklch(15% 0.02 250);

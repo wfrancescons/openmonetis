@@ -6,9 +6,12 @@ import {
 	RiEyeLine,
 	RiMoreLine,
 } from "@remixicon/react";
-import { formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import Image from "next/image";
+import { useMemo } from "react";
 import MoneyValues from "@/components/money-values";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -28,17 +31,59 @@ import type { InboxItem } from "./types";
 
 interface InboxCardProps {
 	item: InboxItem;
-	onProcess: (item: InboxItem) => void;
-	onDiscard: (item: InboxItem) => void;
-	onViewDetails: (item: InboxItem) => void;
+	readonly?: boolean;
+	appLogoMap?: Record<string, string>;
+	onProcess?: (item: InboxItem) => void;
+	onDiscard?: (item: InboxItem) => void;
+	onViewDetails?: (item: InboxItem) => void;
+}
+
+function resolveLogoPath(logo: string): string {
+	if (
+		logo.startsWith("http") ||
+		logo.startsWith("data:") ||
+		logo.startsWith("/")
+	) {
+		return logo;
+	}
+	return `/logos/${logo}`;
+}
+
+function findMatchingLogo(
+	sourceAppName: string | null,
+	appLogoMap: Record<string, string>,
+): string | null {
+	if (!sourceAppName) return null;
+
+	const appName = sourceAppName.toLowerCase();
+
+	// Exact match first
+	if (appLogoMap[appName]) return resolveLogoPath(appLogoMap[appName]);
+
+	// Partial match: card/account name contains app name or vice versa
+	for (const [name, logo] of Object.entries(appLogoMap)) {
+		if (name.includes(appName) || appName.includes(name)) {
+			return resolveLogoPath(logo);
+		}
+	}
+
+	return null;
 }
 
 export function InboxCard({
 	item,
+	readonly,
+	appLogoMap,
 	onProcess,
 	onDiscard,
 	onViewDetails,
 }: InboxCardProps) {
+	const matchedLogo = useMemo(
+		() =>
+			appLogoMap ? findMatchingLogo(item.sourceAppName, appLogoMap) : null,
+		[item.sourceAppName, appLogoMap],
+	);
+
 	const amount = item.parsedAmount ? parseFloat(item.parsedAmount) : null;
 
 	// O timestamp vem do app Android em horário local mas salvo como UTC
@@ -63,12 +108,32 @@ export function InboxCard({
 		timeZone: "UTC",
 	}).format(rawDate);
 
+	const statusDate =
+		item.status === "processed"
+			? item.processedAt
+			: item.status === "discarded"
+				? item.discardedAt
+				: null;
+
+	const formattedStatusDate = statusDate
+		? format(new Date(statusDate), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })
+		: null;
+
 	return (
 		<Card className="flex flex-col gap-0 py-0 h-54">
 			{/* Header com app e valor */}
 			<CardHeader className="pt-4">
 				<div className="flex items-center justify-between">
-					<CardTitle className="text-md">
+					<CardTitle className="flex items-center gap-1.5 text-md">
+						{matchedLogo && (
+							<Image
+								src={matchedLogo}
+								alt=""
+								width={24}
+								height={24}
+								className="shrink-0 rounded-sm"
+							/>
+						)}
 						{item.sourceAppName || item.sourceApp}
 						{"  "}
 						<span className="text-xs font-normal text-muted-foreground">
@@ -80,36 +145,38 @@ export function InboxCard({
 					)}
 				</div>
 
-				<CardAction>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="size-7 -mr-2 -mt-1"
-							>
-								<RiMoreLine className="size-4" />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							<DropdownMenuItem onClick={() => onViewDetails(item)}>
-								<RiEyeLine className="mr-2 size-4" />
-								Ver detalhes
-							</DropdownMenuItem>
-							<DropdownMenuItem onClick={() => onProcess(item)}>
-								<RiCheckLine className="mr-2 size-4" />
-								Processar
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								onClick={() => onDiscard(item)}
-								className="text-destructive"
-							>
-								<RiDeleteBinLine className="mr-2 size-4" />
-								Descartar
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</CardAction>
+				{!readonly && (
+					<CardAction>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button
+									variant="ghost"
+									size="icon"
+									className="size-7 -mr-2 -mt-1"
+								>
+									<RiMoreLine className="size-4" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								<DropdownMenuItem onClick={() => onViewDetails?.(item)}>
+									<RiEyeLine className="mr-2 size-4" />
+									Ver detalhes
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => onProcess?.(item)}>
+									<RiCheckLine className="mr-2 size-4" />
+									Processar
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									onClick={() => onDiscard?.(item)}
+									className="text-destructive"
+								>
+									<RiDeleteBinLine className="mr-2 size-4" />
+									Descartar
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</CardAction>
+				)}
 			</CardHeader>
 
 			{/* Conteúdo da notificação */}
@@ -122,21 +189,40 @@ export function InboxCard({
 				</p>
 			</CardContent>
 
-			{/* Botões de ação */}
-			<CardFooter className="gap-2 pt-3 pb-4">
-				<Button size="sm" className="flex-1" onClick={() => onProcess(item)}>
-					<RiCheckLine className="mr-1.5 size-4" />
-					Processar
-				</Button>
-				<Button
-					size="sm"
-					variant="outline"
-					onClick={() => onDiscard(item)}
-					className="text-muted-foreground hover:text-destructive hover:border-destructive"
-				>
-					<RiDeleteBinLine className="size-4" />
-				</Button>
-			</CardFooter>
+			{/* Botões de ação ou badge de status */}
+			{readonly ? (
+				<CardFooter className="gap-2 pt-3 pb-4">
+					<Badge
+						variant={item.status === "processed" ? "default" : "secondary"}
+					>
+						{item.status === "processed" ? "Processado" : "Descartado"}
+					</Badge>
+					{formattedStatusDate && (
+						<span className="text-xs text-muted-foreground">
+							{formattedStatusDate}
+						</span>
+					)}
+				</CardFooter>
+			) : (
+				<CardFooter className="gap-2 pt-3 pb-4">
+					<Button
+						size="sm"
+						className="flex-1"
+						onClick={() => onProcess?.(item)}
+					>
+						<RiCheckLine className="mr-1.5 size-4" />
+						Processar
+					</Button>
+					<Button
+						size="sm"
+						variant="outline"
+						onClick={() => onDiscard?.(item)}
+						className="text-muted-foreground hover:text-destructive hover:border-destructive"
+					>
+						<RiDeleteBinLine className="size-4" />
+					</Button>
+				</CardFooter>
+			)}
 		</Card>
 	);
 }
