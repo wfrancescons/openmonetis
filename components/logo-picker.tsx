@@ -56,7 +56,7 @@ export function LogoPickerTrigger({
 				className,
 			)}
 		>
-			<span className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border/40 bg-background shadow-xs">
+			<span className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border/40 bg-background shadow-xs">
 				{selectedLogoPath ? (
 					<Image
 						src={selectedLogoPath}
@@ -165,13 +165,13 @@ export function LogoPickerDialog({
 											"border-primary bg-primary/5 ring-2 ring-primary/40",
 									)}
 								>
-									<span className="flex w-full items-center justify-center overflow-hidden rounded-md">
+									<span className="flex w-full items-center justify-center overflow-hidden rounded-full">
 										<Image
 											src={resolveLogoSrc(logo, basePath)}
 											alt={logoLabel || logo}
 											width={40}
 											height={40}
-											className="rounded-md"
+											className="rounded-full"
 										/>
 									</span>
 									<span className="line-clamp-1 text-[10px] leading-tight text-muted-foreground">

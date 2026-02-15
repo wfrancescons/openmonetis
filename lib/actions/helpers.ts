@@ -14,11 +14,8 @@ export function handleActionError(error: unknown): ActionResult {
 		return errorResult(error.issues[0]?.message ?? "Dados inválidos.");
 	}
 
-	if (error instanceof Error) {
-		return errorResult(error.message);
-	}
-
-	return errorResult("Erro inesperado.");
+	console.error("[ActionError]", error);
+	return errorResult("Ocorreu um erro inesperado. Tente novamente.");
 }
 
 /**

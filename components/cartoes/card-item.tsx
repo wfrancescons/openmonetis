@@ -170,7 +170,7 @@ export function CardItem({
 									width={42}
 									height={42}
 									className={cn(
-										"rounded-lg",
+										"rounded-full",
 										isInactive && "grayscale opacity-40",
 									)}
 								/>
@@ -216,7 +216,7 @@ export function CardItem({
 								width={42}
 								height={42}
 								className={cn(
-									"h-6 w-auto rounded",
+									"h-6 w-auto rounded-full",
 									isInactive && "grayscale opacity-40",
 								)}
 							/>

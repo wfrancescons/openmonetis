@@ -10,7 +10,7 @@ type PaymentMethodsWidgetProps = {
 };
 
 const ICON_WRAPPER_CLASS =
-	"flex size-9.5 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground";
+	"flex size-9.5 shrink-0 items-center justify-center rounded-full bg-muted text-foreground";
 
 const formatPercentage = (value: number) =>
 	new Intl.NumberFormat("pt-BR", {

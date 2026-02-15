@@ -1,6 +1,7 @@
 import { RiBarcodeLine } from "@remixicon/react";
 import MoneyValues from "@/components/money-values";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { WidgetEmptyState } from "@/components/widget-empty-state";
 import type { PagadorBoletoStats } from "@/lib/pagadores/details";
 import { cn } from "@/lib/utils/ui";
@@ -43,7 +44,7 @@ export function PagadorBoletoCard({ stats }: PagadorBoletoCardProps) {
 							/>
 						</div>
 
-						<div className="space-y-2 rounded-xl border border-dashed p-3">
+						<div className="space-y-2 border rounded-lg p-3">
 							<StatusRow
 								label="Pagos"
 								amount={stats.paidAmount}
@@ -51,6 +52,7 @@ export function PagadorBoletoCard({ stats }: PagadorBoletoCardProps) {
 								percent={paidPercent}
 								tone="success"
 							/>
+							<Separator />
 							<StatusRow
 								label="Pendentes"
 								amount={stats.pendingAmount}
@@ -77,7 +79,7 @@ type StatusRowProps = {
 function StatusRow({ label, amount, count, percent, tone }: StatusRowProps) {
 	const clampedPercent = Math.min(Math.max(percent, 0), 100);
 	return (
-		<div className="space-y-1 rounded-lg bg-muted/40 p-3">
+		<div className="space-y-1 rounded p-3">
 			<div className="flex items-center justify-between text-sm font-semibold">
 				<span>{label}</span>
 				<span className="text-muted-foreground">{count} registros</span>

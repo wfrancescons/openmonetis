@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { tokensApi } from "@/db/schema";
@@ -15,7 +15,7 @@ export async function GET() {
 		}
 
 		// Buscar tokens ativos do usuário
-		const tokens = await db
+		const activeTokens = await db
 			.select({
 				id: tokensApi.id,
 				name: tokensApi.name,
@@ -26,13 +26,10 @@ export async function GET() {
 				createdAt: tokensApi.createdAt,
 			})
 			.from(tokensApi)
-			.where(eq(tokensApi.userId, session.user.id))
+			.where(
+				and(eq(tokensApi.userId, session.user.id), isNull(tokensApi.revokedAt)),
+			)
 			.orderBy(desc(tokensApi.createdAt));
-
-		// Separar tokens ativos e revogados
-		const activeTokens = tokens.filter(
-			(t) => !t.expiresAt || new Date(t.expiresAt) > new Date(),
-		);
 
 		return NextResponse.json({ tokens: activeTokens });
 	} catch (error) {

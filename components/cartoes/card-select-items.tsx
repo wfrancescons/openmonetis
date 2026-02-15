@@ -40,7 +40,7 @@ export function BrandSelectContent({ label }: { label: string }) {
 					alt={`Logo ${label}`}
 					width={24}
 					height={24}
-					className="rounded object-contain"
+					className="rounded-full object-contain"
 				/>
 			) : (
 				<RiBankLine className="size-5 text-muted-foreground" aria-hidden />
@@ -74,7 +74,7 @@ export function AccountSelectContent({ label, logo }: SelectItemContentProps) {
 					alt={`Logo de ${label}`}
 					width={20}
 					height={20}
-					className="rounded"
+					className="rounded-full"
 				/>
 			) : (
 				<RiBankLine className="size-4 text-muted-foreground" aria-hidden />

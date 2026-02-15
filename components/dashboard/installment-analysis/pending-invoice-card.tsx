@@ -61,10 +61,10 @@ export function PendingInvoiceCard({
 											alt={invoice.cartaoName}
 											width={24}
 											height={24}
-											className="size-6 rounded"
+											className="size-6 rounded-full"
 										/>
 									) : (
-										<div className="flex size-6 items-center justify-center rounded bg-muted">
+										<div className="flex size-6 items-center justify-center rounded-full bg-muted">
 											<RiBillLine className="size-4 text-muted-foreground" />
 										</div>
 									)}

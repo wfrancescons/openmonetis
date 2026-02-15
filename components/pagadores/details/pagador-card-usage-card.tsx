@@ -51,7 +51,7 @@ export function PagadorCardUsageCard({ items }: PagadorCardUsageCardProps) {
 								>
 									<div className="flex items-center gap-3">
 										{logoPath ? (
-											<span className="flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-background">
+											<span className="flex size-10 items-center justify-center overflow-hidden rounded-full border border-border/60 bg-background">
 												<Image
 													src={logoPath}
 													alt={`Logo ${item.name}`}
@@ -61,7 +61,7 @@ export function PagadorCardUsageCard({ items }: PagadorCardUsageCardProps) {
 												/>
 											</span>
 										) : (
-											<span className="flex size-10 items-center justify-center rounded-lg bg-muted text-xs font-semibold uppercase text-muted-foreground">
+											<span className="flex size-10 items-center justify-center rounded-full bg-muted text-xs font-semibold uppercase text-muted-foreground">
 												{item.name.slice(0, 2)}
 											</span>
 										)}

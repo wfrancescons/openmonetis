@@ -109,7 +109,7 @@ export function ContaCartaoSelectContent({
 					alt={`Logo de ${label}`}
 					width={20}
 					height={20}
-					className="rounded"
+					className="rounded-full"
 				/>
 			) : (
 				<Icon className="size-4 text-muted-foreground" aria-hidden />

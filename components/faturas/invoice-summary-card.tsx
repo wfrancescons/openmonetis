@@ -194,7 +194,7 @@ export function InvoiceSummaryCard({
 			<CardHeader className="flex flex-col gap-3">
 				<div className="flex items-start gap-3">
 					{logoPath ? (
-						<div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-background">
+						<div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border/60 bg-background">
 							<Image
 								src={logoPath}
 								alt={`Logo do cartão ${cardName}`}
@@ -204,7 +204,7 @@ export function InvoiceSummaryCard({
 							/>
 						</div>
 					) : cardBrand ? (
-						<span className="flex size-12 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background text-sm font-semibold text-muted-foreground">
+						<span className="flex size-12 shrink-0 items-center justify-center rounded-full border border-border/60 bg-background text-sm font-semibold text-muted-foreground">
 							{cardBrand}
 						</span>
 					) : null}
@@ -270,7 +270,7 @@ export function InvoiceSummaryCard({
 										alt={`Bandeira ${cardBrand}`}
 										width={32}
 										height={32}
-										className="h-5 w-auto rounded"
+										className="h-5 w-auto rounded-full"
 									/>
 									<span className="truncate">{cardBrand}</span>
 								</div>

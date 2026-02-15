@@ -447,7 +447,7 @@ const buildColumns = ({
 								alt={`Logo de ${label}`}
 								width={30}
 								height={30}
-								className="rounded-md"
+								className="rounded-full"
 							/>
 						)}
 						<span className="truncate">{label}</span>
@@ -478,7 +478,7 @@ const buildColumns = ({
 										alt={`Logo de ${label}`}
 										width={30}
 										height={30}
-										className="rounded-md"
+										className="rounded-full"
 									/>
 								)}
 								<span className="truncate">{label}</span>

@@ -94,7 +94,7 @@ export function CardUsageChart({ data, limit, card }: CardUsageChartProps) {
 								alt={card.name}
 								width={24}
 								height={24}
-								className="rounded object-contain"
+								className="rounded-full object-contain"
 							/>
 						) : (
 							<RiBankCard2Line className="size-5 text-muted-foreground" />

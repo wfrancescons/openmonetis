@@ -155,7 +155,7 @@ export function AccountsPage({
 										alt={`Logo da conta ${account.name}`}
 										width={42}
 										height={42}
-										className="rounded-lg"
+										className="rounded-full"
 									/>
 								) : undefined
 							}

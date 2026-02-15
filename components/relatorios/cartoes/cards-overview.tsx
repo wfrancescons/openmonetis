@@ -140,7 +140,7 @@ export function CardsOverview({ data }: CardsOverviewProps) {
 											alt={card.name}
 											width={32}
 											height={32}
-											className="rounded-sm object-contain"
+											className="rounded-full object-contain"
 										/>
 									) : (
 										<RiBankCard2Line className="size-5 text-muted-foreground" />

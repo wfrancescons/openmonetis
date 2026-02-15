@@ -1,4 +1,4 @@
-import { RiBarChartBoxLine } from "@remixicon/react";
+import { RiBarChartBoxLine, RiExternalLinkLine } from "@remixicon/react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -85,11 +85,11 @@ export function MyAccountsWidget({
 													src={logoSrc}
 													alt={`Logo da conta ${account.name}`}
 													fill
-													className="object-contain rounded-lg"
+													className="object-contain rounded-full"
 												/>
 											</div>
 										) : (
-											<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary text-sm font-semibold uppercase text-secondary-foreground">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-sm font-semibold uppercase text-secondary-foreground">
 												{initials}
 											</div>
 										)}
@@ -100,9 +100,13 @@ export function MyAccountsWidget({
 												href={`/contas/${
 													account.id
 												}/extrato?periodo=${formatPeriodForUrl(period)}`}
-												className="truncate font-medium text-foreground hover:text-primary hover:underline"
+												className="inline-flex max-w-full items-center gap-1 text-sm font-medium text-foreground underline-offset-2 hover:text-primary hover:underline"
 											>
-												<span className="truncate text-sm">{account.name}</span>
+												<span className="truncate">{account.name}</span>
+												<RiExternalLinkLine
+													className="size-3 shrink-0 text-muted-foreground"
+													aria-hidden
+												/>
 											</Link>
 											<div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
 												<span className="truncate">{account.accountType}</span>

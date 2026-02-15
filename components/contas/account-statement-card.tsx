@@ -75,7 +75,7 @@ export function AccountStatementCard({
 			<CardHeader className="flex flex-col gap-3">
 				<div className="flex items-start gap-3">
 					{logoPath ? (
-						<div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-background">
+						<div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border/60 bg-background">
 							<Image
 								src={logoPath}
 								alt={`Logo da conta ${accountName}`}

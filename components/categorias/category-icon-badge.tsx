@@ -57,7 +57,7 @@ export function CategoryIconBadge({
 	return (
 		<div
 			className={cn(
-				"flex shrink-0 items-center justify-center overflow-hidden rounded-lg",
+				"flex shrink-0 items-center justify-center overflow-hidden rounded-full",
 				variant.container,
 				className,
 			)}
@@ -66,10 +66,7 @@ export function CategoryIconBadge({
 			{IconComponent ? (
 				<IconComponent className={variant.icon} style={{ color }} />
 			) : (
-				<span
-					className={cn("font-semibold uppercase", variant.text)}
-					style={{ color }}
-				>
+				<span className={cn("uppercase", variant.text)} style={{ color }}>
 					{initials}
 				</span>
 			)}

@@ -1,7 +1,9 @@
 import crypto from "node:crypto";
 
-const JWT_SECRET =
-	process.env.BETTER_AUTH_SECRET || "opensheets-secret-change-me";
+const JWT_SECRET = process.env.BETTER_AUTH_SECRET;
+if (!JWT_SECRET) {
+	throw new Error("BETTER_AUTH_SECRET is required. Set it in your .env file.");
+}
 const ACCESS_TOKEN_EXPIRY = 7 * 24 * 60 * 60; // 7 days in seconds
 const REFRESH_TOKEN_EXPIRY = 90 * 24 * 60 * 60; // 90 days in seconds
 

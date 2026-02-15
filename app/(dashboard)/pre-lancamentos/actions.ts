@@ -62,7 +62,12 @@ export async function markInboxAsProcessedAction(
 				processedAt: new Date(),
 				updatedAt: new Date(),
 			})
-			.where(eq(preLancamentos.id, data.inboxItemId));
+			.where(
+				and(
+					eq(preLancamentos.id, data.inboxItemId),
+					eq(preLancamentos.userId, user.id),
+				),
+			);
 
 		revalidateInbox();
 
@@ -104,7 +109,12 @@ export async function discardInboxItemAction(
 				discardedAt: new Date(),
 				updatedAt: new Date(),
 			})
-			.where(eq(preLancamentos.id, data.inboxItemId));
+			.where(
+				and(
+					eq(preLancamentos.id, data.inboxItemId),
+					eq(preLancamentos.userId, user.id),
+				),
+			);
 
 		revalidateInbox();
 

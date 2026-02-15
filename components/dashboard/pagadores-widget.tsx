@@ -65,7 +65,9 @@ export function PagadoresWidget({ pagadores }: PagadoresWidgetProps) {
 											href={`/pagadores/${pagador.id}`}
 											className="inline-flex max-w-full items-center gap-1 text-sm text-foreground underline-offset-2 hover:text-primary hover:underline"
 										>
-											<span className="truncate">{pagador.name}</span>
+											<span className="truncate font-medium">
+												{pagador.name}
+											</span>
 											{pagador.isAdmin && (
 												<RiVerifiedBadgeFill
 													className="size-4 shrink-0 text-blue-500"

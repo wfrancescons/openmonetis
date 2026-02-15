@@ -585,7 +585,10 @@ export async function generateInsightsAction(
 		const selectedModel = AVAILABLE_MODELS.find((m) => m.id === modelId);
 
 		// Se não encontrou na lista e não tem "/" (formato OpenRouter), é inválido
-		if (!selectedModel && !modelId.includes("/")) {
+		const isOpenRouterFormat = /^[a-zA-Z0-9_-]+\/[a-zA-Z0-9._-]+$/.test(
+			modelId,
+		);
+		if (!selectedModel && !isOpenRouterFormat) {
 			return {
 				success: false,
 				error: "Modelo inválido.",
@@ -599,7 +602,7 @@ export async function generateInsightsAction(
 		let model;
 
 		// Se o modelo tem "/" é OpenRouter (formato: provider/model)
-		if (modelId.includes("/")) {
+		if (isOpenRouterFormat && !selectedModel) {
 			const apiKey = process.env.OPENROUTER_API_KEY;
 			if (!apiKey) {
 				return {
@@ -675,10 +678,7 @@ Responda APENAS com um JSON válido seguindo exatamente o schema especificado.`,
 		console.error("Error generating insights:", error);
 		return {
 			success: false,
-			error:
-				error instanceof Error
-					? error.message
-					: "Erro ao gerar insights. Tente novamente.",
+			error: "Erro ao gerar insights. Tente novamente.",
 		};
 	}
 }
@@ -776,10 +776,7 @@ export async function saveInsightsAction(
 		console.error("Error saving insights:", error);
 		return {
 			success: false,
-			error:
-				error instanceof Error
-					? error.message
-					: "Erro ao salvar análise. Tente novamente.",
+			error: "Erro ao salvar análise. Tente novamente.",
 		};
 	}
 }
@@ -837,10 +834,7 @@ export async function loadSavedInsightsAction(period: string): Promise<
 		console.error("Error loading saved insights:", error);
 		return {
 			success: false,
-			error:
-				error instanceof Error
-					? error.message
-					: "Erro ao carregar análise salva. Tente novamente.",
+			error: "Erro ao carregar análise salva. Tente novamente.",
 		};
 	}
 }
@@ -871,10 +865,7 @@ export async function deleteSavedInsightsAction(
 		console.error("Error deleting saved insights:", error);
 		return {
 			success: false,
-			error:
-				error instanceof Error
-					? error.message
-					: "Erro ao remover análise. Tente novamente.",
+			error: "Erro ao remover análise. Tente novamente.",
 		};
 	}
 }

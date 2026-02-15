@@ -86,7 +86,7 @@ export function ExpensesByCategoryWidget({
 					>
 						<div className="flex items-center justify-between gap-3">
 							<div className="flex min-w-0 flex-1 items-center gap-2">
-								<div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
+								<div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted">
 									{IconComponent ? (
 										<IconComponent className="size-4 text-foreground" />
 									) : (

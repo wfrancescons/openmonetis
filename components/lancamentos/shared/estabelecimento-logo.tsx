@@ -54,7 +54,7 @@ export function EstabelecimentoLogo({
 	return (
 		<div
 			className={cn(
-				"flex items-center justify-center rounded-lg text-white font-bold shrink-0",
+				"flex items-center justify-center rounded-full text-white font-bold shrink-0",
 				colorClass,
 				className,
 			)}

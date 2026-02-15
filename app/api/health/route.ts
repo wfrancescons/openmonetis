@@ -36,8 +36,7 @@ export async function GET() {
 				name: "OpenSheets",
 				version: APP_VERSION,
 				timestamp: new Date().toISOString(),
-				message:
-					error instanceof Error ? error.message : "Database connection failed",
+				message: "Database connection failed",
 			},
 			{ status: 503 },
 		);

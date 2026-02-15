@@ -131,7 +131,7 @@ export function InboxCard({
 								alt=""
 								width={24}
 								height={24}
-								className="shrink-0 rounded-sm"
+								className="shrink-0 rounded-full"
 							/>
 						)}
 						{item.sourceAppName || item.sourceApp}

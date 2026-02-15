@@ -259,7 +259,7 @@ export function InvoicesWidget({ invoices }: InvoicesWidgetProps) {
 									className="flex items-center justify-between border-b border-dashed last:border-b-0 last:pb-0"
 								>
 									<div className="flex min-w-0 flex-1 items-center gap-2 py-2">
-										<div className="flex size-9.5 shrink-0 items-center justify-center overflow-hidden rounded-lg">
+										<div className="flex size-9.5 shrink-0 items-center justify-center overflow-hidden rounded-full">
 											{logo ? (
 												<Image
 													src={logo}
@@ -456,7 +456,7 @@ export function InvoicesWidget({ invoices }: InvoicesWidgetProps) {
 							{selectedInvoice ? (
 								<div className="flex flex-col gap-4">
 									<div className="flex items-center gap-3 rounded-lg border border-border/60 bg-muted/50 p-3">
-										<div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-background">
+										<div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border/60 bg-background">
 											{selectedLogo ? (
 												<Image
 													src={selectedLogo}

@@ -40,7 +40,7 @@ export function AnalysisSummaryPanel({
 
 				{/* Mensagem quando nada está selecionado */}
 				{selectedCount === 0 && (
-					<div className="rounded-lg bg-muted/50 p-3 text-center">
+					<div className="rounded-full bg-muted/50 p-3 text-center">
 						<p className="text-xs text-muted-foreground">
 							Selecione parcelas para ver o resumo
 						</p>
