@@ -93,4 +93,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 
 # Comando de inicialização
 # Nota: Em produção com standalone build, o servidor é iniciado pelo arquivo server.js
-CMD ["node", "server.js"]
+CMD sh -c "pnpm db:push && node server.js"
